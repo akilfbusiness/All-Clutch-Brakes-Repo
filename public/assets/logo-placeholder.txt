@@ -1,0 +1,11 @@
+// Logo placeholder — replace this file with the actual logo when ready
+// Accepted formats: SVG (preferred), PNG, WebP
+// Naming convention: keep filename as "logo.svg" or "logo.png" so no code changes needed
+
+// INSTRUCTIONS FOR LOGO REPLACEMENT:
+// 1. Export your logo as SVG or PNG from your design tool
+// 2. Name the file "logo.svg" (or "logo.png")
+// 3. Upload it to this folder: public/assets/
+// 4. All logo references in the codebase use /assets/logo.svg — no code changes needed
+
+This is a placeholder. Replace with actual logo file.
