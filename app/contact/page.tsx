@@ -1,69 +1,55 @@
-// Contact page
-// Schema: ContactPage + BreadcrumbList
-// Form is structural only — submission logic (email/CRM) added in a later step
+// Contact page — all content pulled from Sanity siteSettings
+// To edit: Sanity Studio → Site Settings → Contact Page & Business Details
+// Form is structural only — submission logic added in a later phase
 
 import type { Metadata } from "next"
+import { getSiteSettings } from "@/sanity/queries"
 
-export const metadata: Metadata = {
-  title: "Contact Ashar Disability Care | NDIS Support Services SA",
-  description:
-    "Contact Ashar Disability Care to discuss your NDIS support needs. Call 0425 760 172, email info@ashardc.com.au, or fill in our enquiry form. Based in Surrey Downs, serving all of South Australia.",
-  alternates: {
-    canonical: "/contact",
-  },
-  openGraph: {
-    title: "Contact Ashar Disability Care | NDIS Support Services SA",
-    description:
-      "Get in touch with Ashar Disability Care. Our friendly team is ready to help you get started with NDIS support services across South Australia.",
-    url: "https://ashardisabilitycare.com.au/contact",
-    type: "website",
-  },
-}
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  const siteUrl = settings?.siteUrl ?? "https://example.com"
+  const businessName = settings?.businessName ?? "Business Name"
 
-const contactPageSchema = {
-  "@context": "https://schema.org",
-  "@type": "ContactPage",
-  "@id": "https://ashardisabilitycare.com.au/contact",
-  name: "Contact Ashar Disability Care",
-  description:
-    "Contact Ashar Disability Care to enquire about NDIS support services in South Australia.",
-  url: "https://ashardisabilitycare.com.au/contact",
-  mainEntity: {
-    "@id": "https://ashardisabilitycare.com.au/#business",
-  },
-}
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "Home",
-      item: "https://ashardisabilitycare.com.au",
+  return {
+    title: `Contact ${businessName}`,
+    description: settings?.contactAnswerCapsule ?? settings?.defaultSeoDescription ?? "",
+    alternates: { canonical: "/contact" },
+    openGraph: {
+      title: `Contact ${businessName}`,
+      description: settings?.contactAnswerCapsule ?? "",
+      url: `${siteUrl}/contact`,
+      type: "website",
     },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Contact",
-      item: "https://ashardisabilitycare.com.au/contact",
-    },
-  ],
+  }
 }
 
-// Services list for the form dropdown
-const serviceOptions = [
-  "Personal Care",
-  "Home Care",
-  "Community Participation",
-  "Transport",
-  "Accommodation Support",
-  "NDIS Planning and Coordination",
-  "Not sure — I need help choosing",
-]
+export default async function ContactPage() {
+  const settings = await getSiteSettings()
 
-export default function ContactPage() {
+  const siteUrl = settings?.siteUrl ?? "https://example.com"
+  const businessName = settings?.businessName ?? "Business Name"
+  const phone = settings?.phone ?? []
+  const serviceOptions = settings?.contactServiceOptions ?? []
+
+  const contactPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "@id": `${siteUrl}/contact`,
+    name: `Contact ${businessName}`,
+    description: settings?.contactAnswerCapsule ?? "",
+    url: `${siteUrl}/contact`,
+    mainEntity: { "@id": `${siteUrl}/#business` },
+  }
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Contact", item: `${siteUrl}/contact` },
+    ],
+  }
+
   return (
     <>
       <script
@@ -83,13 +69,12 @@ export default function ContactPage() {
           </ol>
         </nav>
 
-        <h1>Contact Ashar Disability Care</h1>
+        <h1>{settings?.contactHeading ?? `Contact ${businessName}`}</h1>
 
         {/* Answer capsule */}
-        <p className="answer-capsule">
-          Reach Ashar Disability Care by phone on 0425 760 172, by email at
-          info@ashardc.com.au, or complete the enquiry form below.
-        </p>
+        {settings?.contactAnswerCapsule && (
+          <p className="answer-capsule">{settings.contactAnswerCapsule}</p>
+        )}
 
         <div>
           {/* ── CONTACT DETAILS ─────────────────────────────────────────────── */}
@@ -98,53 +83,79 @@ export default function ContactPage() {
 
             <address>
               <dl>
-                <div>
-                  <dt>Phone</dt>
-                  <dd>
-                    <a href="tel:+61425760172">0425 760 172</a>
-                  </dd>
-                  <dd>
-                    <a href="tel:+61425409849">0425 409 849</a>
-                  </dd>
-                </div>
-                <div>
-                  <dt>Email</dt>
-                  <dd>
-                    <a href="mailto:info@ashardc.com.au">info@ashardc.com.au</a>
-                  </dd>
-                </div>
-                <div>
-                  <dt>Address</dt>
-                  <dd>2 Yangoura Ct, Surrey Downs SA 5126, Australia</dd>
-                </div>
-                <div>
-                  <dt>Business Hours</dt>
-                  <dd>Monday – Friday: 9:00 AM – 5:00 PM</dd>
-                  <dd>24/7 Support Available</dd>
-                </div>
+                {phone.length > 0 && (
+                  <div>
+                    <dt>Phone</dt>
+                    {phone.map((p, i) => (
+                      <dd key={i}>
+                        <a href={`tel:${p.replace(/\s/g, "")}`}>{p}</a>
+                      </dd>
+                    ))}
+                  </div>
+                )}
+                {settings?.email && (
+                  <div>
+                    <dt>Email</dt>
+                    <dd>
+                      <a href={`mailto:${settings.email}`}>{settings.email}</a>
+                    </dd>
+                  </div>
+                )}
+                {settings?.address && (
+                  <div>
+                    <dt>Address</dt>
+                    <dd>
+                      {settings.address.street}, {settings.address.suburb}{" "}
+                      {settings.address.state} {settings.address.postcode},{" "}
+                      {settings.address.country}
+                    </dd>
+                  </div>
+                )}
+                {settings?.businessHours && settings.businessHours.length > 0 && (
+                  <div>
+                    <dt>Business Hours</dt>
+                    {settings.businessHours.map((h, i) => (
+                      <dd key={i}>
+                        {h.days}: {h.hours}
+                      </dd>
+                    ))}
+                  </div>
+                )}
               </dl>
             </address>
 
-            {/* Google Map embed placeholder — replace src with real embed URL */}
-            <div aria-label="Map showing Ashar Disability Care location in Surrey Downs SA">
-              {/* LOGO-HERE — Google Map embed placeholder */}
-              <p>Map placeholder — replace with Google Maps embed</p>
-            </div>
+            {/* Google Map embed — URL set in Sanity → Site Settings → Business Details */}
+            {settings?.googleMapsEmbedUrl ? (
+              <div aria-label={`Map showing ${businessName} location`}>
+                <iframe
+                  src={settings.googleMapsEmbedUrl}
+                  width="100%"
+                  height="300"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title={`${businessName} location map`}
+                />
+              </div>
+            ) : (
+              <div aria-label="Map placeholder">
+                {/* Add Google Maps embed URL in Sanity → Site Settings → Business Details */}
+                <p>Map placeholder — add Google Maps embed URL in Sanity Studio.</p>
+              </div>
+            )}
           </section>
 
           {/* ── ENQUIRY FORM ──────────────────────────────────────────────────── */}
-          {/* Form is structural only — submission handler added in a later step */}
           <section aria-labelledby="form-heading">
-            <h2 id="form-heading">Send an Enquiry</h2>
-            <p>
-              Fill in the form below and a member of our team will be in touch
-              within one business day.
-            </p>
+            <h2 id="form-heading">
+              {settings?.contactFormHeading ?? "Send an Enquiry"}
+            </h2>
+            {settings?.contactFormSubheading && (
+              <p>{settings.contactFormSubheading}</p>
+            )}
 
-            <form
-              aria-label="Contact enquiry form"
-              // action and onSubmit wired up in a later build step
-            >
+            <form aria-label="Contact enquiry form">
               <div>
                 <label htmlFor="name">
                   Full Name <span aria-hidden="true">*</span>
@@ -201,17 +212,19 @@ export default function ContactPage() {
                 />
               </div>
 
-              <div>
-                <label htmlFor="service">Service Interested In</label>
-                <select id="service" name="service">
-                  <option value="">Select a service</option>
-                  {serviceOptions.map((service) => (
-                    <option key={service} value={service}>
-                      {service}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {serviceOptions.length > 0 && (
+                <div>
+                  <label htmlFor="service">Service Interested In</label>
+                  <select id="service" name="service">
+                    <option value="">Select a service</option>
+                    {serviceOptions.map((service) => (
+                      <option key={service} value={service}>
+                        {service}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div>
                 <label htmlFor="message">
@@ -223,7 +236,7 @@ export default function ContactPage() {
                   rows={5}
                   required
                   aria-required="true"
-                  placeholder="Tell us about your support needs or ask us any questions"
+                  placeholder="Tell us about your needs or ask us any questions"
                 />
               </div>
 

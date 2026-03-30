@@ -9,13 +9,57 @@ import { sanityFetch } from "./client"
 export const SITE_SETTINGS_QUERY = `
   *[_type == "siteSettings"][0] {
     businessName,
+    tagline,
+    "logo": logo.asset->url,
     phone,
     email,
     address,
     businessHours,
-    ndisRegistrationId,
     abn,
-    socialLinks
+    registrationId,
+    googleMapsEmbedUrl,
+    socialLinks,
+    heroHeading,
+    heroAnswerCapsule,
+    heroPrimaryCtaLabel,
+    heroSecondaryCtaLabel,
+    heroTrustSignals,
+    homeServicesHeading,
+    homeServicesSubheading,
+    homeWhyUsHeading,
+    homeWhyUsBody,
+    homeWhyUsPoints,
+    homeCtaHeading,
+    homeCtaBody,
+    homeFaqs,
+    aboutHeading,
+    aboutAnswerCapsule,
+    aboutMissionHeading,
+    aboutMissionBody,
+    aboutWhoWeAreHeading,
+    aboutWhoWeAreBody,
+    aboutValues,
+    aboutTeamHeading,
+    aboutTeamBody,
+    contactHeading,
+    contactAnswerCapsule,
+    contactFormHeading,
+    contactFormSubheading,
+    contactServiceOptions,
+    servicesPageHeading,
+    servicesPageAnswerCapsule,
+    servicesFaqs,
+    locationsPageHeading,
+    locationsPageAnswerCapsule,
+    locationsFaqs,
+    footerTagline,
+    footerCopyrightText,
+    footerLinks,
+    siteUrl,
+    defaultSeoTitle,
+    defaultSeoDescription,
+    googleSearchConsoleToken,
+    areaServed
   }
 `
 
@@ -218,6 +262,80 @@ export interface SiteSettings {
 export interface FaqItem {
   question: string
   answer: string
+}
+
+export interface SiteSettings {
+  // Business
+  businessName: string
+  tagline?: string
+  logo?: string
+  phone?: string[]
+  email?: string
+  address?: {
+    street: string
+    suburb: string
+    state: string
+    postcode: string
+    country: string
+  }
+  businessHours?: { days: string; hours: string }[]
+  abn?: string
+  registrationId?: string
+  googleMapsEmbedUrl?: string
+  socialLinks?: {
+    facebook?: string
+    instagram?: string
+    linkedin?: string
+    twitter?: string
+  }
+  // Home page
+  heroHeading?: string
+  heroAnswerCapsule?: string
+  heroPrimaryCtaLabel?: string
+  heroSecondaryCtaLabel?: string
+  heroTrustSignals?: string[]
+  homeServicesHeading?: string
+  homeServicesSubheading?: string
+  homeWhyUsHeading?: string
+  homeWhyUsBody?: string
+  homeWhyUsPoints?: string[]
+  homeCtaHeading?: string
+  homeCtaBody?: string
+  homeFaqs?: FaqItem[]
+  // About page
+  aboutHeading?: string
+  aboutAnswerCapsule?: string
+  aboutMissionHeading?: string
+  aboutMissionBody?: string
+  aboutWhoWeAreHeading?: string
+  aboutWhoWeAreBody?: string[]
+  aboutValues?: { title: string; description: string }[]
+  aboutTeamHeading?: string
+  aboutTeamBody?: string
+  // Contact page
+  contactHeading?: string
+  contactAnswerCapsule?: string
+  contactFormHeading?: string
+  contactFormSubheading?: string
+  contactServiceOptions?: string[]
+  // Services page
+  servicesPageHeading?: string
+  servicesPageAnswerCapsule?: string
+  servicesFaqs?: FaqItem[]
+  // Locations page
+  locationsPageHeading?: string
+  locationsPageAnswerCapsule?: string
+  locationsFaqs?: FaqItem[]
+  // Footer
+  footerTagline?: string
+  footerCopyrightText?: string
+  footerLinks?: { label: string; href: string }[]
+  // SEO
+  siteUrl?: string
+  defaultSeoTitle?: string
+  defaultSeoDescription?: string
+  googleSearchConsoleToken?: string
+  areaServed?: string[]
 }
 
 export interface Article {

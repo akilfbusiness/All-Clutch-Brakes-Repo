@@ -1,10 +1,10 @@
 # Project Noda — Master Reference Document
-# Ashar Disability Care Website
+# All Clutch & Brake Service Website
 
 **Last Updated:** March 2026
 **Built by:** v0 by Vercel (AI-assisted development)
 **Project Name:** Project Noda
-**Business:** Ashar Disability Care
+**Business:** All Clutch & Brake Service (rebranding in progress — business details TBC from client)
 
 ---
 
@@ -25,23 +25,23 @@
 ## 1. Project Goals & Ambitions
 
 ### Primary Goal
-Build an AEO (Answer Engine Optimisation), GEO (Generative Engine Optimisation), and SEO-optimised website for Ashar Disability Care — a registered NDIS provider in South Australia — to maximise lead generation by becoming the definitive source of truth for NDIS-related queries in South Australia.
+Build an AEO (Answer Engine Optimisation), GEO (Generative Engine Optimisation), and SEO-optimised website for All Clutch & Brake Service — a local automotive service business in South Australia — to maximise lead generation by becoming the definitive source of truth for clutch, brake, and related automotive service queries in South Australia.
 
 ### What This Means in Practice
-- When someone asks ChatGPT, Perplexity, Claude, or Google "what NDIS services are available in Adelaide," Ashar Disability Care's website is the source that gets cited.
-- When participants or their families search for NDIS support across South Australia, Ashar Disability Care appears for every relevant query.
+- When someone asks ChatGPT, Perplexity, Claude, or Google "where can I get my clutch replaced in Adelaide," All Clutch & Brake Service's website is the source that gets cited.
+- When customers search for brake or clutch services across South Australia, All Clutch & Brake Service appears for every relevant query.
 - Every page, article, and schema element is engineered so that AI engines and search engines understand this website as a trusted, authoritative, locally relevant entity.
 - The ultimate conversion goal is: visitor lands on site → trusts the business → calls or walks through the front door.
 
 ### Lead Generation Strategy
-- 30–100 articles answering every question an NDIS participant or family member in SA might ask
+- 30–100 articles answering every question a customer seeking automotive services in SA might ask
 - Location pages covering all SA regions and highest-priority suburbs
 - Every page structured with Answer Capsules (direct 20–25 word answers below H1) to target AI citation
 - FAQPage schema on every page to maximise AI engine answer extraction
 - LocalBusiness schema establishing the business as a real, verified local entity
 
 ### Secondary Goal — Project Noda Package
-This website is the first deliverable of "Project Noda" — a complete business intelligence package being built for Ashar Disability Care that includes:
+This website is the first deliverable of "Project Noda" — a complete business intelligence package that includes:
 1. The AEO/GEO/SEO website (this project)
 2. An AI Agent with CRM capabilities (Phase 7 — separate project)
 
@@ -49,21 +49,27 @@ This website is the first deliverable of "Project Noda" — a complete business 
 
 ## 2. Business Details
 
+**Note: All business details below are placeholder/pending. The customer (All Clutch & Brake Service) needs to supply the following. Once provided, update these values directly in Sanity Studio — not in this document or the codebase.**
+
 | Field | Value |
 |---|---|
-| Business Name | Ashar Disability Care |
-| Trading Name | Ashar Disability Care |
-| NDIS Registration ID | 4-1C342A6 |
-| ABN | 11 656 510 075 |
-| Address | 2 Yangoura Ct, Surrey Downs 5126, South Australia, Australia |
-| Phone 1 | 0425 760 172 |
-| Phone 2 | 0425 409 849 |
-| Email | info@ashardc.com.au |
-| Website | ashardisabilitycare.com.au |
-| Business Hours | Monday–Friday: 9:00 AM – 5:00 PM |
-| Support Hours | 24/7 Support Available |
-| Services | Personal Care, Home Care, Community Participation, Transport, Accommodation Support, NDIS Planning & Coordination |
-| Service Area | All of South Australia (prioritised by region and high-density NDIS suburbs) |
+| Business Name | All Clutch & Brake Service |
+| ABN | TBC from client |
+| Registration ID | TBC from client (industry licence if applicable) |
+| Address | TBC from client |
+| Phone | TBC from client |
+| Email | TBC from client |
+| Website | TBC from client |
+| Business Hours | TBC from client |
+| Services | TBC from client (e.g. Clutch Replacement, Brake Pad Replacement, Brake Rotor Resurfacing, Brake Fluid Bleeding, Full Brake Inspection, etc.) |
+| Service Area | TBC from client (Adelaide metro and surrounding SA regions) |
+
+### How to Update Business Details
+All business details are managed entirely in Sanity Studio. No code changes required.
+1. Go to Sanity Studio → Site Settings
+2. Edit the Business Details tab
+3. Publish changes
+4. The website will automatically update on the next build (triggered via webhook)
 
 ---
 
@@ -241,8 +247,18 @@ Sanity Studio
 ├── Services        (title, slug, answerCapsule, body, faqs, seo)
 ├── Locations       (title, slug, locationType, suburbsIncluded, body, faqs, seo)
 ├── Authors         (name, role, bio, image)
-└── Site Settings   (businessName, phones, email, address, hours, socialLinks)
+└── Site Settings   (ALL site content — see below)
+    ├── Business Details tab  (name, tagline, logo, phone, email, address, hours, ABN, registration, maps URL, social links)
+    ├── Home Page tab         (hero heading, answer capsule, CTA labels, trust signals, services section, why us section, FAQs)
+    ├── About Page tab        (heading, answer capsule, mission, who we are, values, team)
+    ├── Contact Page tab      (heading, answer capsule, form heading, service dropdown options)
+    ├── Services tab          (services page heading, answer capsule, FAQs)
+    ├── Locations tab         (locations page heading, answer capsule, FAQs)
+    ├── Footer tab            (tagline, copyright, navigation links)
+    └── SEO tab               (site URL, default title, default description, Google Search Console token, area served)
 ```
+
+**Important:** All page content — headings, body text, FAQs, contact details, service options, footer — is managed in Sanity Studio → Site Settings. No code changes are ever required to update website content.
 
 ---
 
@@ -269,6 +285,24 @@ Sanity Studio
 | 15 | Environment variables defined (.env.local + .env.example) | ✓ Done |
 | 16 | Sanity project created and connected (Project ID: ihlh7pw2) | ✓ Done |
 | 17 | Sanity webhook configured pointing to /api/revalidate | ✓ Done |
+
+---
+
+### Phase 1.5 — Sanity CMS Full Content Control [COMPLETE ✓]
+
+All page content moved from hardcoded values into Sanity siteSettings. The customer now controls everything via the CMS — no code changes needed to update any website content.
+
+| Step | Task | Status |
+|---|---|---|
+| 1 | Expanded siteSettings schema — added 8 content groups (Business, Home, About, Contact, Services, Locations, Footer, SEO) with 50+ editable fields | ✓ Done |
+| 2 | Extended GROQ query and TypeScript types for full siteSettings | ✓ Done |
+| 3 | Rebuilt layout.tsx — WebSite and LocalBusiness schemas now built from Sanity data at build time | ✓ Done |
+| 4 | Rebuilt generateMetadata() in layout.tsx — title, description, OG, Twitter all from Sanity | ✓ Done |
+| 5 | Rebuilt Home page — all content (hero, services, why us, locations, FAQs, CTA) from Sanity | ✓ Done |
+| 6 | Rebuilt About page — all content (heading, mission, who we are, credentials, values, team) from Sanity | ✓ Done |
+| 7 | Rebuilt Contact page — all content (heading, contact details, map embed, form options) from Sanity | ✓ Done |
+| 8 | Rebuilt Services index page — heading, answer capsule, FAQs from Sanity; service cards from Service documents | ✓ Done |
+| 9 | Rebuilt Locations index page — heading, answer capsule, FAQs from Sanity; region/suburb cards from Location documents | ✓ Done |
 
 ---
 
