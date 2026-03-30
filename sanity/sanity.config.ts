@@ -9,8 +9,8 @@ import { sanityConfig } from "./config"
 
 export default defineConfig({
   ...sanityConfig,
-  name: "ashar-disability-care",
-  title: "Ashar Disability Care — CMS",
+  name: "project-noda-cms",
+  title: "Project Noda — CMS",
 
   plugins: [
     structureTool({
