@@ -13,6 +13,10 @@ export default defineConfig({
   title: "Project Noda — CMS",
   basePath: "/studio",
 
+  schema: {
+    types: schemaTypes,
+  },
+
   plugins: [
     structureTool({
       structure: (S) =>
