@@ -11,6 +11,7 @@ export default defineConfig({
   ...sanityConfig,
   name: "project-noda-cms",
   title: "Project Noda — CMS",
+  basePath: "/studio",
 
   plugins: [
     structureTool({
