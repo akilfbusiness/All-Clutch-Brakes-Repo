@@ -1,6 +1,3 @@
-// Sanity Studio configuration
-// Enhanced desk structure with All Pages view, Navigation editing, and organised content
-
 import { defineConfig } from "sanity"
 import { structureTool } from "sanity/structure"
 import { visionTool } from "@sanity/vision"
@@ -8,12 +5,26 @@ import { colorInput } from "@sanity/color-input"
 import { media } from "sanity-plugin-media"
 import { schemaTypes } from "./schemas/index"
 import { sanityConfig } from "./config"
+import { CustomDashboard } from "./plugins/custom-dashboard"
+
+// Import action plugins
+import { jsonExportAction, jsonImportAction } from "./plugins/json-import-export"
+import { livePreviewAction } from "./plugins/live-preview"
+import { duplicateAction } from "./plugins/duplicate-document"
 
 // Custom desk structure with enhanced organisation
 const deskStructure = (S: any) =>
   S.list()
     .title("Content Management")
     .items([
+      // === Dashboard (Home) ===
+      S.listItem()
+        .title("Dashboard")
+        .id("dashboard")
+        .icon(() => "🏠")
+        .child(S.component(CustomDashboard).id("dashboard").title("Dashboard")),
+      S.divider(),
+
       // === Quick Access Section ===
       S.listItem()
         .title("Site Settings")
@@ -128,6 +139,27 @@ const deskStructure = (S: any) =>
         .child(S.documentTypeList("author").title("Authors")),
     ])
 
+// Document actions helper — adds actions to all document types
+const documentActions = (S: any, context: any) => {
+  const defaultActions = S.getDefaultDocumentActions(context)
+  const client = context.getClient({ apiVersion: "2024-01-01" })
+
+  return [
+    // Standard Sanity actions
+    ...defaultActions,
+    S.divider(),
+    // Custom actions (only for specific document types)
+    ...(["article", "service", "location", "page"].includes(context.schemaType)
+      ? [
+          duplicateAction(client)(context),
+          livePreviewAction(client)(context),
+          jsonExportAction(client)(context),
+          jsonImportAction(client)(context),
+        ]
+      : []),
+  ]
+}
+
 export default defineConfig({
   ...sanityConfig,
   name: "project-noda-cms",
@@ -141,6 +173,11 @@ export default defineConfig({
   plugins: [
     structureTool({
       structure: deskStructure,
+      defaultDocumentNode: (S: any, context: any) => {
+        return S.document().documentActions(
+          (S: any) => documentActions(S, context)
+        )
+      },
     }),
     // Vision — allows testing GROQ queries directly in the Studio
     visionTool(),
