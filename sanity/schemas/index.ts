@@ -4,16 +4,20 @@
 import { articleSchema } from "./article"
 import { authorSchema } from "./author"
 import { locationSchema } from "./location"
+import { navigationSchema } from "./navigation"
+import { pageSchema } from "./page"
 import { serviceSchema } from "./service"
 import { siteSettingsSchema } from "./siteSettings"
 
 export const schemaTypes = [
   // Content types
   articleSchema,
+  pageSchema,
   serviceSchema,
   locationSchema,
   // Supporting types
   authorSchema,
-  // Global settings (singleton)
+  // Global settings (singletons)
   siteSettingsSchema,
+  navigationSchema,
 ]
