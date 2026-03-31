@@ -1,46 +1,48 @@
-import { SanityClient, DocumentActionsContext } from "sanity"
+import { DocumentActionComponent } from "sanity"
 
 // Live preview action — opens draft in a preview window
-export const livePreviewAction =
-  (client: SanityClient) =>
-  async (context: DocumentActionsContext) => {
-    return {
-      label: "Preview",
-      tone: "primary",
-      onHandle: async () => {
-        const { draft, published } = context
-        const doc = draft || published
+export const livePreviewAction: DocumentActionComponent = (props) => {
+  const { draft, published, type } = props
+  const doc = draft || published
 
-        if (!doc) {
-          alert("No document to preview")
-          return
-        }
+  return {
+    label: "Preview",
+    icon: () => "👁",
+    tone: "primary",
+    onHandle: () => {
+      if (!doc) {
+        alert("No document to preview")
+        return
+      }
 
-        // Determine the preview URL based on document type and slug
-        let previewUrl = ""
+      // Determine the preview URL based on document type and slug
+      let previewUrl = ""
+      const slug = (doc as any).slug?.current || "preview"
 
-        switch (doc._type) {
-          case "article":
-            previewUrl = `/articles/${doc.slug?.current || "preview"}`
-            break
-          case "service":
-            previewUrl = `/services/${doc.slug?.current || "preview"}`
-            break
-          case "location":
-            previewUrl = `/locations/${doc.slug?.current || "preview"}`
-            break
-          case "page":
-            previewUrl = `/${doc.slug?.current || "preview"}`
-            break
-          default:
-            previewUrl = "/"
-        }
+      switch (type) {
+        case "article":
+          previewUrl = `/articles/${slug}`
+          break
+        case "service":
+          previewUrl = `/services/${slug}`
+          break
+        case "location":
+          previewUrl = `/locations/${slug}`
+          break
+        case "page":
+          previewUrl = `/${slug}`
+          break
+        default:
+          previewUrl = "/"
+      }
 
-        // Open in new window with draft mode token
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-        const fullUrl = `${baseUrl}${previewUrl}`
+      // Open in new window
+      const baseUrl = typeof window !== "undefined" 
+        ? window.location.origin.replace("/studio", "") 
+        : "http://localhost:3000"
+      const fullUrl = `${baseUrl}${previewUrl}`
 
-        window.open(fullUrl, "_blank")
-      },
-    }
+      window.open(fullUrl, "_blank")
+    },
   }
+}

@@ -139,27 +139,6 @@ const deskStructure = (S: any) =>
         .child(S.documentTypeList("author").title("Authors")),
     ])
 
-// Document actions helper — adds actions to all document types
-const documentActions = (S: any, context: any) => {
-  const defaultActions = S.getDefaultDocumentActions(context)
-  const client = context.getClient({ apiVersion: "2024-01-01" })
-
-  return [
-    // Standard Sanity actions
-    ...defaultActions,
-    S.divider(),
-    // Custom actions (only for specific document types)
-    ...(["article", "service", "location", "page"].includes(context.schemaType)
-      ? [
-          duplicateAction(client)(context),
-          livePreviewAction(client)(context),
-          jsonExportAction(client)(context),
-          jsonImportAction(client)(context),
-        ]
-      : []),
-  ]
-}
-
 export default defineConfig({
   ...sanityConfig,
   name: "project-noda-cms",
@@ -173,11 +152,6 @@ export default defineConfig({
   plugins: [
     structureTool({
       structure: deskStructure,
-      defaultDocumentNode: (S: any, context: any) => {
-        return S.document().documentActions(
-          (S: any) => documentActions(S, context)
-        )
-      },
     }),
     // Vision — allows testing GROQ queries directly in the Studio
     visionTool(),
@@ -186,4 +160,21 @@ export default defineConfig({
     // Enhanced media library browser
     media(),
   ],
+
+  // Document actions — custom actions for content types
+  document: {
+    actions: (prev, context) => {
+      // Add custom actions only for content document types
+      if (["article", "service", "location", "page"].includes(context.schemaType)) {
+        return [
+          ...prev,
+          jsonExportAction,
+          jsonImportAction,
+          livePreviewAction,
+          duplicateAction,
+        ]
+      }
+      return prev
+    },
+  },
 })
