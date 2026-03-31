@@ -16,11 +16,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: `Services | ${businessName}`,
-    description: settings?.servicesPageAnswerCapsule ?? settings?.defaultSeoDescription ?? "",
+    description: settings?.servicesPageSeoDescription ?? settings?.defaultSeoDescription ?? "",
     alternates: { canonical: "/services" },
     openGraph: {
       title: `Services | ${businessName}`,
-      description: settings?.servicesPageAnswerCapsule ?? "",
+      description: settings?.servicesPageSeoDescription ?? "",
       url: `${siteUrl}/services`,
       type: "website",
     },
@@ -64,7 +64,7 @@ export default async function ServicesPage() {
     "@type": "CollectionPage",
     "@id": `${siteUrl}/services`,
     name: `Services — ${businessName}`,
-    description: settings?.servicesPageAnswerCapsule ?? "",
+    description: settings?.servicesPageSeoDescription ?? "",
     url: `${siteUrl}/services`,
     provider: { "@id": `${siteUrl}/#business` },
   }
@@ -108,11 +108,11 @@ export default async function ServicesPage() {
 
           <div className="max-w-3xl space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-              {settings?.servicesPageHeading ?? `Our Services`}
+              {settings?.servicesPageHeroTitle ?? `Our Services`}
             </h1>
-            {settings?.servicesPageAnswerCapsule && (
+            {settings?.servicesPageHeroSubtitle && (
               <p className="text-lg text-primary-foreground/75 leading-relaxed max-w-2xl text-pretty">
-                {settings.servicesPageAnswerCapsule}
+                {settings.servicesPageHeroSubtitle}
               </p>
             )}
           </div>

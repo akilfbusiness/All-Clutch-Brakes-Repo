@@ -86,10 +86,10 @@ export default async function LocationsPage() {
             </nav>
 
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              {settings?.locationsPageHeading ?? `Service Areas`}
+              {settings?.locationsPageHeroTitle ?? `Service Areas`}
             </h1>
             <p className="text-xl text-zinc-300 max-w-3xl">
-              {settings?.locationsPageAnswerCapsule ?? `${businessName} provides expert clutch, brake, and transmission services across Adelaide and surrounding areas. Visit our Edwardstown workshop or contact us for mobile service options.`}
+              {settings?.locationsPageHeroSubtitle ?? `${businessName} provides expert clutch, brake, and transmission services across Adelaide and surrounding areas. Visit our Edwardstown workshop or contact us for mobile service options.`}
             </p>
           </div>
         </section>
