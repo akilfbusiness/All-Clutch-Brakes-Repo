@@ -125,10 +125,10 @@ const deskStructure = (S: any) =>
         .schemaType("location")
         .child(S.documentTypeList("location").title("Locations")),
       S.listItem()
-        .title("Articles")
+        .title("Blog")
         .icon(() => "📰")
-        .schemaType("article")
-        .child(S.documentTypeList("article").title("Articles")),
+        .schemaType("post")
+        .child(S.documentTypeList("post").title("Blog")),
       S.divider(),
 
       // === Supporting Content ===
@@ -165,7 +165,7 @@ export default defineConfig({
   document: {
     actions: (prev, context) => {
       // Add custom actions only for content document types
-      if (["article", "service", "location", "page"].includes(context.schemaType)) {
+      if (["post", "service", "location", "page"].includes(context.schemaType)) {
         return [
           ...prev,
           jsonExportAction,
