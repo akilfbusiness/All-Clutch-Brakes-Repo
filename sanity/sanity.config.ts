@@ -3,9 +3,6 @@ import { structureTool } from "sanity/structure"
 import { visionTool } from "@sanity/vision"
 import { colorInput } from "@sanity/color-input"
 import { media } from "sanity-plugin-media"
-import { assist } from "@sanity/assist"
-import { singletonPlugin } from "sanity-plugin-singleton-management"
-import { references } from "sanity-plugin-references"
 import { schemaTypes } from "./schemas/index"
 import { sanityConfig } from "./config"
 import { CustomDashboard } from "./plugins/custom-dashboard"
@@ -188,13 +185,5 @@ export default defineConfig({
     colorInput(),
     // Enhanced media library browser
     media(),
-    // AI Assist — generates content suggestions using Sanity AI
-    assist(),
-    // Singleton Management — cleaner handling of single-instance documents
-    singletonPlugin({
-      types: ["siteSettings", "navigation"],
-    }),
-    // References — shows which documents link to the current one
-    references(),
   ],
 })
