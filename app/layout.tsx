@@ -111,7 +111,7 @@ export default async function RootLayout({
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${siteUrl}/articles?q={search_term_string}`,
+        urlTemplate: `${siteUrl}/blog?q={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
     },

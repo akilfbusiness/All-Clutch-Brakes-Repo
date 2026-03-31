@@ -14,7 +14,7 @@ export const siteSettingsSchema = defineType({
     { name: "homepage", title: "Home Page" },
     { name: "servicespage", title: "Services Page" },
     { name: "locationspage", title: "Locations Page" },
-    { name: "articlespage", title: "Articles Page" },
+    { name: "articlespage", title: "Blog Page" },
     { name: "about", title: "About Page" },
     { name: "contact", title: "Contact Page" },
     { name: "services", title: "Services" },
@@ -312,7 +312,7 @@ export const siteSettingsSchema = defineType({
       description: "Meta description for search results (120-160 characters).",
     }),
 
-    // ─── ARTICLES PAGE ─────────────────────────────────────────────────────────
+    // ─── BLOG PAGE ─────────────────────────────────────────────────────────────
     defineField({
       name: "articlesPageHeroTitle",
       title: "Hero Title",

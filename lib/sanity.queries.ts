@@ -46,7 +46,7 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   locationsPageSeoTitle,
   locationsPageSeoDescription,
   
-  // Articles page
+  // Blog page (CMS fields are still named articlesPage* for backwards compatibility)
   articlesPageHeroTitle,
   articlesPageHeroSubtitle,
   articlesPageHeroImage,
@@ -92,28 +92,43 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   areaServed,
 }`
 
-// Get all articles
-export const ARTICLES_QUERY = `*[_type == "article"] | order(publishedAt desc) {
+// Get all blog posts
+export const POSTS_QUERY = `*[_type == "post"] | order(publishedAt desc) {
   _id,
   title,
   slug,
-  excerpt,
+  answerCapsule,
   publishedAt,
+  updatedAt,
   category,
+  readTimeMinutes,
+  heroImage,
   author->{name},
   body,
 }`
 
-// Get single article by slug
-export const ARTICLE_BY_SLUG_QUERY = `*[_type == "article" && slug.current == $slug][0]{
+// Get single blog post by slug
+export const POST_BY_SLUG_QUERY = `*[_type == "post" && slug.current == $slug][0]{
   _id,
   title,
   slug,
-  excerpt,
+  answerCapsule,
+  quickAnswers,
   publishedAt,
+  updatedAt,
   category,
+  readTimeMinutes,
+  heroImage,
   author->{name},
   body,
+  faqItems,
+  dataSources,
+  geoTags,
+  ctaHeading,
+  ctaBody,
+  "relatedPosts": relatedPosts[]->{
+    title, "slug": slug.current, category, publishedAt, readTimeMinutes
+  },
   seoTitle,
   seoDescription,
 }`
@@ -173,15 +188,15 @@ export async function fetchSettings() {
   })
 }
 
-export async function fetchArticles() {
+export async function fetchPosts() {
   return await sanityFetch<any[]>({
-    query: ARTICLES_QUERY,
+    query: POSTS_QUERY,
   })
 }
 
-export async function fetchArticleBySlug(slug: string) {
+export async function fetchPostBySlug(slug: string) {
   return await sanityFetch<any>({
-    query: ARTICLE_BY_SLUG_QUERY,
+    query: POST_BY_SLUG_QUERY,
     params: { slug },
   })
 }

@@ -23,8 +23,8 @@ export async function Header({ settings }: { settings: SiteSettings }) {
           <Link href="/locations" className="transition-colors hover:text-foreground/80">
             Locations
           </Link>
-          <Link href="/articles" className="transition-colors hover:text-foreground/80">
-            Articles
+          <Link href="/blog" className="transition-colors hover:text-foreground/80">
+            Blog
           </Link>
           <Link href="/about" className="transition-colors hover:text-foreground/80">
             About

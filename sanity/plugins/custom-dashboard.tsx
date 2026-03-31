@@ -33,8 +33,8 @@ export function CustomDashboard() {
             />
             <Button
               as="a"
-              href="/studio/editor/article"
-              text="Create New Article"
+              href="/studio/intent/create/schema=post"
+              text="Create New Blog Post"
               size="large"
               tone="positive"
               style={{ width: "100%", textAlign: "center" }}
@@ -66,7 +66,7 @@ export function CustomDashboard() {
               <strong>Navigation:</strong> Edit menu structure and footer links from the Navigation section.
             </Text>
             <Text size={0}>
-              <strong>Content:</strong> Use "All Pages" to see every page in your site, or browse by type (Services, Articles, Locations).
+              <strong>Content:</strong> Use "All Pages" to see every page in your site, or browse by type (Services, Blog, Locations).
             </Text>
             <Text size={0}>
               <strong>Templates:</strong> When creating new content, use pre-built templates to maintain consistency.
@@ -90,7 +90,7 @@ export function CustomDashboard() {
               - Use JSON import to bulk-update content with ChatGPT-generated descriptions
             </Text>
             <Text size={0}>
-              - Duplicate existing services/articles to maintain formatting consistency
+              - Duplicate existing services/blog posts to maintain formatting consistency
             </Text>
           </Stack>
         </Card>

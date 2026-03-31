@@ -1,7 +1,7 @@
 // Schema index — exports all schemas to the Sanity Studio
 // Add new schemas here as the content model grows
 
-import { articleSchema } from "./article"
+import { postSchema } from "./post"
 import { authorSchema } from "./author"
 import { locationSchema } from "./location"
 import { navigationSchema } from "./navigation"
@@ -11,7 +11,7 @@ import { siteSettingsSchema } from "./siteSettings"
 
 export const schemaTypes = [
   // Content types
-  articleSchema,
+  postSchema,
   pageSchema,
   serviceSchema,
   locationSchema,

@@ -9,6 +9,16 @@ export interface FaqItem {
   answer: string
 }
 
+export interface QuickAnswer {
+  question: string
+  quickAnswer: string
+}
+
+export interface DataSource {
+  label: string
+  url: string
+}
+
 export interface SiteSettings {
   businessName?: string
   tagline?: string
@@ -59,6 +69,22 @@ export interface SiteSettings {
   contactFormHeading?: string
   contactFormSubheading?: string
   contactServiceOptions?: string[]
+  servicesPageHeroTitle?: string
+  servicesPageHeroSubtitle?: string
+  servicesPageHeroImage?: unknown
+  servicesPageSeoTitle?: string
+  servicesPageSeoDescription?: string
+  locationsPageHeroTitle?: string
+  locationsPageHeroSubtitle?: string
+  locationsPageHeroImage?: unknown
+  locationsPageSeoTitle?: string
+  locationsPageSeoDescription?: string
+  // Blog page fields (previously articlesPage*)
+  articlesPageHeroTitle?: string
+  articlesPageHeroSubtitle?: string
+  articlesPageHeroImage?: unknown
+  articlesPageSeoTitle?: string
+  articlesPageSeoDescription?: string
   servicesPageHeading?: string
   servicesPageAnswerCapsule?: string
   servicesFaqs?: FaqItem[]
@@ -75,21 +101,32 @@ export interface SiteSettings {
   areaServed?: string[]
 }
 
-export interface Article {
+export interface Post {
   title: string
   slug: string
   answerCapsule: string
+  quickAnswers?: QuickAnswer[]
   body?: unknown[]
   faqItems?: FaqItem[]
+  relatedPosts?: Post[]
+  dataSources?: DataSource[]
   category: string
   tags?: string[]
+  geoTags?: string[]
   author?: { name: string; role: string; bio: string; photo: unknown }
   publishedAt: string
   updatedAt?: string
+  readTimeMinutes?: number
+  heroImage?: unknown
+  ctaHeading?: string
+  ctaBody?: string
   seoTitle?: string
   seoDescription?: string
   ogImage?: unknown
 }
+
+// Keep Article as an alias for backwards compatibility during migration
+export type Article = Post
 
 export interface Service {
   title: string
@@ -133,6 +170,12 @@ export const SITE_SETTINGS_QUERY = `
     aboutTeamHeading, aboutTeamBody,
     contactHeading, contactAnswerCapsule, contactFormHeading,
     contactFormSubheading, contactServiceOptions,
+    servicesPageHeroTitle, servicesPageHeroSubtitle, servicesPageHeroImage,
+    servicesPageSeoTitle, servicesPageSeoDescription,
+    locationsPageHeroTitle, locationsPageHeroSubtitle, locationsPageHeroImage,
+    locationsPageSeoTitle, locationsPageSeoDescription,
+    articlesPageHeroTitle, articlesPageHeroSubtitle, articlesPageHeroImage,
+    articlesPageSeoTitle, articlesPageSeoDescription,
     servicesPageHeading, servicesPageAnswerCapsule, servicesFaqs,
     locationsPageHeading, locationsPageAnswerCapsule, locationsFaqs,
     footerTagline, footerCopyrightText, footerLinks,
@@ -149,38 +192,52 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   return result ?? {}
 }
 
-// ─── ARTICLES ─────────────────────────────────────────────────────────────────
+// ─── BLOG POSTS ───────────────────────────────────────────────────────────────
 
-export const ALL_ARTICLES_QUERY = `
-  *[_type == "article"] | order(publishedAt desc) {
+export const ALL_POSTS_QUERY = `
+  *[_type == "post"] | order(publishedAt desc) {
     title, "slug": slug.current, answerCapsule,
-    category, tags, publishedAt, seoDescription, ogImage
+    category, tags, geoTags, publishedAt, updatedAt,
+    readTimeMinutes, heroImage, seoDescription, ogImage,
+    author->{ name, role, photo }
   }
 `
 
-export const ARTICLE_BY_SLUG_QUERY = `
-  *[_type == "article" && slug.current == $slug][0] {
-    title, "slug": slug.current, answerCapsule, body, faqItems,
-    category, tags, author-> { name, role, bio, photo },
-    publishedAt, updatedAt, seoTitle, seoDescription, ogImage
+export const POST_BY_SLUG_QUERY = `
+  *[_type == "post" && slug.current == $slug][0] {
+    title, "slug": slug.current, answerCapsule, quickAnswers,
+    body, faqItems, category, tags, geoTags,
+    author->{ name, role, bio, photo },
+    publishedAt, updatedAt, readTimeMinutes, heroImage,
+    ctaHeading, ctaBody,
+    dataSources,
+    "relatedPosts": relatedPosts[]->{
+      title, "slug": slug.current, category, publishedAt, readTimeMinutes, heroImage, answerCapsule
+    },
+    seoTitle, seoDescription, ogImage
   }
 `
 
-export const ALL_ARTICLE_SLUGS_QUERY = `*[_type == "article"] { "slug": slug.current }`
+export const ALL_POST_SLUGS_QUERY = `*[_type == "post"] { "slug": slug.current }`
 
-export async function getAllArticles(): Promise<Article[]> {
-  const result = await sanityFetch<Article[] | null>({ query: ALL_ARTICLES_QUERY, tags: ["articles"] })
+export async function getAllPosts(): Promise<Post[]> {
+  const result = await sanityFetch<Post[] | null>({ query: ALL_POSTS_QUERY, tags: ["posts"] })
   return result ?? []
 }
 
-export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  return sanityFetch<Article | null>({ query: ARTICLE_BY_SLUG_QUERY, params: { slug }, tags: [`article-${slug}`] })
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  return sanityFetch<Post | null>({ query: POST_BY_SLUG_QUERY, params: { slug }, tags: [`post-${slug}`] })
 }
 
-export async function getAllArticleSlugs(): Promise<{ slug: string }[]> {
-  const result = await sanityFetch<{ slug: string }[] | null>({ query: ALL_ARTICLE_SLUGS_QUERY, tags: ["articles"] })
+export async function getAllPostSlugs(): Promise<{ slug: string }[]> {
+  const result = await sanityFetch<{ slug: string }[] | null>({ query: ALL_POST_SLUGS_QUERY, tags: ["posts"] })
   return result ?? []
 }
+
+// Keep old function names as aliases during migration
+export const getAllArticles = getAllPosts
+export const getArticleBySlug = getPostBySlug
+export const getAllArticleSlugs = getAllPostSlugs
 
 // ─── SERVICES ─────────────────────────────────────────────────────────────────
 

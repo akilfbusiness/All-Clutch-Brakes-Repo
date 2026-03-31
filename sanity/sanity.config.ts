@@ -84,14 +84,14 @@ const deskStructure = (S: any) =>
                     .title("Location Pages")
                     .filter('_type == "location"')
                 ),
-              // Articles
+              // Blog
               S.listItem()
-                .title("Article Pages")
-                .schemaType("article")
+                .title("Blog Posts")
+                .schemaType("post")
                 .child(
-                  S.documentTypeList("article")
-                    .title("Article Pages")
-                    .filter('_type == "article"')
+                  S.documentTypeList("post")
+                    .title("Blog Posts")
+                    .filter('_type == "post"')
                 ),
               S.divider(),
               // Combined view of ALL pages
@@ -101,7 +101,7 @@ const deskStructure = (S: any) =>
                 .child(
                   S.documentList()
                     .title("All Pages (Combined)")
-                    .filter('_type in ["page", "service", "location", "article"]')
+                    .filter('_type in ["page", "service", "location", "post"]')
                     .defaultOrdering([{ field: "_updatedAt", direction: "desc" }])
                 ),
             ])
