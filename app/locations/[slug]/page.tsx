@@ -1,162 +1,58 @@
-// Individual location page — dynamic route [slug]
-// Handles BOTH region pages (Northern Adelaide) and Tier 1 suburb pages (Elizabeth)
-// The locationType field from Sanity determines which variant renders
-// Schema: LocalBusiness (areaServed) + FAQPage + BreadcrumbList
-// generateStaticParams: pre-renders all location pages at build time
-
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { getLocationBySlug, getAllLocationSlugs, type Location } from "@/sanity/queries"
+import Link from "next/link"
 import { PortableText } from "@portabletext/react"
+import { getLocationBySlug, getAllLocationSlugs, getSiteSettings, type Location } from "@/sanity/queries"
+import { ChevronRight, MapPin, Phone, ArrowLeft, CheckCircle } from "lucide-react"
 
-// ── STATIC PARAMS ────────────────────────────────────────────────────────────
 export async function generateStaticParams() {
-  const slugs = await getAllLocationSlugs()
-  return slugs.map(({ slug }) => ({ slug }))
+  try {
+    const slugs = await getAllLocationSlugs()
+    return slugs.map(({ slug }) => ({ slug }))
+  } catch {
+    return []
+  }
 }
 
-// ── DYNAMIC METADATA ─────────────────────────────────────────────────────────
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const location = await getLocationBySlug(slug)
+  const [location, settings] = await Promise.all([
+    getLocationBySlug(slug).catch(() => null),
+    getSiteSettings(),
+  ])
 
-  if (!location) return { title: "Location Not Found" }
+  const businessName = settings?.businessName ?? "All Clutch & Brake Service"
 
-  const isRegion = location.locationType === "region"
+  if (!location) return { title: `Location Not Found | ${businessName}` }
 
-  const title =
-    location.seoTitle ??
-    `NDIS Support Services in ${location.title} | Ashar Disability Care`
-
-  const description =
-    location.seoDescription ??
-    location.answerCapsule ??
-    `Ashar Disability Care provides NDIS support services in ${location.title}, South Australia. Registered NDIS provider — personal care, home care, community participation, and more.`
+  const title = location.seoTitle ?? `Clutch & Brake Service in ${location.title} | ${businessName}`
+  const description = location.seoDescription ?? location.answerCapsule ?? `${businessName} provides clutch, brake, and transmission services in ${location.title}. Expert mechanics serving Adelaide.`
 
   return {
     title,
     description,
-    alternates: {
-      canonical: `/locations/${slug}`,
-    },
+    alternates: { canonical: `/locations/${slug}` },
     openGraph: {
       title,
       description,
-      url: `https://ashardisabilitycare.com.au/locations/${slug}`,
+      url: `${settings?.siteUrl ?? "https://example.com"}/locations/${slug}`,
       type: "website",
     },
   }
 }
 
-// ── SCHEMA GENERATORS ────────────────────────────────────────────────────────
-
-function buildLocalBusinessSchema(location: Location) {
-  // Per-location LocalBusiness schema — extends the root schema with
-  // specific areaServed for this page. This tells Google exactly which
-  // area this page is authoritative for.
-  return {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "@id": `https://ashardisabilitycare.com.au/locations/${location.slug}`,
-    name: `Ashar Disability Care — ${location.title}`,
-    url: `https://ashardisabilitycare.com.au/locations/${location.slug}`,
-    parentOrganization: {
-      "@id": "https://ashardisabilitycare.com.au/#business",
-    },
-    areaServed: location.suburbsIncluded?.length
-      ? [
-          { "@type": "AdministrativeArea", name: location.title },
-          ...location.suburbsIncluded.map((suburb) => ({
-            "@type": "City",
-            name: suburb,
-          })),
-        ]
-      : [{ "@type": "AdministrativeArea", name: location.title }],
-    telephone: "+61425760172",
-    email: "info@ashardc.com.au",
-  }
-}
-
-function buildFaqSchema(location: Location) {
-  if (!location.faqItems?.length) return null
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: location.faqItems.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer,
-      },
-    })),
-  }
-}
-
-function buildBreadcrumbSchema(location: Location) {
-  const items = [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "Home",
-      item: "https://ashardisabilitycare.com.au",
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Locations",
-      item: "https://ashardisabilitycare.com.au/locations",
-    },
-  ]
-
-  // For suburb pages, add the parent region as a breadcrumb level if available
-  if (location.locationType === "suburb" && location.region) {
-    items.push({
-      "@type": "ListItem",
-      position: 3,
-      name: location.region
-        .split("-")
-        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(" "),
-      item: `https://ashardisabilitycare.com.au/locations/${location.region}`,
-    })
-    items.push({
-      "@type": "ListItem",
-      position: 4,
-      name: location.title,
-      item: `https://ashardisabilitycare.com.au/locations/${location.slug}`,
-    })
-  } else {
-    items.push({
-      "@type": "ListItem",
-      position: 3,
-      name: location.title,
-      item: `https://ashardisabilitycare.com.au/locations/${location.slug}`,
-    })
-  }
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: items,
-  }
-}
-
-// ── ALL NDIS SERVICES — displayed on every location page ────────────────────
-const ndisServices = [
-  { title: "Personal Care", slug: "personal-care" },
-  { title: "Home Care", slug: "home-care" },
-  { title: "Community Participation", slug: "community-participation" },
-  { title: "Transport", slug: "transport" },
-  { title: "Accommodation Support", slug: "accommodation-support" },
-  { title: "NDIS Planning & Coordination", slug: "ndis-planning-and-coordination" },
+const services = [
+  { title: "Clutch Repairs & Replacement", slug: "clutch-repairs" },
+  { title: "Brake Services", slug: "brake-services" },
+  { title: "Transmission Repairs", slug: "transmission-repairs" },
+  { title: "Flywheel Machining", slug: "flywheel-machining" },
+  { title: "Hydraulic Repairs", slug: "hydraulic-repairs" },
+  { title: "Differential Services", slug: "differential-services" },
 ]
-
-// ── PAGE COMPONENT ───────────────────────────────────────────────────────────
 
 export default async function LocationPage({
   params,
@@ -164,147 +60,276 @@ export default async function LocationPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const location = await getLocationBySlug(slug)
+  const [location, settings] = await Promise.all([
+    getLocationBySlug(slug).catch(() => null),
+    getSiteSettings(),
+  ])
 
   if (!location) notFound()
 
+  const businessName = settings?.businessName ?? "All Clutch & Brake Service"
+  const phone = settings?.phone?.[0] ?? "(08) 8277 8122"
+  const siteUrl = settings?.siteUrl ?? "https://example.com"
   const isRegion = location.locationType === "region"
-  const localBusinessSchema = buildLocalBusinessSchema(location)
-  const faqSchema = buildFaqSchema(location)
-  const breadcrumbSchema = buildBreadcrumbSchema(location)
+
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": `${siteUrl}/locations/${location.slug}`,
+    name: `${businessName} — ${location.title}`,
+    url: `${siteUrl}/locations/${location.slug}`,
+    areaServed: location.suburbsIncluded?.length
+      ? [
+          { "@type": "AdministrativeArea", name: location.title },
+          ...location.suburbsIncluded.map((suburb) => ({ "@type": "City", name: suburb })),
+        ]
+      : [{ "@type": "AdministrativeArea", name: location.title }],
+    telephone: phone,
+  }
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Locations", item: `${siteUrl}/locations` },
+      ...(location.locationType === "suburb" && location.region
+        ? [
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: location.region.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+              item: `${siteUrl}/locations/${location.region}`,
+            },
+            { "@type": "ListItem", position: 4, name: location.title, item: `${siteUrl}/locations/${slug}` },
+          ]
+        : [{ "@type": "ListItem", position: 3, name: location.title, item: `${siteUrl}/locations/${slug}` }]),
+    ],
+  }
+
+  const faqSchema = location.faqItems?.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: location.faqItems.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
+      }
+    : null
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(localBusinessSchema),
-        }}
-      />
-      {faqSchema && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-        />
-      )}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      {faqSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />}
 
-      <main>
-        {/* Breadcrumb nav */}
-        <nav aria-label="Breadcrumb">
-          <ol>
-            <li><a href="/">Home</a></li>
-            <li><a href="/locations">Locations</a></li>
-            {location.locationType === "suburb" && location.region && (
-              <li>
-                <a href={`/locations/${location.region}`}>
-                  {location.region
-                    .split("-")
-                    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                    .join(" ")}
-                </a>
-              </li>
-            )}
-            <li aria-current="page">{location.title}</li>
-          </ol>
-        </nav>
+      <main className="min-h-screen bg-background">
+        {/* Hero Section */}
+        <section className="bg-zinc-900 text-white">
+          <div className="container mx-auto px-4 py-16 md:py-24">
+            {/* Breadcrumb */}
+            <nav aria-label="Breadcrumb" className="mb-6">
+              <ol className="flex items-center gap-2 text-sm text-zinc-400 flex-wrap">
+                <li><Link href="/" className="hover:text-orange-500 transition-colors">Home</Link></li>
+                <li aria-hidden="true"><ChevronRight className="h-4 w-4" /></li>
+                <li><Link href="/locations" className="hover:text-orange-500 transition-colors">Locations</Link></li>
+                {location.locationType === "suburb" && location.region && (
+                  <>
+                    <li aria-hidden="true"><ChevronRight className="h-4 w-4" /></li>
+                    <li>
+                      <Link href={`/locations/${location.region}`} className="hover:text-orange-500 transition-colors">
+                        {location.region.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
+                      </Link>
+                    </li>
+                  </>
+                )}
+                <li aria-hidden="true"><ChevronRight className="h-4 w-4" /></li>
+                <li aria-current="page" className="text-orange-500">{location.title}</li>
+              </ol>
+            </nav>
 
-        {/* ── HERO ────────────────────────────────────────────────────────── */}
-        <section aria-labelledby="location-heading">
-          <h1 id="location-heading">
-            NDIS Support Services in {location.title}
-          </h1>
-
-          {/* Answer capsule — answers "Does Ashar service [location]?" */}
-          <p className="answer-capsule">{location.answerCapsule}</p>
-
-          <a href="/contact">Get NDIS Support in {location.title}</a>
-        </section>
-
-        {/* ── BODY CONTENT ────────────────────────────────────────────────── */}
-        {location.body && (
-          <section aria-labelledby="location-body-heading">
-            <h2 id="location-body-heading">
-              NDIS Services Available in {location.title}
-            </h2>
-            <div className="prose">
-              <PortableText value={location.body} />
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
+                <MapPin className="h-6 w-6 text-white" />
+              </div>
+              <span className="text-sm font-medium text-orange-400 uppercase tracking-wide">
+                {isRegion ? "Service Region" : "Service Area"}
+              </span>
             </div>
-          </section>
-        )}
 
-        {/* ── SUBURBS COVERED (regions only) ───────────────────────────────── */}
-        {isRegion && location.suburbsIncluded && location.suburbsIncluded.length > 0 && (
-          <section aria-labelledby="suburbs-covered-heading">
-            <h2 id="suburbs-covered-heading">
-              Suburbs We Service in {location.title}
-            </h2>
-            <p>
-              Ashar Disability Care provides NDIS support across the following
-              suburbs in the {location.title} area:
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+              Clutch &amp; Brake Service in {location.title}
+            </h1>
+
+            <p className="text-xl text-zinc-300 max-w-3xl mb-8">
+              {location.answerCapsule}
             </p>
-            {/* These listed suburbs are how Google ranks for suburb-level searches
-                without needing individual pages for each suburb */}
-            <ul role="list">
-              {location.suburbsIncluded.map((suburb) => (
-                <li key={suburb}>{suburb}</li>
-              ))}
-            </ul>
-          </section>
-        )}
 
-        {/* ── SERVICES AVAILABLE ───────────────────────────────────────────── */}
-        <section aria-labelledby="location-services-heading">
-          <h2 id="location-services-heading">
-            NDIS Services Available in {location.title}
-          </h2>
-          <p>
-            Ashar Disability Care provides the following NDIS-funded support
-            services to participants in {location.title} and surrounding areas:
-          </p>
-          <ul role="list">
-            {ndisServices.map((service) => (
-              <li key={service.slug}>
-                <a href={`/services/${service.slug}`}>{service.title}</a>
-                {" "}in {location.title}
-              </li>
-            ))}
-          </ul>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold transition-colors"
+            >
+              Get Service in {location.title}
+            </Link>
+          </div>
         </section>
 
-        {/* ── FAQ ──────────────────────────────────────────────────────────── */}
-        {location.faqItems && location.faqItems.length > 0 && (
-          <section aria-labelledby="location-faq-heading">
-            <h2 id="location-faq-heading">
-              Frequently Asked Questions — NDIS Services in {location.title}
-            </h2>
-            <dl>
-              {location.faqItems.map((faq, index) => (
-                <div key={index}>
-                  <dt><strong>{faq.question}</strong></dt>
-                  <dd>{faq.answer}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-        )}
+        {/* Content Section */}
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="grid gap-12 lg:grid-cols-3">
+              {/* Main Content */}
+              <div className="lg:col-span-2">
+                {location.body && (
+                  <div className="prose prose-lg prose-zinc max-w-none prose-headings:font-bold prose-a:text-orange-600 mb-12">
+                    <h2>Services in {location.title}</h2>
+                    <PortableText value={location.body} />
+                  </div>
+                )}
 
-        {/* ── CTA ──────────────────────────────────────────────────────────── */}
-        <section aria-labelledby="location-cta-heading">
-          <h2 id="location-cta-heading">
-            Access NDIS Support in {location.title}
-          </h2>
-          <p>
-            Contact Ashar Disability Care to discuss NDIS support services in
-            {" "}{location.title}. Our friendly team is ready to help you get started.
-          </p>
-          <a href="/contact">Contact Us</a>
-          <address>
-            <a href="tel:+61425760172">0425 760 172</a>
-          </address>
+                {/* Services Available */}
+                <div className="mb-12">
+                  <h2 className="text-2xl font-bold text-zinc-900 mb-6">
+                    Services Available in {location.title}
+                  </h2>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {services.map((service) => (
+                      <Link
+                        key={service.slug}
+                        href={`/services/${service.slug}`}
+                        className="flex items-center gap-3 p-4 bg-white border border-zinc-200 rounded-lg hover:border-orange-300 hover:shadow transition-all"
+                      >
+                        <CheckCircle className="h-5 w-5 text-orange-500 flex-shrink-0" />
+                        <span className="font-medium text-zinc-900">{service.title}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Suburbs Covered (regions only) */}
+                {isRegion && location.suburbsIncluded && location.suburbsIncluded.length > 0 && (
+                  <div className="mb-12">
+                    <h2 className="text-2xl font-bold text-zinc-900 mb-4">
+                      Suburbs We Service in {location.title}
+                    </h2>
+                    <p className="text-zinc-600 mb-6">
+                      {businessName} provides clutch, brake, and transmission services across the following suburbs:
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {location.suburbsIncluded.map((suburb) => (
+                        <span
+                          key={suburb}
+                          className="inline-flex items-center gap-1 px-3 py-1 bg-zinc-100 text-zinc-700 rounded-full text-sm"
+                        >
+                          <MapPin className="h-3 w-3" />
+                          {suburb}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* FAQ */}
+                {location.faqItems && location.faqItems.length > 0 && (
+                  <div>
+                    <h2 className="text-2xl font-bold text-zinc-900 mb-6">
+                      Frequently Asked Questions
+                    </h2>
+                    <div className="space-y-4">
+                      {location.faqItems.map((faq, index) => (
+                        <div key={index} className="bg-zinc-50 border border-zinc-200 rounded-lg p-6">
+                          <h3 className="text-lg font-semibold text-zinc-900 mb-3">{faq.question}</h3>
+                          <p className="text-zinc-600">{faq.answer}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Sidebar */}
+              <div className="lg:col-span-1">
+                <div className="sticky top-24 space-y-6">
+                  {/* Contact Card */}
+                  <div className="bg-zinc-900 text-white rounded-lg p-6">
+                    <h3 className="text-xl font-bold mb-4">Get Service in {location.title}</h3>
+                    <p className="text-zinc-300 mb-6">
+                      Contact us today to discuss your clutch, brake, or transmission needs.
+                    </p>
+                    <div className="space-y-4">
+                      <Link
+                        href="/contact"
+                        className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                      >
+                        Request a Quote
+                      </Link>
+                      <a
+                        href={`tel:${phone.replace(/\s/g, "")}`}
+                        className="flex items-center justify-center gap-2 w-full bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                      >
+                        <Phone className="h-5 w-5" />
+                        {phone}
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Other Locations */}
+                  <div className="bg-white border border-zinc-200 rounded-lg p-6">
+                    <h3 className="text-lg font-bold text-zinc-900 mb-4">Other Service Areas</h3>
+                    <Link
+                      href="/locations"
+                      className="inline-flex items-center gap-2 text-orange-600 font-semibold hover:text-orange-700 transition-colors"
+                    >
+                      View All Locations
+                      <ChevronRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="bg-zinc-900 text-white py-16">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Ready for Service in {location.title}?
+            </h2>
+            <p className="text-xl text-zinc-300 mb-8 max-w-2xl mx-auto">
+              Contact {businessName} today to discuss your clutch, brake, or transmission needs.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold transition-colors"
+              >
+                Contact Us
+              </Link>
+              <a
+                href={`tel:${phone.replace(/\s/g, "")}`}
+                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-lg font-semibold transition-colors"
+              >
+                <Phone className="h-5 w-5" />
+                {phone}
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* Back Link */}
+        <section className="py-8 bg-zinc-100">
+          <div className="container mx-auto px-4">
+            <Link
+              href="/locations"
+              className="inline-flex items-center gap-2 text-zinc-600 hover:text-orange-600 font-semibold transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to All Locations
+            </Link>
+          </div>
         </section>
       </main>
     </>

@@ -2,12 +2,10 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { PortableText } from "@portabletext/react"
-import { getAllArticleSlugs, getArticleBySlug } from "@/sanity/queries"
+import { getAllArticleSlugs, getArticleBySlug, getSiteSettings } from "@/sanity/queries"
 import type { Article } from "@/sanity/queries"
+import { ChevronRight, Calendar, User, Clock, Phone, ArrowLeft } from "lucide-react"
 
-// ─── STATIC PARAMS ────────────────────────────────────────────────────────────
-// Pre-renders every article at build time from Sanity slugs.
-// Google and AI crawlers receive fully rendered HTML — no server call required.
 export async function generateStaticParams() {
   try {
     const slugs = await getAllArticleSlugs()
@@ -17,165 +15,61 @@ export async function generateStaticParams() {
   }
 }
 
-// ─── DYNAMIC METADATA ─────────────────────────────────────────────────────────
-// generateMetadata runs per page — each article gets its own accurate title,
-// description, OG data and canonical URL pulled directly from Sanity fields.
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
+  const [article, settings] = await Promise.all([
+    getArticleBySlug(slug).catch(() => null),
+    getSiteSettings(),
+  ])
 
-  let article: Article | null = null
-  try {
-    article = await getArticleBySlug(slug)
-  } catch {
-    // fall through to defaults
-  }
+  const businessName = settings?.businessName ?? "All Clutch & Brake Service"
 
   if (!article) {
-    return {
-      title: "Article Not Found | Ashar Disability Care",
-    }
+    return { title: `Article Not Found | ${businessName}` }
   }
 
   const title = article.seoTitle ?? article.title
   const description = article.seoDescription ?? article.answerCapsule
-  const url = `https://ashardisabilitycare.com.au/articles/${slug}`
+  const siteUrl = settings?.siteUrl ?? "https://example.com"
 
   return {
-    title: `${title} | Ashar Disability Care`,
+    title: `${title} | ${businessName}`,
     description,
-    alternates: { canonical: url },
+    alternates: { canonical: `/articles/${slug}` },
     openGraph: {
-      title: `${title} | Ashar Disability Care`,
+      title: `${title} | ${businessName}`,
       description,
-      url,
+      url: `${siteUrl}/articles/${slug}`,
       type: "article",
-      locale: "en_AU",
       publishedTime: article.publishedAt,
       modifiedTime: article.updatedAt,
-      authors: article.author?.name ? [article.author.name] : ["Ashar Disability Care"],
-      siteName: "Ashar Disability Care",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${title} | Ashar Disability Care`,
-      description,
+      authors: article.author?.name ? [article.author.name] : [businessName],
     },
   }
 }
 
-// ─── SCHEMA BUILDERS ──────────────────────────────────────────────────────────
-// All schema is generated from Sanity fields automatically.
-// Every new article published gets correct structured data with zero manual work.
-
-function buildArticleSchema(article: Article, slug: string) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: article.title,
-    description: article.answerCapsule,
-    url: `https://ashardisabilitycare.com.au/articles/${slug}`,
-    datePublished: article.publishedAt,
-    dateModified: article.updatedAt ?? article.publishedAt,
-    author: {
-      "@type": "Person",
-      name: article.author?.name ?? "Ashar Disability Care Team",
-    },
-    publisher: {
-      "@type": "LocalBusiness",
-      name: "Ashar Disability Care",
-      url: "https://ashardisabilitycare.com.au",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "2 Yangoura Ct",
-        addressLocality: "Surrey Downs",
-        addressRegion: "SA",
-        postalCode: "5126",
-        addressCountry: "AU",
-      },
-    },
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `https://ashardisabilitycare.com.au/articles/${slug}`,
-    },
-  }
-}
-
-function buildFaqSchema(faqItems: { question: string; answer: string }[]) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqItems.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
-  }
-}
-
-function buildBreadcrumbSchema(article: Article, slug: string) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://ashardisabilitycare.com.au",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Articles",
-        item: "https://ashardisabilitycare.com.au/articles",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: article.title,
-        item: `https://ashardisabilitycare.com.au/articles/${slug}`,
-      },
-    ],
-  }
-}
-
-// ─── FALLBACK ARTICLE ─────────────────────────────────────────────────────────
-// Shown when Sanity is not yet connected — prevents blank pages during development
 const FALLBACK_ARTICLE: Article = {
-  title: "What is the NDIS and How Does It Work in South Australia?",
-  slug: "what-is-the-ndis-south-australia",
-  answerCapsule:
-    "The NDIS is Australia's national disability insurance scheme providing funding for people with permanent and significant disabilities to access the support services they need to live an ordinary life.",
-  category: "NDIS Basics",
+  title: "How Often Should You Replace Your Clutch?",
+  slug: "how-often-replace-clutch",
+  answerCapsule: "Most clutches last between 60,000 and 100,000 kilometres, but driving habits, vehicle type, and conditions significantly affect lifespan. Heavy city traffic and towing reduce clutch life considerably.",
+  category: "Clutch Care",
   publishedAt: "2024-01-15",
-  author: { name: "Ashar Disability Care Team", role: "Support Team", bio: "", photo: null },
+  author: { name: "All Clutch & Brake Team", role: "Service Team", bio: "", photo: null },
   faqItems: [
     {
-      question: "Who is eligible for the NDIS in South Australia?",
-      answer:
-        "To be eligible for the NDIS in South Australia you must be under 65 years of age, be an Australian citizen or permanent resident, and have a permanent and significant disability that affects your ability to take part in everyday activities.",
+      question: "What are the signs of a worn clutch?",
+      answer: "Common signs include slipping (engine revs but car doesn't accelerate), difficulty shifting, a burning smell, clutch pedal feeling soft or spongy, and unusual noises when pressing the clutch.",
     },
     {
-      question: "How do I apply for the NDIS in SA?",
-      answer:
-        "You can apply for the NDIS by calling the NDIS on 1800 800 110, completing an Access Request Form, or asking a registered NDIS provider like Ashar Disability Care to help you with the application process.",
-    },
-    {
-      question: "How long does NDIS approval take in South Australia?",
-      answer:
-        "NDIS access decisions in South Australia typically take between 21 and 90 days depending on the complexity of your situation and whether additional evidence is required from allied health professionals.",
+      question: "How much does clutch replacement cost in Adelaide?",
+      answer: "Clutch replacement in Adelaide typically costs between $800 and $2,500 depending on the vehicle type, clutch kit quality, and whether the flywheel needs machining or replacement.",
     },
   ],
 }
-
-// ─── PAGE ─────────────────────────────────────────────────────────────────────
 
 export default async function ArticlePage({
   params,
@@ -183,163 +77,213 @@ export default async function ArticlePage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
+  const [article, settings] = await Promise.all([
+    getArticleBySlug(slug).catch(() => null),
+    getSiteSettings(),
+  ])
 
-  let article: Article | null = null
-  try {
-    article = await getArticleBySlug(slug)
-  } catch {
-    // Sanity not connected — use fallback in dev
-    article = FALLBACK_ARTICLE
+  const businessName = settings?.businessName ?? "All Clutch & Brake Service"
+  const phone = settings?.phone?.[0] ?? "(08) 8277 8122"
+  const siteUrl = settings?.siteUrl ?? "https://example.com"
+
+  const displayArticle = article ?? (slug === FALLBACK_ARTICLE.slug ? FALLBACK_ARTICLE : null)
+
+  if (!displayArticle) {
+    notFound()
   }
 
-  // If no article found and not a known fallback slug, 404
-  if (!article) {
-    if (slug === FALLBACK_ARTICLE.slug) {
-      article = FALLBACK_ARTICLE
-    } else {
-      notFound()
-    }
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: displayArticle.title,
+    description: displayArticle.answerCapsule,
+    url: `${siteUrl}/articles/${slug}`,
+    datePublished: displayArticle.publishedAt,
+    dateModified: displayArticle.updatedAt ?? displayArticle.publishedAt,
+    author: {
+      "@type": "Person",
+      name: displayArticle.author?.name ?? businessName,
+    },
+    publisher: {
+      "@type": "LocalBusiness",
+      name: businessName,
+      url: siteUrl,
+    },
   }
 
-  const articleSchema = buildArticleSchema(article, slug)
-  const breadcrumbSchema = buildBreadcrumbSchema(article, slug)
-  const hasFaq = article.faqItems && article.faqItems.length > 0
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Articles", item: `${siteUrl}/articles` },
+      { "@type": "ListItem", position: 3, name: displayArticle.title, item: `${siteUrl}/articles/${slug}` },
+    ],
+  }
+
+  const faqSchema = displayArticle.faqItems?.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: displayArticle.faqItems.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: { "@type": "Answer", text: item.answer },
+        })),
+      }
+    : null
 
   return (
     <>
-      {/* Structured data — injected into <head> via Next.js script tag */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-      {hasFaq && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(buildFaqSchema(article.faqItems!)),
-          }}
-        />
-      )}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      {faqSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />}
 
-      <main>
-        {/* Breadcrumb navigation */}
-        <nav aria-label="Breadcrumb">
-          <ol>
-            <li>
-              <Link href="/">Home</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li>
-              <Link href="/articles">Articles</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page">{article.title}</li>
-          </ol>
-        </nav>
+      <main className="min-h-screen bg-background">
+        {/* Hero Section */}
+        <section className="bg-zinc-900 text-white">
+          <div className="container mx-auto px-4 py-16 md:py-20">
+            {/* Breadcrumb */}
+            <nav aria-label="Breadcrumb" className="mb-6">
+              <ol className="flex items-center gap-2 text-sm text-zinc-400 flex-wrap">
+                <li><Link href="/" className="hover:text-orange-500 transition-colors">Home</Link></li>
+                <li aria-hidden="true"><ChevronRight className="h-4 w-4" /></li>
+                <li><Link href="/articles" className="hover:text-orange-500 transition-colors">Articles</Link></li>
+                <li aria-hidden="true"><ChevronRight className="h-4 w-4" /></li>
+                <li aria-current="page" className="text-orange-500 truncate max-w-[200px]">{displayArticle.title}</li>
+              </ol>
+            </nav>
 
-        <article>
-          {/* Article header */}
-          <header>
-            {article.category && <span>{article.category}</span>}
-            <h1>{article.title}</h1>
+            {displayArticle.category && (
+              <span className="inline-block px-3 py-1 text-xs font-semibold bg-orange-500 text-white rounded-full mb-4">
+                {displayArticle.category}
+              </span>
+            )}
 
-            {/*
-              ANSWER CAPSULE — this is the most important element on the page for AEO.
-              It sits immediately below the H1 and provides a direct, complete answer
-              in 20-30 words. This is exactly what AI engines (ChatGPT, Perplexity,
-              Google AI Overviews) extract and cite when a user asks a matching question.
-            */}
-            <p>{article.answerCapsule}</p>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+              {displayArticle.title}
+            </h1>
 
-            {/* Author and date — required for Article schema E-E-A-T signals */}
-            <div>
-              {article.author?.name && (
-                <span>By {article.author.name}</span>
+            <p className="text-xl text-zinc-300 max-w-3xl mb-6">
+              {displayArticle.answerCapsule}
+            </p>
+
+            <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-400">
+              {displayArticle.author?.name && (
+                <span className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  {displayArticle.author.name}
+                </span>
               )}
-              {article.publishedAt && (
-                <time dateTime={article.publishedAt}>
-                  {new Date(article.publishedAt).toLocaleDateString("en-AU", {
+              {displayArticle.publishedAt && (
+                <span className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  <time dateTime={displayArticle.publishedAt}>
+                    {new Date(displayArticle.publishedAt).toLocaleDateString("en-AU", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </time>
+                </span>
+              )}
+              {displayArticle.updatedAt && (
+                <span className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  Updated: {new Date(displayArticle.updatedAt).toLocaleDateString("en-AU", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
                   })}
-                </time>
-              )}
-              {article.updatedAt && (
-                <time dateTime={article.updatedAt}>
-                  Updated:{" "}
-                  {new Date(article.updatedAt).toLocaleDateString("en-AU", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </time>
+                </span>
               )}
             </div>
-          </header>
+          </div>
+        </section>
 
-          {/* Article body — rendered from Sanity Portable Text */}
-          {article.body && Array.isArray(article.body) && article.body.length > 0 ? (
-            <div>
-              <PortableText value={article.body} />
-            </div>
-          ) : (
-            /* Placeholder body shown before Sanity content is added */
-            <div>
-              <p>
-                This article is coming soon. In the meantime, contact our team at Ashar Disability
-                Care and we will answer your question directly.
-              </p>
-            </div>
-          )}
+        {/* Article Content */}
+        <article className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              {displayArticle.body && Array.isArray(displayArticle.body) && displayArticle.body.length > 0 ? (
+                <div className="prose prose-lg prose-zinc max-w-none prose-headings:font-bold prose-a:text-orange-600 prose-a:no-underline hover:prose-a:underline">
+                  <PortableText value={displayArticle.body} />
+                </div>
+              ) : (
+                <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-8 text-center">
+                  <p className="text-zinc-600">
+                    This article is coming soon. In the meantime, contact our team at {businessName} and we will answer your question directly.
+                  </p>
+                </div>
+              )}
 
-          {/* FAQ section — each question/answer pair generates FAQPage schema */}
-          {hasFaq && (
-            <section aria-labelledby="faq-heading">
-              <h2 id="faq-heading">Frequently Asked Questions</h2>
-              <dl>
-                {article.faqItems!.map((item, index) => (
-                  <div key={index}>
-                    <dt>
-                      <h3>{item.question}</h3>
-                    </dt>
-                    <dd>{item.answer}</dd>
+              {/* FAQ Section */}
+              {displayArticle.faqItems && displayArticle.faqItems.length > 0 && (
+                <section className="mt-16" aria-labelledby="faq-heading">
+                  <h2 id="faq-heading" className="text-2xl font-bold text-zinc-900 mb-8">
+                    Frequently Asked Questions
+                  </h2>
+                  <div className="space-y-6">
+                    {displayArticle.faqItems.map((item, index) => (
+                      <div key={index} className="bg-zinc-50 border border-zinc-200 rounded-lg p-6">
+                        <h3 className="text-lg font-semibold text-zinc-900 mb-3">
+                          {item.question}
+                        </h3>
+                        <p className="text-zinc-600">{item.answer}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </dl>
-            </section>
-          )}
+                </section>
+              )}
 
-          {/* Author bio */}
-          {article.author?.bio && (
-            <section aria-label="About the author">
-              <h2>About the Author</h2>
-              <p>{article.author.bio}</p>
-            </section>
-          )}
+              {/* Author Bio */}
+              {displayArticle.author?.bio && (
+                <section className="mt-16 bg-zinc-50 border border-zinc-200 rounded-lg p-6" aria-label="About the author">
+                  <h2 className="text-lg font-semibold text-zinc-900 mb-3">About the Author</h2>
+                  <p className="text-zinc-600">{displayArticle.author.bio}</p>
+                </section>
+              )}
+            </div>
+          </div>
         </article>
 
-        {/* CTA — conversion point for every article */}
-        <aside aria-label="Contact Ashar Disability Care">
-          <h2>Need NDIS Support in South Australia?</h2>
-          <p>
-            Ashar Disability Care is a registered NDIS provider serving participants across South
-            Australia. Contact us to discuss your support needs.
-          </p>
-          <div>
-            <Link href="/contact">Enquire now</Link>
-            <a href="tel:0425760172">Call 0425 760 172</a>
+        {/* CTA Section */}
+        <section className="bg-zinc-900 text-white py-16">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl font-bold mb-4">Need Expert Help?</h2>
+            <p className="text-xl text-zinc-300 mb-8 max-w-2xl mx-auto">
+              {businessName} provides expert clutch, brake, and transmission services across Adelaide.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold transition-colors"
+              >
+                Contact Us
+              </Link>
+              <a
+                href={`tel:${phone.replace(/\s/g, "")}`}
+                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-lg font-semibold transition-colors"
+              >
+                <Phone className="h-5 w-5" />
+                {phone}
+              </a>
+            </div>
           </div>
-        </aside>
+        </section>
 
-        {/* Back to articles */}
-        <nav aria-label="Article navigation">
-          <Link href="/articles">Back to all articles</Link>
-        </nav>
+        {/* Back to Articles */}
+        <section className="py-8 bg-zinc-100">
+          <div className="container mx-auto px-4">
+            <Link
+              href="/articles"
+              className="inline-flex items-center gap-2 text-zinc-600 hover:text-orange-600 font-semibold transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to All Articles
+            </Link>
+          </div>
+        </section>
       </main>
     </>
   )
