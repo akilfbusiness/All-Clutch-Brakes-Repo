@@ -11,12 +11,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
 
   return {
-    title: `Articles & Resources | ${businessName}`,
-    description: "Expert guides and answers about clutch, brake, and transmission repairs. Tips, maintenance advice, and industry insights from Adelaide's specialists.",
+    title: settings?.articlesPageSeoTitle ?? `Articles & Resources | ${businessName}`,
+    description: settings?.articlesPageSeoDescription ?? "Expert guides and answers about clutch, brake, and transmission repairs. Tips, maintenance advice, and industry insights from Adelaide's specialists.",
     alternates: { canonical: "/articles" },
     openGraph: {
-      title: `Articles & Resources | ${businessName}`,
-      description: "Expert guides and answers about clutch, brake, and transmission repairs.",
+      title: settings?.articlesPageSeoTitle ?? `Articles & Resources | ${businessName}`,
+      description: settings?.articlesPageSeoDescription ?? "Expert guides and answers about clutch, brake, and transmission repairs.",
       url: `${siteUrl}/articles`,
       type: "website",
     },
@@ -111,11 +111,10 @@ export default async function ArticlesPage() {
             </nav>
 
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Articles &amp; Resources
+              {settings?.articlesPageHeroTitle ?? "Articles & Resources"}
             </h1>
             <p className="text-xl text-zinc-300 max-w-3xl">
-              Expert guides and answers about clutch, brake, and transmission repairs. 
-              Tips, maintenance advice, and industry insights from Adelaide&apos;s specialists.
+              {settings?.articlesPageHeroSubtitle ?? "Expert guides and answers about clutch, brake, and transmission repairs. Tips, maintenance advice, and industry insights from Adelaide's specialists."}
             </p>
           </div>
         </section>
