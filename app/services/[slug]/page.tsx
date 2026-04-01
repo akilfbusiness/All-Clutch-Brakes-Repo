@@ -127,10 +127,10 @@ export default async function ServicePage({
 
       <main className="min-h-screen bg-background">
         {/* Hero Section */}
-        <section className="bg-zinc-900 text-white">
-          {/* Featured Image */}
+        <section className="relative bg-zinc-900 text-white overflow-hidden">
+          {/* Featured Image — fills the entire hero as a background */}
           {service.featuredImage && (
-            <div className="relative h-64 md:h-80 w-full overflow-hidden">
+            <>
               <Image
                 src={service.featuredImage}
                 alt={service.title}
@@ -140,9 +140,9 @@ export default async function ServicePage({
                 crossOrigin="anonymous"
               />
               <div className="absolute inset-0 bg-gradient-to-b from-zinc-900/60 to-zinc-900/80" />
-            </div>
+            </>
           )}
-          <div className="container mx-auto px-4 py-16 md:py-24">
+          <div className="relative container mx-auto px-4 py-16 md:py-24">
             {/* Breadcrumb */}
             <nav aria-label="Breadcrumb" className="mb-6">
               <ol className="flex items-center gap-2 text-sm text-zinc-400 flex-wrap">
