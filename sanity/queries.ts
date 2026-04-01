@@ -152,6 +152,11 @@ export interface Post {
 // Keep Article as an alias for backwards compatibility during migration
 export type Article = Post
 
+export interface ServiceGalleryImage {
+  url: string
+  caption?: string
+}
+
 export interface Service {
   title: string
   slug: string
@@ -160,6 +165,9 @@ export interface Service {
   whoIsItFor?: string
   faqItems?: FaqItem[]
   icon?: string
+  featuredImage?: string
+  gallery?: ServiceGalleryImage[]
+  serviceAreas?: { title: string; slug: string }[]
   seoTitle?: string
   seoDescription?: string
 }
@@ -286,7 +294,14 @@ export const ALL_SERVICES_QUERY = `
 export const SERVICE_BY_SLUG_QUERY = `
   *[_type == "service" && slug.current == $slug][0] {
     title, "slug": slug.current, answerCapsule, body,
-    whoIsItFor, faqItems, icon, seoTitle, seoDescription
+    whoIsItFor, faqItems, icon,
+    "featuredImage": featuredImage.asset->url,
+    "gallery": gallery[] {
+      "url": asset->url,
+      caption
+    },
+    "serviceAreas": serviceAreas[]->{ title, "slug": slug.current },
+    seoTitle, seoDescription
   }
 `
 

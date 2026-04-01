@@ -10,6 +10,40 @@ export const serviceSchema = defineType({
   type: "document",
   fields: [
     defineField({
+      name: "featuredImage",
+      title: "Featured Image",
+      type: "image",
+      options: { hotspot: true },
+      description: "Main image for this service. Shown at the top of the service page and in service cards.",
+    }),
+    defineField({
+      name: "gallery",
+      title: "Gallery",
+      type: "array",
+      of: [
+        {
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            {
+              name: "caption",
+              title: "Caption",
+              type: "string",
+              description: "Optional caption for this image (e.g. 'Before', 'After', 'Workshop').",
+            },
+          ],
+        },
+      ],
+      description: "Additional images — before/after shots, workshop photos. These appear in a gallery below the main content.",
+    }),
+    defineField({
+      name: "serviceAreas",
+      title: "Service Areas",
+      type: "array",
+      of: [{ type: "reference", to: [{ type: "location" }] }],
+      description: "Link this service to specific locations. Used for geo-targeted SEO — mentions the suburbs on this service page automatically.",
+    }),
+    defineField({
       name: "title",
       title: "Service Name",
       type: "string",

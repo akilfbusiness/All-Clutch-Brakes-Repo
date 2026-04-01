@@ -1,9 +1,10 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { PortableText } from "@portabletext/react"
 import { getServiceBySlug, getAllServiceSlugs, getAllServices, getSiteSettings, type Service } from "@/sanity/queries"
-import { ChevronRight, Phone, ArrowLeft, CheckCircle, Wrench } from "lucide-react"
+import { ChevronRight, Phone, ArrowLeft, CheckCircle, Wrench, MapPin } from "lucide-react"
 
 export async function generateStaticParams() {
   try {
@@ -84,8 +85,11 @@ export default async function ServicePage({
     description: service.answerCapsule,
     url: `${siteUrl}/services/${service.slug}`,
     provider: { "@id": `${siteUrl}/#business` },
-    areaServed: { "@type": "State", name: "South Australia" },
+    areaServed: service.serviceAreas?.length
+      ? service.serviceAreas.map((a) => ({ "@type": "City", name: a.title }))
+      : { "@type": "State", name: "South Australia" },
     serviceType: "Automotive Repair",
+    ...(service.featuredImage && { image: service.featuredImage }),
   }
 
   const breadcrumbSchema = {
@@ -124,6 +128,20 @@ export default async function ServicePage({
       <main className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="bg-zinc-900 text-white">
+          {/* Featured Image */}
+          {service.featuredImage && (
+            <div className="relative h-64 md:h-80 w-full overflow-hidden">
+              <Image
+                src={service.featuredImage}
+                alt={service.title}
+                fill
+                className="object-cover opacity-40"
+                priority
+                crossOrigin="anonymous"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-zinc-900/60 to-zinc-900/80" />
+            </div>
+          )}
           <div className="container mx-auto px-4 py-16 md:py-24">
             {/* Breadcrumb */}
             <nav aria-label="Breadcrumb" className="mb-6">
@@ -191,6 +209,33 @@ export default async function ServicePage({
                   </div>
                 )}
 
+                {/* Gallery */}
+                {service.gallery && service.gallery.length > 0 && (
+                  <div className="mb-12">
+                    <h2 className="text-2xl font-bold text-zinc-900 mb-6">Gallery</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {service.gallery.map((img, i) => (
+                        <figure key={i} className="rounded-lg overflow-hidden border border-zinc-200">
+                          <div className="relative aspect-[4/3]">
+                            <Image
+                              src={img.url}
+                              alt={img.caption ?? `${service.title} photo ${i + 1}`}
+                              fill
+                              className="object-cover"
+                              crossOrigin="anonymous"
+                            />
+                          </div>
+                          {img.caption && (
+                            <figcaption className="text-xs text-zinc-500 text-center p-2 bg-zinc-50">
+                              {img.caption}
+                            </figcaption>
+                          )}
+                        </figure>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* How We Deliver */}
                 <div className="mb-12 bg-zinc-50 border border-zinc-200 rounded-lg p-8">
                   <h2 className="text-2xl font-bold text-zinc-900 mb-4">
@@ -249,6 +294,29 @@ export default async function ServicePage({
                       </a>
                     </div>
                   </div>
+
+                  {/* Service Areas */}
+                  {service.serviceAreas && service.serviceAreas.length > 0 && (
+                    <div className="bg-white border border-zinc-200 rounded-lg p-6">
+                      <h3 className="text-lg font-bold text-zinc-900 mb-4 flex items-center gap-2">
+                        <MapPin className="h-5 w-5 text-orange-500" />
+                        Service Areas
+                      </h3>
+                      <ul className="space-y-2">
+                        {service.serviceAreas.map((area) => (
+                          <li key={area.slug}>
+                            <Link
+                              href={`/locations/${area.slug}`}
+                              className="flex items-center gap-2 text-zinc-600 hover:text-orange-600 transition-colors text-sm"
+                            >
+                              <ChevronRight className="h-3.5 w-3.5" />
+                              {area.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                   {/* Related Services */}
                   <div className="bg-white border border-zinc-200 rounded-lg p-6">
