@@ -89,6 +89,9 @@ export default async function HomePage() {
   const ctaHeading = settings.homeCtaHeading || "Need a Quote?"
   const ctaBody    = settings.homeCtaBody    || "Call us today or send a message and we will get back to you promptly."
 
+  const inspectionCardHeading = settings.homeInspectionCardHeading || "Book a Free Inspection"
+  const inspectionCardBody    = settings.homeInspectionCardBody    || "Not sure what is wrong with your vehicle? Bring it in and our technicians will inspect your clutch or brakes at no charge and give you an honest quote."
+
   const faqs = settings.homeFaqs?.length ? settings.homeFaqs : DEFAULT_FAQS
 
   const serviceItems = services.length > 0
@@ -221,10 +224,9 @@ export default async function HomePage() {
             </div>
             <Card>
               <CardContent className="p-8 space-y-4">
-                <h3 className="text-xl font-semibold">Book a Free Inspection</h3>
+                <h3 className="text-xl font-semibold">{inspectionCardHeading}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  Not sure what is wrong with your vehicle? Bring it in and our technicians
-                  will inspect your clutch or brakes at no charge and give you an honest quote.
+                  {inspectionCardBody}
                 </p>
                 <div className="space-y-2 pt-2">
                   <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">

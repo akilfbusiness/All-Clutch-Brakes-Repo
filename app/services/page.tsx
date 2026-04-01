@@ -37,6 +37,12 @@ export default async function ServicesPage() {
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
   const faqs = settings?.servicesFaqs ?? []
   const phone = settings?.phone?.[0] ?? "(08) 8277 8122"
+  const allServicesSubheading =
+    settings?.servicesAllSubheading ?? "Click on a service to learn more about what we offer."
+  const servicesCtaHeading = settings?.servicesCtaHeading ?? "Ready to Get Started?"
+  const servicesCtaBody =
+    settings?.servicesCtaBody ??
+    "Contact our team today to discuss which services are right for you."
 
   const faqSchema = faqs.length > 0
     ? {
@@ -125,7 +131,7 @@ export default async function ServicesPage() {
           <div className="mb-10 space-y-2">
             <h2 className="text-2xl font-bold tracking-tight">All Services</h2>
             <p className="text-muted-foreground">
-              Click on a service to learn more about what we offer.
+              {allServicesSubheading}
             </p>
           </div>
 
@@ -197,9 +203,9 @@ export default async function ServicesPage() {
       {/* ── CTA SECTION ────────────────────────────────────────────────────── */}
       <section className="bg-primary text-primary-foreground py-14">
         <div className="container text-center space-y-4">
-          <h2 className="text-2xl md:text-3xl font-bold">Ready to Get Started?</h2>
+          <h2 className="text-2xl md:text-3xl font-bold">{servicesCtaHeading}</h2>
           <p className="text-primary-foreground/70 max-w-xl mx-auto text-pretty">
-            Contact our team today to discuss which services are right for you.
+            {servicesCtaBody}
           </p>
           <div className="flex flex-wrap justify-center gap-4 pt-2">
             <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold">

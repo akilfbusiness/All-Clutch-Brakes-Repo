@@ -64,11 +64,28 @@ export interface SiteSettings {
   aboutValues?: { title: string; description: string }[]
   aboutTeamHeading?: string
   aboutTeamBody?: string
+  aboutTeamMembers?: {
+    name: string
+    role?: string
+    bio?: string
+    photo?: unknown
+  }[]
+  aboutCtaHeading?: string
+  aboutCtaBody?: string
+  aboutCtaPrimaryLabel?: string
+  aboutCtaSecondaryLabel?: string
+  aboutSeoTitle?: string
+  aboutSeoDescription?: string
   contactHeading?: string
   contactAnswerCapsule?: string
+  contactInfoHeading?: string
   contactFormHeading?: string
   contactFormSubheading?: string
+  contactPrivacyNote?: string
   contactServiceOptions?: string[]
+  contactFaqs?: FaqItem[]
+  contactSeoTitle?: string
+  contactSeoDescription?: string
   servicesPageHeroTitle?: string
   servicesPageHeroSubtitle?: string
   servicesPageHeroImage?: unknown
@@ -87,7 +104,14 @@ export interface SiteSettings {
   articlesPageSeoDescription?: string
   servicesPageHeading?: string
   servicesPageAnswerCapsule?: string
+  servicesAllSubheading?: string
+  servicesCtaHeading?: string
+  servicesCtaBody?: string
+  servicesHowWeDeliverHeading?: string
+  servicesHowWeDeliverPoints?: string[]
   servicesFaqs?: FaqItem[]
+  homeInspectionCardHeading?: string
+  homeInspectionCardBody?: string
   locationsPageHeading?: string
   locationsPageAnswerCapsule?: string
   locationsFaqs?: FaqItem[]
@@ -168,15 +192,27 @@ export const SITE_SETTINGS_QUERY = `
     aboutHeading, aboutAnswerCapsule, aboutMissionHeading, aboutMissionBody,
     aboutWhoWeAreHeading, aboutWhoWeAreBody, aboutValues,
     aboutTeamHeading, aboutTeamBody,
-    contactHeading, contactAnswerCapsule, contactFormHeading,
-    contactFormSubheading, contactServiceOptions,
+    "aboutTeamMembers": aboutTeamMembers[] {
+      name, role, bio,
+      "photo": photo.asset->url
+    },
+    aboutCtaHeading, aboutCtaBody, aboutCtaPrimaryLabel, aboutCtaSecondaryLabel,
+    aboutSeoTitle, aboutSeoDescription,
+    contactHeading, contactAnswerCapsule, contactInfoHeading,
+    contactFormHeading, contactFormSubheading, contactPrivacyNote,
+    contactServiceOptions, contactFaqs,
+    contactSeoTitle, contactSeoDescription,
     servicesPageHeroTitle, servicesPageHeroSubtitle, servicesPageHeroImage,
     servicesPageSeoTitle, servicesPageSeoDescription,
     locationsPageHeroTitle, locationsPageHeroSubtitle, locationsPageHeroImage,
     locationsPageSeoTitle, locationsPageSeoDescription,
     articlesPageHeroTitle, articlesPageHeroSubtitle, articlesPageHeroImage,
     articlesPageSeoTitle, articlesPageSeoDescription,
-    servicesPageHeading, servicesPageAnswerCapsule, servicesFaqs,
+    servicesPageHeading, servicesPageAnswerCapsule,
+    servicesAllSubheading, servicesCtaHeading, servicesCtaBody,
+    servicesHowWeDeliverHeading, servicesHowWeDeliverPoints,
+    servicesFaqs,
+    homeInspectionCardHeading, homeInspectionCardBody,
     locationsPageHeading, locationsPageAnswerCapsule, locationsFaqs,
     footerTagline, footerCopyrightText, footerLinks,
     siteUrl, defaultSeoTitle, defaultSeoDescription,

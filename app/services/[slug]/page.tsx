@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { PortableText } from "@portabletext/react"
-import { getServiceBySlug, getAllServiceSlugs, getSiteSettings, type Service } from "@/sanity/queries"
+import { getServiceBySlug, getAllServiceSlugs, getAllServices, getSiteSettings, type Service } from "@/sanity/queries"
 import { ChevronRight, Phone, ArrowLeft, CheckCircle, Wrench } from "lucide-react"
 
 export async function generateStaticParams() {
@@ -52,8 +52,10 @@ export default async function ServicePage({
 }) {
   const { slug } = await params
   const [service, settings] = await Promise.all([
+  const [service, settings, allServices] = await Promise.all([
     getServiceBySlug(slug).catch(() => null),
     getSiteSettings(),
+    getAllServices(),
   ])
 
   if (!service) notFound()
@@ -61,6 +63,19 @@ export default async function ServicePage({
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
   const phone = settings?.phone?.[0] ?? "(08) 8277 8122"
   const siteUrl = settings?.siteUrl ?? "https://example.com"
+
+  const howWeDeliverHeading =
+    settings?.servicesHowWeDeliverHeading ?? `How ${businessName} Delivers`
+  const defaultDeliverPoints = [
+    "Expert diagnosis by qualified mechanics",
+    "Quality parts with warranty",
+    "Transparent pricing with no hidden fees",
+    "Work completed to manufacturer standards",
+  ]
+  const deliverPoints =
+    settings?.servicesHowWeDeliverPoints?.length
+      ? settings.servicesHowWeDeliverPoints
+      : defaultDeliverPoints
 
   const serviceSchema = {
     "@context": "https://schema.org",
@@ -96,14 +111,10 @@ export default async function ServicePage({
       }
     : null
 
-  // Related services (excluding current)
-  const relatedServices = [
-    { title: "Clutch Repairs & Replacement", slug: "clutch-repairs" },
-    { title: "Brake Services", slug: "brake-services" },
-    { title: "Transmission Repairs", slug: "transmission-repairs" },
-    { title: "Flywheel Machining", slug: "flywheel-machining" },
-    { title: "Hydraulic Repairs", slug: "hydraulic-repairs" },
-  ].filter((s) => s.slug !== slug).slice(0, 3)
+  // Related services — real services from Sanity, excluding the current one
+  const relatedServices = allServices
+    .filter((s) => s.slug !== slug)
+    .slice(0, 3)
 
   return (
     <>
@@ -184,25 +195,15 @@ export default async function ServicePage({
                 {/* How We Deliver */}
                 <div className="mb-12 bg-zinc-50 border border-zinc-200 rounded-lg p-8">
                   <h2 className="text-2xl font-bold text-zinc-900 mb-4">
-                    How {businessName} Delivers {service.title}
+                    {howWeDeliverHeading} {service.title}
                   </h2>
                   <ul className="space-y-3">
-                    <li className="flex items-start gap-3">
-                      <CheckCircle className="h-6 w-6 text-orange-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-zinc-600">Expert diagnosis by qualified mechanics</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle className="h-6 w-6 text-orange-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-zinc-600">Quality parts with warranty</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle className="h-6 w-6 text-orange-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-zinc-600">Transparent pricing with no hidden fees</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle className="h-6 w-6 text-orange-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-zinc-600">Work completed to manufacturer standards</span>
-                    </li>
+                    {deliverPoints.map((point, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <CheckCircle className="h-6 w-6 text-orange-500 flex-shrink-0 mt-0.5" />
+                        <span className="text-zinc-600">{point}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
 
