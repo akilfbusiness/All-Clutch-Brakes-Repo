@@ -9,5 +9,8 @@ export const sanityConfig = {
   projectId: PROJECT_ID,
   dataset: DATASET,
   apiVersion: "2024-01-01",
-  useCdn: process.env.NODE_ENV === "production",
+  // useCdn must be false — CDN responses bypass Next.js fetch cache tags,
+  // which means revalidateTag() calls from the webhook never clear the cache.
+  // Without this, CMS changes don't appear until a full redeploy.
+  useCdn: false,
 }

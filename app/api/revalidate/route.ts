@@ -1,28 +1,25 @@
-// ISR Revalidation Webhook — Sanity calls this endpoint automatically
-// whenever content is published or updated in the Studio.
+// ISR Revalidation Webhook — Sanity calls this endpoint on every publish/update.
 //
-// How it works:
-// 1. You configure a webhook in Sanity (sanity.io → your project → API → Webhooks)
-// 2. Point the webhook URL to: https://ashardisabilitycare.com.au/api/revalidate
-// 3. Set the secret to match SANITY_WEBHOOK_SECRET in your environment variables
-// 4. Whenever you save content in Sanity, this endpoint fires and rebuilds
-//    only the affected pages — not the entire site.
+// Setup (one-time, done in Sanity Studio):
+//   1. Go to sanity.io → your project → API → Webhooks
+//   2. Create a new webhook:
+//      - URL: https://your-domain.com/api/revalidate
+//      - Trigger on: Create, Update, Delete
+//      - Filter: leave blank (all document types)
+//      - HTTP method: POST
+//      - Secret: any random string — copy it into SANITY_WEBHOOK_SECRET env var
 //
-// Supported document types and their cache tags:
-// - article   → revalidates "articles" tag + individual "article-{slug}" tag
-// - service   → revalidates "services" tag + individual "service-{slug}" tag
-// - location  → revalidates "locations" tag + individual "location-{slug}" tag
-// - siteSettings → revalidates global "site-settings" tag
+// What happens when you publish in the CMS:
+//   Sanity → POST /api/revalidate → revalidateTag() → Next.js drops cache for
+//   affected pages only → next visitor gets a fresh page within seconds.
 
 import { revalidateTag } from "next/cache"
 import { type NextRequest, NextResponse } from "next/server"
 
-// Simple HMAC-SHA256 signature verification to ensure the request
-// genuinely comes from Sanity and not an unauthorised third party
 async function verifySignature(req: NextRequest, body: string): Promise<boolean> {
   const secret = process.env.SANITY_WEBHOOK_SECRET
   if (!secret) {
-    // If no secret is set, skip verification in development only
+    // Allow in development without a secret
     if (process.env.NODE_ENV === "development") return true
     return false
   }
@@ -47,14 +44,12 @@ async function verifySignature(req: NextRequest, body: string): Promise<boolean>
 
 export async function POST(req: NextRequest) {
   let body: string
-
   try {
     body = await req.text()
   } catch {
     return NextResponse.json({ message: "Could not read request body" }, { status: 400 })
   }
 
-  // Verify the request is genuinely from Sanity
   const isValid = await verifySignature(req, body)
   if (!isValid) {
     return NextResponse.json({ message: "Invalid signature" }, { status: 401 })
@@ -68,46 +63,57 @@ export async function POST(req: NextRequest) {
   }
 
   const { _type, slug } = payload
+  const slugValue = slug?.current ?? null
 
-  // Revalidate the appropriate cache tags based on which document type changed
   switch (_type) {
-    case "article":
-      revalidateTag("articles")
-      if (slug?.current) {
-        revalidateTag(`article-${slug.current}`)
-      }
+    // Blog posts
+    case "post":
+      revalidateTag("posts")
+      if (slugValue) revalidateTag(`post-${slugValue}`)
       break
 
+    // Services
     case "service":
       revalidateTag("services")
-      if (slug?.current) {
-        revalidateTag(`service-${slug.current}`)
-      }
+      if (slugValue) revalidateTag(`service-${slugValue}`)
       break
 
+    // Locations
     case "location":
       revalidateTag("locations")
-      if (slug?.current) {
-        revalidateTag(`location-${slug.current}`)
-      }
+      if (slugValue) revalidateTag(`location-${slugValue}`)
       break
 
+    // Site-wide settings — affects every page
     case "siteSettings":
       revalidateTag("site-settings")
       break
 
+    // Navigation changes affect header/footer on every page
+    case "navigation":
+      revalidateTag("navigation")
+      revalidateTag("site-settings")
+      break
+
+    // Author updates may affect blog posts
+    case "author":
+      revalidateTag("posts")
+      break
+
     default:
-      // Unknown document type — revalidate everything as a safe fallback
-      revalidateTag("articles")
+      // Unknown type — revalidate everything as a safe fallback
+      revalidateTag("posts")
       revalidateTag("services")
       revalidateTag("locations")
       revalidateTag("site-settings")
+      revalidateTag("navigation")
+      break
   }
 
   return NextResponse.json({
     message: "Revalidation triggered",
     type: _type,
-    slug: slug?.current ?? null,
+    slug: slugValue,
     timestamp: new Date().toISOString(),
   })
 }
