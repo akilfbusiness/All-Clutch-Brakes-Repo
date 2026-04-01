@@ -51,7 +51,6 @@ export default async function ServicePage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const [service, settings] = await Promise.all([
   const [service, settings, allServices] = await Promise.all([
     getServiceBySlug(slug).catch(() => null),
     getSiteSettings(),
