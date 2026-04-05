@@ -89,8 +89,9 @@ const DEFAULT_TICKER_ITEMS = [
   "Qualified Tradespeople", "Transmission Service", "Brake Machining",
 ]
 
-function Ticker({ items }: { items: string[] }) {
-  const doubled = [...items, ...items]
+function Ticker({ items }: { items?: string[] }) {
+  const resolved = items?.length ? items : DEFAULT_TICKER_ITEMS
+  const doubled = [...resolved, ...resolved]
   return (
     <div className="overflow-hidden border-y border-border bg-background py-5 select-none">
       <div className="ticker-track flex items-center gap-0">
@@ -430,7 +431,7 @@ export function HomePageClient({
       {/* ══════════════════════════════════════════════════════════════════════
           TICKER STRIP 2
       ══════════════════════════════════════════════════════════════════════ */}
-      <Ticker />
+      <Ticker items={tickerItems} />
 
 
       {/* ══════════════════════════════════════════════════════════════════════
