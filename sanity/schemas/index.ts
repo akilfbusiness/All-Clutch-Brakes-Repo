@@ -8,6 +8,12 @@ import { navigationSchema } from "./navigation"
 import { pageSchema } from "./page"
 import { serviceSchema } from "./service"
 import { siteSettingsSchema } from "./siteSettings"
+import { staffSchema } from "./staff"
+import { whatWeDoSchema } from "./whatWeDo"
+import { projectSchema } from "./project"
+import { featuredItemSchema } from "./featuredItem"
+import { brandSchema } from "./brand"
+import { productPageSchema } from "./productPage"
 
 export const schemaTypes = [
   // Content types
@@ -15,9 +21,15 @@ export const schemaTypes = [
   pageSchema,
   serviceSchema,
   locationSchema,
+  staffSchema,
+  projectSchema,
+  featuredItemSchema,
+  brandSchema,
+  productPageSchema,
   // Supporting types
   authorSchema,
   // Global settings (singletons)
   siteSettingsSchema,
   navigationSchema,
+  whatWeDoSchema,
 ]
