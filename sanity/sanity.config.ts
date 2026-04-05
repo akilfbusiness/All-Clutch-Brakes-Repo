@@ -131,6 +131,64 @@ const deskStructure = (S: any) =>
         .child(S.documentTypeList("post").title("Blog")),
       S.divider(),
 
+      // === About Section (nested pages) ===
+      S.listItem()
+        .title("About")
+        .icon(() => "ℹ️")
+        .child(
+          S.list()
+            .title("About")
+            .items([
+              S.listItem()
+                .title("What We Do")
+                .icon(() => "📋")
+                .child(
+                  S.document()
+                    .schemaType("whatWeDo")
+                    .documentId("whatWeDo")
+                    .title("What We Do Page")
+                ),
+              S.listItem()
+                .title("Projects")
+                .icon(() => "🚗")
+                .schemaType("project")
+                .child(S.documentTypeList("project").title("Projects")),
+              S.listItem()
+                .title("Meet Our Staff")
+                .icon(() => "👥")
+                .schemaType("staff")
+                .child(S.documentTypeList("staff").title("Meet Our Staff")),
+            ])
+        ),
+      S.divider(),
+
+      // === Products Section ===
+      S.listItem()
+        .title("Products")
+        .icon(() => "🛠️")
+        .child(
+          S.list()
+            .title("Products")
+            .items([
+              S.listItem()
+                .title("Featured Items & News")
+                .icon(() => "⭐")
+                .schemaType("featuredItem")
+                .child(S.documentTypeList("featuredItem").title("Featured Items & News")),
+              S.listItem()
+                .title("Brands")
+                .icon(() => "🏷️")
+                .schemaType("brand")
+                .child(S.documentTypeList("brand").title("Brands")),
+              S.listItem()
+                .title("Product Pages")
+                .icon(() => "📦")
+                .schemaType("productPage")
+                .child(S.documentTypeList("productPage").title("Product Pages")),
+            ])
+        ),
+      S.divider(),
+
       // === Supporting Content ===
       S.listItem()
         .title("Authors")
