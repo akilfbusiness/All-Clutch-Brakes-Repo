@@ -388,11 +388,22 @@ export const SITE_NAVIGATION_QUERY = `
     "headerItems": headerItems[] {
       label, linkType, openInNewTab, highlight,
       "href": select(
-        linkType == "external"  => externalUrl,
-        defined(customSlug)     => customSlug,
-        linkType == "page"      => pageReference->slug.current,
+        linkType == "external"        => externalUrl,
+        defined(hardcodedPage)        => hardcodedPage,
+        defined(customSlug)           => customSlug,
+        linkType == "page"            => pageReference->slug.current,
         "#"
-      )
+      ),
+      "children": children[] {
+        label, linkType, openInNewTab,
+        "href": select(
+          linkType == "external"      => externalUrl,
+          defined(hardcodedPage)      => hardcodedPage,
+          defined(customSlug)         => customSlug,
+          linkType == "page"          => pageReference->slug.current,
+          "#"
+        )
+      }
     }
   }
 `
