@@ -1,20 +1,26 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Geist, Geist_Mono, Syne } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { getSiteSettings } from "@/sanity/queries"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import "./globals.css"
 
-const _geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
+const _geist    = Geist({ subsets: ["latin"], variable: "--font-sans" })
 const _geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
+const _syne      = Syne({ subsets: ["latin"], variable: "--font-syne", weight: ["400", "700", "800"] })
 
 // ─── METADATA ──────────────────────────────────────────────────────────────────
 // metadataBase and all title/description values are pulled from Sanity siteSettings.
 // To change the site title, description, or URL, edit the CMS — never this file.
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
+  let settings: Awaited<ReturnType<typeof getSiteSettings>>
+  try {
+    settings = await getSiteSettings()
+  } catch {
+    settings = {}
+  }
 
   const siteUrl = settings?.siteUrl ?? "https://example.com"
   const businessName = settings?.businessName ?? "Business Name"
@@ -85,7 +91,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const settings = await getSiteSettings()
+  let settings: Awaited<ReturnType<typeof getSiteSettings>>
+  try {
+    settings = await getSiteSettings()
+  } catch {
+    settings = {}
+  }
 
   const siteUrl = settings?.siteUrl ?? "https://example.com"
   const businessName = settings?.businessName ?? "Business Name"
@@ -178,7 +189,7 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
         />
       </head>
-      <body className={`${_geist.variable} ${_geistMono.variable} font-sans antialiased`}>
+      <body className={`${_geist.variable} ${_geistMono.variable} ${_syne.variable} font-sans antialiased`}>
         <Header settings={settings} />
         <main>{children}</main>
         <Footer settings={settings} />

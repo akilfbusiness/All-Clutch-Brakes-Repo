@@ -28,11 +28,15 @@ export async function sanityFetch<T>({
   params?: Record<string, unknown>
   revalidate?: number | false
   tags?: string[]
-}): Promise<T> {
-  return sanityClient.fetch<T>(query, params, {
-    next: {
-      revalidate,
-      tags,
-    },
-  })
+}): Promise<T | null> {
+  try {
+    return await sanityClient.fetch<T>(query, params, {
+      next: {
+        revalidate,
+        tags,
+      },
+    })
+  } catch {
+    return null
+  }
 }
