@@ -8,9 +8,12 @@ import { Phone } from "lucide-react"
 interface NavbarClientProps {
   businessName: string
   phone: string
+  navItems?: { label: string; href: string; openInNewTab?: boolean }[]
+  ctaLabel?: string
+  ctaLink?: string
 }
 
-const NAV_LINKS = [
+const FALLBACK_NAV_LINKS = [
   { href: "/services",  label: "Services"  },
   { href: "/locations", label: "Locations" },
   { href: "/blog",      label: "Blog"      },
@@ -20,9 +23,11 @@ const NAV_LINKS = [
 
 const ease = [0.22, 1, 0.36, 1] as const
 
-export function NavbarClient({ businessName, phone }: NavbarClientProps) {
+export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "Get a Quote", ctaLink = "/contact" }: NavbarClientProps) {
   const [open,     setOpen]     = useState(false)
   const [scrolled, setScrolled] = useState(false)
+
+  const links = navItems.length > 0 ? navItems : FALLBACK_NAV_LINKS
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -98,7 +103,7 @@ export function NavbarClient({ businessName, phone }: NavbarClientProps) {
 
               {/* Nav links — Autovera style large list */}
               <nav className="border-t border-border">
-                {NAV_LINKS.map((link, i) => (
+                {links.map((link, i) => (
                   <motion.div
                     key={link.href}
                     initial={{ opacity: 0, x: -40 }}
@@ -141,11 +146,11 @@ export function NavbarClient({ businessName, phone }: NavbarClientProps) {
                   {phone}
                 </a>
                 <Link
-                  href="/contact"
+                  href={ctaLink}
                   onClick={() => setOpen(false)}
                   className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-colors"
                 >
-                  Get a Free Quote
+                  {ctaLabel}
                 </Link>
               </motion.div>
             </div>

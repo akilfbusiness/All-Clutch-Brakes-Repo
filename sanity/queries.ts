@@ -44,9 +44,16 @@ export interface SiteSettings {
   }
   heroHeading?: string
   heroAnswerCapsule?: string
+  heroTagline?: string
+  heroImage?: string
+  mechanicImage?: string
+  workshopImage?: string
   heroPrimaryCtaLabel?: string
   heroSecondaryCtaLabel?: string
   heroTrustSignals?: string[]
+  homeTickerItems?: string[]
+  homeStatsItems?: { displayValue: string; label: string; subtitle?: string }[]
+  homeAboutDescription?: string
   homeServicesHeading?: string
   homeServicesSubheading?: string
   homeWhyUsHeading?: string
@@ -115,6 +122,7 @@ export interface SiteSettings {
   locationsPageHeading?: string
   locationsPageAnswerCapsule?: string
   locationsFaqs?: FaqItem[]
+  footerBrandLabel?: string
   footerTagline?: string
   footerCopyrightText?: string
   footerLinks?: { label: string; href: string }[]
@@ -185,6 +193,21 @@ export interface Location {
   seoDescription?: string
 }
 
+export interface NavItem {
+  label: string
+  linkType: "page" | "external" | "header"
+  href: string
+  openInNewTab?: boolean
+  highlight?: "normal" | "button-primary" | "button-secondary"
+}
+
+export interface SiteNavigation {
+  headerItems?: NavItem[]
+  headerCtaLabel?: string
+  headerCtaLink?: string
+  showPhoneInHeader?: boolean
+}
+
 // ─── SITE SETTINGS ────────────────────────────────────────────────────────────
 
 export const SITE_SETTINGS_QUERY = `
@@ -194,7 +217,12 @@ export const SITE_SETTINGS_QUERY = `
     phone, email, address, businessHours, abn, registrationId,
     googleMapsEmbedUrl, socialLinks,
     heroHeading, heroAnswerCapsule, heroPrimaryCtaLabel, heroSecondaryCtaLabel,
-    heroTrustSignals, homeServicesHeading, homeServicesSubheading,
+    heroTagline,
+    "heroImage": heroImage.asset->url,
+    "mechanicImage": mechanicImage.asset->url,
+    "workshopImage": workshopImage.asset->url,
+    heroTrustSignals, homeTickerItems, homeStatsItems, homeAboutDescription,
+    homeServicesHeading, homeServicesSubheading,
     homeWhyUsHeading, homeWhyUsBody, homeWhyUsPoints,
     homeCtaHeading, homeCtaBody, homeFaqs,
     aboutHeading, aboutAnswerCapsule, aboutMissionHeading, aboutMissionBody,
@@ -222,7 +250,7 @@ export const SITE_SETTINGS_QUERY = `
     servicesFaqs,
     homeInspectionCardHeading, homeInspectionCardBody,
     locationsPageHeading, locationsPageAnswerCapsule, locationsFaqs,
-    footerTagline, footerCopyrightText, footerLinks,
+    footerTagline, footerCopyrightText, footerLinks, footerBrandLabel,
     siteUrl, defaultSeoTitle, defaultSeoDescription,
     googleSearchConsoleToken, areaServed
   }
@@ -350,4 +378,29 @@ export async function getLocationBySlug(slug: string): Promise<Location | null> 
 export async function getAllLocationSlugs(): Promise<{ slug: string }[]> {
   const result = await sanityFetch<{ slug: string }[] | null>({ query: ALL_LOCATION_SLUGS_QUERY, tags: ["locations"] })
   return result ?? []
+}
+
+// ─── NAVIGATION ───────────────────────────────────────────────────────────────
+
+export const SITE_NAVIGATION_QUERY = `
+  *[_type == "navigation"][0] {
+    headerCtaLabel, headerCtaLink, showPhoneInHeader,
+    "headerItems": headerItems[] {
+      label, linkType, openInNewTab, highlight,
+      "href": select(
+        linkType == "external"  => externalUrl,
+        defined(customSlug)     => customSlug,
+        linkType == "page"      => pageReference->slug.current,
+        "#"
+      )
+    }
+  }
+`
+
+export async function getSiteNavigation(): Promise<SiteNavigation> {
+  const result = await sanityFetch<SiteNavigation | null>({
+    query: SITE_NAVIGATION_QUERY,
+    tags: ["navigation"],
+  })
+  return result ?? {}
 }

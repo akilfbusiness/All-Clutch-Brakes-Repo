@@ -5,6 +5,20 @@ import { HomePageClient } from "@/components/home-page-client"
 // ─── DEFAULT CONTENT ──────────────────────────────────────────────────────────
 // Shown when Sanity has no data yet. Edit via Sanity Studio → Site Settings.
 
+const DEFAULT_TICKER_ITEMS = [
+  "Clutch Replacement", "Brake Repairs", "30+ Years Experience",
+  "Same Day Service", "Free Quotes", "All Makes & Models",
+  "Adelaide Specialists", "Fixed Pricing", "No Surprises",
+  "Qualified Tradespeople", "Transmission Service", "Brake Machining",
+]
+
+const DEFAULT_STATS_ITEMS = [
+  { displayValue: "30+",      label: "Years in Business",    subtitle: "Serving Adelaide since 1994"    },
+  { displayValue: "All",      label: "Makes & Models",       subtitle: "European, Japanese, 4WD & more" },
+  { displayValue: "Same\nDay", label: "Service Available",   subtitle: "Most jobs completed same day"   },
+  { displayValue: "Free",     label: "Quotes & Inspections", subtitle: "No obligation, no charge, ever" },
+]
+
 const DEFAULT_SERVICES = [
   "Clutch Replacement","Clutch Repairs","Brake Pad Replacement",
   "Brake Rotor Machining & Replacement","Brake Caliper Repairs","Brake Fluid Flush",
@@ -80,9 +94,17 @@ export default async function HomePage() {
 
   const heroHeading    = settings.heroHeading    || "Adelaide's Clutch & Brake Specialists"
   const heroAnswer     = settings.heroAnswerCapsule || "Expert clutch replacement, brake repairs, and transmission service for all makes and models. Based in St Marys, serving all of Adelaide."
+  const heroTagline    = settings.heroTagline    || "Clutch · Brake · Transmission · Adelaide"
+  const heroImage      = settings.heroImage      || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1920&q=80"
+  const mechanicImage  = settings.mechanicImage  || "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=900&q=80"
+  const workshopImage  = settings.workshopImage  || "https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=1920&q=80"
   const primaryCta     = settings.heroPrimaryCtaLabel   || "Call Now"
   const secondaryCta   = settings.heroSecondaryCtaLabel || "Our Services"
   const trustSignals   = settings.heroTrustSignals?.length ? settings.heroTrustSignals : ["30+ Years Experience","All Makes & Models","Same Day Service","Free Quotes"]
+
+  const tickerItems = settings.homeTickerItems?.length ? settings.homeTickerItems : DEFAULT_TICKER_ITEMS
+
+  const statsItems = settings.homeStatsItems?.length ? settings.homeStatsItems : DEFAULT_STATS_ITEMS
 
   const servicesHeading    = settings.homeServicesHeading    || "Our Services"
   const servicesSubheading = settings.homeServicesSubheading || "From clutch replacements to full brake overhauls, we handle everything in-house."
@@ -95,6 +117,7 @@ export default async function HomePage() {
 
   const inspectionCardHeading = settings.homeInspectionCardHeading || "Book a Free Inspection"
   const inspectionCardBody    = settings.homeInspectionCardBody    || "Not sure what is wrong with your vehicle? Bring it in and our technicians will inspect your clutch or brakes at no charge and give you an honest quote."
+  const aboutDescription      = settings.homeAboutDescription      || "Based in St Marys and serving all of Adelaide — no apprentices working unsupervised, no hidden fees, no surprises. Just honest, qualified tradework backed by over three decades of experience."
 
   const faqs = settings.homeFaqs?.length ? settings.homeFaqs : DEFAULT_FAQS
 
@@ -122,9 +145,15 @@ export default async function HomePage() {
         hours={hours}
         heroHeading={heroHeading}
         heroAnswer={heroAnswer}
+        heroTagline={heroTagline}
+        heroImage={heroImage}
+        mechanicImage={mechanicImage}
+        workshopImage={workshopImage}
         primaryCta={primaryCta}
         secondaryCta={secondaryCta}
         trustSignals={trustSignals}
+        tickerItems={tickerItems}
+        statsItems={statsItems}
         servicesHeading={servicesHeading}
         servicesSubheading={servicesSubheading}
         whyUsHeading={whyUsHeading}
@@ -133,6 +162,7 @@ export default async function HomePage() {
         ctaBody={ctaBody}
         inspectionCardHeading={inspectionCardHeading}
         inspectionCardBody={inspectionCardBody}
+        aboutDescription={aboutDescription}
         faqs={faqs}
         serviceItems={serviceItems}
       />

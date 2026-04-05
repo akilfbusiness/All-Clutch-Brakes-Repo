@@ -31,9 +31,15 @@ export interface HomePageClientProps {
   hours: HourItem[]
   heroHeading: string
   heroAnswer: string
+  heroTagline: string
+  heroImage: string
+  mechanicImage: string
+  workshopImage: string
   primaryCta: string
   secondaryCta: string
   trustSignals: string[]
+  tickerItems: string[]
+  statsItems: { displayValue: string; label: string; subtitle?: string }[]
   servicesHeading: string
   servicesSubheading: string
   whyUsHeading: string
@@ -42,15 +48,10 @@ export interface HomePageClientProps {
   ctaBody: string
   inspectionCardHeading: string
   inspectionCardBody: string
+  aboutDescription: string
   faqs: FaqItem[]
   serviceItems: ServiceItem[]
 }
-
-// ─── IMAGES ───────────────────────────────────────────────────────────────────
-
-const HERO_IMG     = "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1920&q=80"
-const MECHANIC_IMG = "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=900&q=80"
-const WORKSHOP_IMG = "https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=1920&q=80"
 
 // ─── ANIMATION PRESETS ────────────────────────────────────────────────────────
 
@@ -81,15 +82,15 @@ function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
 
 // ─── TICKER ───────────────────────────────────────────────────────────────────
 
-const TICKER_ITEMS = [
+const DEFAULT_TICKER_ITEMS = [
   "Clutch Replacement", "Brake Repairs", "30+ Years Experience",
   "Same Day Service", "Free Quotes", "All Makes & Models",
   "Adelaide Specialists", "Fixed Pricing", "No Surprises",
   "Qualified Tradespeople", "Transmission Service", "Brake Machining",
 ]
 
-function Ticker() {
-  const doubled = [...TICKER_ITEMS, ...TICKER_ITEMS]
+function Ticker({ items }: { items: string[] }) {
+  const doubled = [...items, ...items]
   return (
     <div className="overflow-hidden border-y border-border bg-background py-5 select-none">
       <div className="ticker-track flex items-center gap-0">
@@ -123,10 +124,12 @@ function SectionNum({ n }: { n: string }) {
 
 export function HomePageClient({
   businessName, phone, address, hours,
-  heroHeading, heroAnswer, primaryCta, secondaryCta,
+  heroHeading, heroAnswer, heroTagline, heroImage, mechanicImage, workshopImage,
+  primaryCta, secondaryCta,
+  trustSignals, tickerItems, statsItems,
   servicesHeading, servicesSubheading,
   whyUsHeading, whyUsPoints, ctaHeading, ctaBody,
-  inspectionCardBody, faqs, serviceItems,
+  inspectionCardBody, aboutDescription, faqs, serviceItems,
 }: HomePageClientProps) {
 
   const [openService, setOpenService] = useState<number | null>(null)
@@ -166,15 +169,15 @@ export function HomePageClient({
         onMouseMove={handleMouseMove}
         className="relative min-h-screen flex flex-col justify-center overflow-hidden"
       >
-        {/* Parallax image wrapper */}
-        <motion.div
-          style={{ y: imageY }}
-          className="absolute inset-[-15%] will-change-transform"
-        >
-          {/* Ken Burns zoom */}
-          <motion.img
-            src={HERO_IMG}
-            alt="Mechanic working on vehicle"
+          {/* Parallax image wrapper */}
+          <motion.div
+            style={{ y: imageY }}
+            className="absolute inset-[-15%] will-change-transform"
+          >
+            {/* Ken Burns zoom */}
+            <motion.img
+              src={heroImage}
+              alt="Mechanic working on vehicle"
             initial={{ scale: 1.0 }}
             animate={{ scale: 1.12 }}
             transition={{ duration: 12, ease: "linear" }}
@@ -203,7 +206,7 @@ export function HomePageClient({
               variants={fadeUp}
               className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-8"
             >
-              Clutch · Brake · Transmission · Adelaide
+              {heroTagline}
             </motion.p>
 
             {/* Two-tone headline */}
@@ -273,7 +276,7 @@ export function HomePageClient({
       {/* ══════════════════════════════════════════════════════════════════════
           TICKER STRIP
       ══════════════════════════════════════════════════════════════════════ */}
-      <Ticker />
+      <Ticker items={tickerItems} />
 
 
       {/* ══════════════════════════════════════════════════════════════════════
@@ -287,19 +290,14 @@ export function HomePageClient({
           whileInView="show" viewport={{ once: true, margin: "-60px" }}
           className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-border"
         >
-          {[
-            { isNum: true,  num: 30,    suffix: "+",   label: "Years in Business",      sub: "Serving Adelaide since 1994"          },
-            { isNum: false, text: "All",                label: "Makes & Models",         sub: "European, Japanese, 4WD & more"       },
-            { isNum: false, text: "Same\nDay",          label: "Service Available",      sub: "Most jobs completed same day"         },
-            { isNum: false, text: "Free",               label: "Quotes & Inspections",   sub: "No obligation, no charge, ever"       },
-          ].map((stat, i) => (
+          {statsItems.map((stat, i) => (
             <motion.div
               key={i} variants={fadeUp}
               className="flex flex-col justify-between p-8 md:p-12 lg:p-16 min-h-[280px] md:min-h-[340px] border-b lg:border-b-0 border-border"
             >
               <div>
                 <p className="text-6xl md:text-7xl lg:text-8xl xl:text-[100px] font-black text-foreground leading-none tracking-tight whitespace-pre-line">
-                  {stat.isNum ? <Counter to={stat.num!} suffix={stat.suffix} /> : stat.text}
+                  {stat.displayValue}
                 </p>
                 <div className="mt-6 mb-5 w-full h-px bg-border" />
                 <p className="text-[11px] font-bold text-foreground/80 uppercase tracking-[0.2em]">
@@ -307,7 +305,7 @@ export function HomePageClient({
                 </p>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed mt-6">
-                {stat.sub}
+                {stat.subtitle}
               </p>
             </motion.div>
           ))}
@@ -517,7 +515,7 @@ export function HomePageClient({
             className="relative min-h-[400px] lg:min-h-0"
           >
             <img
-              src={MECHANIC_IMG}
+              src={mechanicImage}
               alt="Qualified mechanic at All Clutch & Brake Service"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
@@ -539,7 +537,7 @@ export function HomePageClient({
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden">
         <img
-          src={WORKSHOP_IMG}
+          src={workshopImage}
           alt="Workshop"
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
@@ -584,11 +582,7 @@ export function HomePageClient({
             </h2>
             <div className="space-y-4 text-white/55 text-sm leading-relaxed mb-10">
               <p>{inspectionCardBody}</p>
-              <p>
-                Based in St Marys and serving all of Adelaide — no apprentices working unsupervised,
-                no hidden fees, no surprises. Just honest, qualified tradework backed by over three
-                decades of experience.
-              </p>
+              {aboutDescription && <p>{aboutDescription}</p>}
             </div>
             <div className="flex flex-wrap gap-4">
               <a

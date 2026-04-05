@@ -10,6 +10,8 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
   const businessHours = settings.businessHours || []
   const footerLinks   = settings.footerLinks   || []
   const copyright     = settings.footerCopyrightText || `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`
+  const footerBrandLabel = settings.footerBrandLabel || "Adelaide Specialists"
+  const footerTagline    = settings.footerTagline    || "Expert clutch, brake and transmission repairs for all makes and models. Trusted by Adelaide drivers for over 30 years."
 
   const navLinks = footerLinks.length > 0 ? footerLinks : [
     { href: "/services",  label: "Our Services" },
@@ -40,15 +42,14 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
           <div className="space-y-5">
             <div>
               <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-accent mb-3">
-                Adelaide Specialists
+                {footerBrandLabel}
               </p>
               <h3 className="text-lg font-black tracking-tight text-foreground">
                 {businessName}
               </h3>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed max-w-[220px]">
-              Expert clutch, brake and transmission repairs for all makes and models.
-              Trusted by Adelaide drivers for over 30 years.
+              {footerTagline}
             </p>
             <div className="w-10 h-[2px] bg-accent" />
           </div>

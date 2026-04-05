@@ -215,6 +215,71 @@ export const siteSettingsSchema = defineType({
       rows: 3,
     }),
     defineField({
+      name: "heroTagline",
+      title: "Hero Eyebrow Tagline",
+      type: "string",
+      group: "homepage",
+      description: "Small text above the hero heading. e.g. 'Clutch · Brake · Transmission · Adelaide'",
+    }),
+    defineField({
+      name: "heroImage",
+      title: "Hero Background Image",
+      type: "image",
+      group: "homepage",
+      description: "Full-viewport background image shown behind the hero heading.",
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: "mechanicImage",
+      title: "Mechanic Section Image",
+      type: "image",
+      group: "homepage",
+      description: "Photo used in the Why Choose Us / mechanic panel section.",
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: "workshopImage",
+      title: "Workshop Background Image",
+      type: "image",
+      group: "homepage",
+      description: "Full-bleed background photo used in the About / Our Story section.",
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: "homeTickerItems",
+      title: "Ticker Strip Items",
+      type: "array",
+      group: "homepage",
+      of: [{ type: "string" }],
+      description: "Items that scroll across the ticker strip between sections. e.g. 'Clutch Replacement', 'Free Quotes'.",
+    }),
+    defineField({
+      name: "homeStatsItems",
+      title: "Stats Section Items",
+      type: "array",
+      group: "homepage",
+      description: "The four large stat columns below the hero. Each has a display value, a label, and a subtitle.",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "displayValue", title: "Display Value (e.g. '30+', 'All', 'Same Day')", type: "string", validation: (Rule) => Rule.required() },
+            { name: "label",        title: "Label (e.g. 'Years in Business')",              type: "string", validation: (Rule) => Rule.required() },
+            { name: "subtitle",     title: "Subtitle (e.g. 'Serving Adelaide since 1994')", type: "string" },
+          ],
+          preview: { select: { title: "displayValue", subtitle: "label" } },
+        },
+      ],
+    }),
+    defineField({
+      name: "homeAboutDescription",
+      title: "About / Our Story Description",
+      type: "text",
+      group: "homepage",
+      rows: 4,
+      description: "Second paragraph in the 'Our Story' section on the home page. The first paragraph is pulled from the Free Inspection Card Body field above.",
+    }),
+    defineField({
       name: "homeFaqs",
       title: "Home Page FAQ Items",
       type: "array",
@@ -672,7 +737,7 @@ export const siteSettingsSchema = defineType({
       description: "Body text inside the 'Book a Free Inspection' card.",
     }),
 
-    // ─── LOCATIONS ─────────────────────────────────────────────────────────────
+    // ─── LOCATIONS ─────────────────────────────────────────���───────────────────
     defineField({
       name: "locationsPageHeading",
       title: "Locations Page H1",
@@ -705,11 +770,18 @@ export const siteSettingsSchema = defineType({
 
     // ─── FOOTER ────────────────────────────────────────────────────────────────
     defineField({
+      name: "footerBrandLabel",
+      title: "Footer Brand Label",
+      type: "string",
+      group: "footer",
+      description: "Small uppercase eyebrow text above the business name in the footer. e.g. 'Adelaide Specialists'.",
+    }),
+    defineField({
       name: "footerTagline",
       title: "Footer Tagline",
       type: "string",
       group: "footer",
-      description: "Short description shown in the footer below the logo.",
+      description: "Short description shown in the footer below the business name. e.g. 'Expert clutch, brake and transmission repairs...'",
     }),
     defineField({
       name: "footerCopyrightText",
