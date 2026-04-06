@@ -3,6 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { ChevronRight, Users } from "lucide-react"
 import { getSiteSettings, getAllStaff } from "@/sanity/queries"
+import { urlFor } from "@/sanity/image"
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
@@ -87,7 +88,7 @@ export default async function MeetOurStaffPage() {
                     <div className="relative h-72 w-full bg-muted">
                       {member.photo ? (
                         <Image
-                          src={member.photo}
+                          src={urlFor(member.photo).width(600).height(576).fit("crop").url()}
                           alt={member.name}
                           fill
                           className="object-cover object-top"
