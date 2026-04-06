@@ -3,12 +3,19 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { Phone } from "lucide-react"
+import { Phone, ChevronDown } from "lucide-react"
+
+interface NavItem {
+  label: string
+  href: string
+  openInNewTab?: boolean
+  children?: { label: string; href: string; openInNewTab?: boolean }[]
+}
 
 interface NavbarClientProps {
   businessName: string
   phone: string
-  navItems?: { label: string; href: string; openInNewTab?: boolean }[]
+  navItems?: NavItem[]
   ctaLabel?: string
   ctaLink?: string
 }
@@ -24,8 +31,9 @@ const FALLBACK_NAV_LINKS = [
 const ease = [0.22, 1, 0.36, 1] as const
 
 export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "Get a Quote", ctaLink = "/contact" }: NavbarClientProps) {
-  const [open,     setOpen]     = useState(false)
-  const [scrolled, setScrolled] = useState(false)
+  const [open,        setOpen]        = useState(false)
+  const [scrolled,    setScrolled]    = useState(false)
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
 
   const links = navItems.length > 0 ? navItems : FALLBACK_NAV_LINKS
 
@@ -38,6 +46,7 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
   // Lock body scroll when menu open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : ""
+    if (!open) setExpandedIdx(null)
     return () => { document.body.style.overflow = "" }
   }, [open])
 
@@ -103,32 +112,102 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
 
               {/* Nav links — Autovera style large list */}
               <nav className="border-t border-border">
-                {links.map((link, i) => (
-                  <motion.div
-                    key={link.href}
-                    initial={{ opacity: 0, x: -40 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ delay: 0.08 + i * 0.07, duration: 0.5, ease }}
-                  >
-                    <Link
-                      href={link.href}
-                      onClick={() => setOpen(false)}
-                      className="group flex items-center justify-between border-b border-border py-7 md:py-8 hover:border-accent transition-all duration-300"
+                {links.map((link, i) => {
+                  const hasChildren = link.children && link.children.length > 0
+                  const isExpanded  = expandedIdx === i
+
+                  return (
+                    <motion.div
+                      key={`${link.href}-${i}`}
+                      initial={{ opacity: 0, x: -40 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ delay: 0.08 + i * 0.07, duration: 0.5, ease }}
                     >
-                      <span className="text-4xl md:text-6xl lg:text-7xl font-black text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight leading-none">
-                        {link.label}
-                      </span>
-                      <motion.span
-                        initial={{ opacity: 0, x: -8 }}
-                        whileHover={{ opacity: 1, x: 0 }}
-                        className="text-accent text-xl font-bold opacity-0 group-hover:opacity-100 transition-all duration-300"
-                      >
-                        →
-                      </motion.span>
-                    </Link>
-                  </motion.div>
-                ))}
+                      {/* Parent row */}
+                      <div className="border-b border-border">
+                        <div className="group flex items-center justify-between py-7 md:py-8 hover:border-accent transition-all duration-300 cursor-pointer"
+                          onClick={() => {
+                            if (hasChildren) {
+                              setExpandedIdx(isExpanded ? null : i)
+                            } else {
+                              setOpen(false)
+                            }
+                          }}
+                        >
+                          {hasChildren ? (
+                            <span className="text-4xl md:text-6xl lg:text-7xl font-black text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight leading-none select-none">
+                              {link.label}
+                            </span>
+                          ) : (
+                            <Link
+                              href={link.href || "#"}
+                              target={link.openInNewTab ? "_blank" : undefined}
+                              rel={link.openInNewTab ? "noopener noreferrer" : undefined}
+                              onClick={() => setOpen(false)}
+                              className="text-4xl md:text-6xl lg:text-7xl font-black text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight leading-none"
+                            >
+                              {link.label}
+                            </Link>
+                          )}
+                          {hasChildren ? (
+                            <motion.span
+                              animate={{ rotate: isExpanded ? 180 : 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="text-accent"
+                            >
+                              <ChevronDown className="h-8 w-8 md:h-10 md:w-10" />
+                            </motion.span>
+                          ) : (
+                            <motion.span
+                              initial={{ opacity: 0, x: -8 }}
+                              whileHover={{ opacity: 1, x: 0 }}
+                              className="text-accent text-xl font-bold opacity-0 group-hover:opacity-100 transition-all duration-300"
+                            >
+                              →
+                            </motion.span>
+                          )}
+                        </div>
+
+                        {/* Children sub-list */}
+                        <AnimatePresence>
+                          {hasChildren && isExpanded && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.35, ease }}
+                              className="overflow-hidden pl-4 md:pl-8"
+                            >
+                              {link.children!.map((child, j) => (
+                                <motion.div
+                                  key={`${child.href}-${j}`}
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: j * 0.05, duration: 0.3, ease }}
+                                >
+                                  <Link
+                                    href={child.href || "#"}
+                                    target={child.openInNewTab ? "_blank" : undefined}
+                                    rel={child.openInNewTab ? "noopener noreferrer" : undefined}
+                                    onClick={() => { setOpen(false); setExpandedIdx(null) }}
+                                    className="group flex items-center justify-between border-t border-border/50 py-4 md:py-5 hover:text-accent transition-colors duration-300"
+                                  >
+                                    <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight">
+                                      {child.label}
+                                    </span>
+                                    <span className="text-accent text-base font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300">→</span>
+                                  </Link>
+                                </motion.div>
+                              ))}
+                              <div className="pb-4" />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </motion.div>
+                  )
+                })}
               </nav>
 
               {/* Bottom CTA row */}
