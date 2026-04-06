@@ -37,6 +37,33 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
 
   const links = navItems.length > 0 ? navItems : FALLBACK_NAV_LINKS
 
+  // Count total visible rows (parents + expanded children) to scale text/padding
+  const totalItems = links.reduce((acc, l) => acc + 1 + (l.children?.length ?? 0), 0)
+
+  const parentSize =
+    totalItems <= 3  ? "text-5xl md:text-6xl lg:text-7xl" :
+    totalItems <= 6  ? "text-4xl md:text-5xl lg:text-6xl" :
+    totalItems <= 9  ? "text-3xl md:text-4xl lg:text-5xl" :
+                       "text-2xl md:text-3xl lg:text-4xl"
+
+  const parentPad =
+    totalItems <= 3  ? "py-7 md:py-8" :
+    totalItems <= 6  ? "py-5 md:py-6" :
+    totalItems <= 9  ? "py-3 md:py-4" :
+                       "py-2 md:py-3"
+
+  const childSize =
+    totalItems <= 3  ? "text-3xl md:text-4xl lg:text-4xl" :
+    totalItems <= 6  ? "text-2xl md:text-3xl lg:text-3xl" :
+    totalItems <= 9  ? "text-xl  md:text-2xl lg:text-2xl" :
+                       "text-lg  md:text-xl  lg:text-xl"
+
+  const childPad =
+    totalItems <= 3  ? "py-4 md:py-5" :
+    totalItems <= 6  ? "py-3 md:py-4" :
+    totalItems <= 9  ? "py-2 md:py-3" :
+                       "py-1.5 md:py-2"
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
     window.addEventListener("scroll", onScroll, { passive: true })
@@ -126,7 +153,7 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
                     >
                       {/* Parent row */}
                       <div className="border-b border-border">
-                        <div className="group flex items-center justify-between py-7 md:py-8 hover:border-accent transition-all duration-300 cursor-pointer"
+                        <div className={`group flex items-center justify-between ${parentPad} hover:border-accent transition-all duration-300 cursor-pointer`}
                           onClick={() => {
                             if (hasChildren) {
                               setExpandedIdx(isExpanded ? null : i)
@@ -136,7 +163,7 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
                           }}
                         >
                           {hasChildren ? (
-                            <span className="text-4xl md:text-6xl lg:text-7xl font-black text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight leading-none select-none">
+                            <span className={`${parentSize} font-black text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight leading-none select-none`}>
                               {link.label}
                             </span>
                           ) : (
@@ -145,7 +172,7 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
                               target={link.openInNewTab ? "_blank" : undefined}
                               rel={link.openInNewTab ? "noopener noreferrer" : undefined}
                               onClick={() => setOpen(false)}
-                              className="text-4xl md:text-6xl lg:text-7xl font-black text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight leading-none"
+                              className={`${parentSize} font-black text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight leading-none`}
                             >
                               {link.label}
                             </Link>
@@ -191,9 +218,9 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
                                     target={child.openInNewTab ? "_blank" : undefined}
                                     rel={child.openInNewTab ? "noopener noreferrer" : undefined}
                                     onClick={() => { setOpen(false); setExpandedIdx(null) }}
-                                    className="group flex items-center justify-between border-t border-border/50 py-4 md:py-5 hover:text-accent transition-colors duration-300"
+                                    className={`group flex items-center justify-between border-t border-border/50 ${childPad} hover:text-accent transition-colors duration-300`}
                                   >
-                                    <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight">
+                                    <span className={`${childSize} font-bold text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight`}>
                                       {child.label}
                                     </span>
                                     <span className="text-accent text-base font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300">→</span>
