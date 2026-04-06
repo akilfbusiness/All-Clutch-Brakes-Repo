@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { ChevronRight } from "lucide-react"
 import { getSiteSettings, getAllProjects } from "@/sanity/queries"
 import { ProjectsGrid } from "@/components/projects-grid"
 
