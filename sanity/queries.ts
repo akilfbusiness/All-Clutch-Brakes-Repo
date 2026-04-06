@@ -472,7 +472,7 @@ export async function getWhatWeDo(): Promise<WhatWeDoPage> {
   return result ?? {}
 }
 
-// ─── PROJECTS ─────────────────────────────────────────────────────────────────
+// ─── PROJECTS ─────────────────────────────────────────────────────��───────────
 
 export interface ProjectGalleryImage {
   asset?: string
@@ -483,7 +483,7 @@ export interface Project {
   _id: string
   title: string
   slug?: string
-  featuredImage?: string
+  featuredImage?: any
   gallery?: ProjectGalleryImage[]
   description?: string
   tags?: string[]
@@ -491,9 +491,9 @@ export interface Project {
 }
 
 export const ALL_PROJECTS_QUERY = `
-  *[_type == "project"] | order(order asc) {
+  *[_type == "project"] | order(coalesce(order, 9999) asc, _createdAt desc) {
     _id, title, "slug": slug.current, description, tags, order,
-    "featuredImage": featuredImage.asset->url,
+    "featuredImage": featuredImage,
     "gallery": gallery[] { "asset": asset->url, caption }
   }
 `
@@ -501,10 +501,12 @@ export const ALL_PROJECTS_QUERY = `
 export const PROJECT_BY_SLUG_QUERY = `
   *[_type == "project" && slug.current == $slug][0] {
     _id, title, "slug": slug.current, description, tags, order,
-    "featuredImage": featuredImage.asset->url,
+    "featuredImage": featuredImage,
     "gallery": gallery[] { "asset": asset->url, caption }
   }
 `
+
+export const ALL_PROJECT_SLUGS_QUERY = `*[_type == "project"] { "slug": slug.current }`
 
 export async function getAllProjects(): Promise<Project[]> {
   const result = await sanityFetch<Project[]>({
@@ -522,13 +524,18 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
   })
 }
 
+export async function getAllProjectSlugs(): Promise<{ slug: string }[]> {
+  const result = await sanityFetch<{ slug: string }[] | null>({ query: ALL_PROJECT_SLUGS_QUERY, tags: ["projects"] })
+  return result ?? []
+}
+
 // ─── FEATURED ITEMS ───────────────────────────────────────────────────────────
 
 export interface FeaturedItem {
   _id: string
   title: string
   slug?: string
-  image?: string
+  image?: any
   category?: "product" | "news" | "promotion"
   description?: string
   specs?: string[]
@@ -540,16 +547,16 @@ export interface FeaturedItem {
 }
 
 export const ALL_FEATURED_ITEMS_QUERY = `
-  *[_type == "featuredItem" && featured == true] | order(order asc) {
+  *[_type == "featuredItem"] | order(coalesce(order, 9999) asc, _createdAt desc) {
     _id, title, "slug": slug.current, category, description, specs, ctaLabel, ctaLink, publishedDate, featured, order,
-    "image": image.asset->url
+    "image": image
   }
 `
 
 export const FEATURED_ITEM_BY_SLUG_QUERY = `
   *[_type == "featuredItem" && slug.current == $slug][0] {
     _id, title, "slug": slug.current, category, description, specs, ctaLabel, ctaLink, publishedDate, featured, order,
-    "image": image.asset->url
+    "image": image
   }
 `
 
@@ -574,16 +581,16 @@ export async function getFeaturedItemBySlug(slug: string): Promise<FeaturedItem 
 export interface Brand {
   _id: string
   name: string
-  logo?: string
+  logo?: any
   description?: string
   website?: string
   order?: number
 }
 
 export const ALL_BRANDS_QUERY = `
-  *[_type == "brand"] | order(order asc) {
+  *[_type == "brand"] | order(coalesce(order, 9999) asc) {
     _id, name, description, website, order,
-    "logo": logo.asset->url
+    "logo": logo
   }
 `
 
