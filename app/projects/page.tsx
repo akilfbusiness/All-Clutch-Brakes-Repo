@@ -3,6 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { ChevronRight, Tag } from "lucide-react"
 import { getSiteSettings, getAllProjects } from "@/sanity/queries"
+import { urlFor } from "@/sanity/image"
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
@@ -83,11 +84,12 @@ export default async function ProjectsPage() {
                     key={project._id}
                     className="bg-card border border-border rounded-xl overflow-hidden group hover:border-accent/50 transition-colors"
                   >
-                    {/* Image */}
-                    <div className="relative h-56 w-full bg-muted overflow-hidden">
+                    <Link href={project.slug ? `/projects/${project.slug}` : "#"} className="block">
+                      {/* Image */}
+                      <div className="relative h-56 w-full bg-muted overflow-hidden">
                       {project.featuredImage ? (
                         <Image
-                          src={project.featuredImage}
+                          src={urlFor(project.featuredImage).width(800).height(448).fit("crop").url()}
                           alt={project.title}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -124,7 +126,8 @@ export default async function ProjectsPage() {
                         </div>
                       )}
                     </div>
-                  </article>
+                      </div>
+                    </article>
                 ))}
               </div>
             ) : (

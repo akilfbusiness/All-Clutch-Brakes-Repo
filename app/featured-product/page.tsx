@@ -3,6 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { ChevronRight, Star, Tag } from "lucide-react"
 import { getSiteSettings, getAllFeaturedItems } from "@/sanity/queries"
+import { urlFor } from "@/sanity/image"
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
@@ -99,7 +100,7 @@ export default async function FeaturedProductPage() {
                     {item.image && (
                       <div className="relative h-56 w-full bg-muted overflow-hidden">
                         <Image
-                          src={item.image}
+                          src={urlFor(item.image).width(800).height(448).fit("crop").url()}
                           alt={item.title}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-500"

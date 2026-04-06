@@ -3,6 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { ChevronRight, ExternalLink } from "lucide-react"
 import { getSiteSettings, getAllBrands } from "@/sanity/queries"
+import { urlFor } from "@/sanity/image"
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
@@ -87,7 +88,7 @@ export default async function BrandsPage() {
                     {brand.logo ? (
                       <div className="relative h-20 w-full mb-4">
                         <Image
-                          src={brand.logo}
+                          src={urlFor(brand.logo).width(300).height(160).fit("max").url()}
                           alt={`${brand.name} logo`}
                           fill
                           className="object-contain"
