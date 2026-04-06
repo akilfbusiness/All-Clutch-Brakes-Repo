@@ -422,7 +422,7 @@ export interface StaffMember {
   _id: string
   name: string
   role: string
-  photo?: string
+  photo?: any
   bio?: string
   order?: number
 }
@@ -430,7 +430,7 @@ export interface StaffMember {
 export const ALL_STAFF_QUERY = `
   *[_type == "staff"] | order(order asc) {
     _id, name, role, bio, order,
-    "photo": photo.asset->url
+    "photo": photo
   }
 `
 
