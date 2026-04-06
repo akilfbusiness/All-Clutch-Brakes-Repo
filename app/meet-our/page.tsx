@@ -1,9 +1,8 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import Image from "next/image"
-import { ChevronRight, Users } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 import { getSiteSettings, getAllStaff } from "@/sanity/queries"
-import { urlFor } from "@/sanity/image"
+import { StaffGrid } from "@/components/staff-grid"
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
@@ -77,64 +76,7 @@ export default async function MeetOurStaffPage() {
         {/* STAFF GRID */}
         <section className="py-16 md:py-24">
           <div className="container mx-auto">
-            {staff.length > 0 ? (
-              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {staff.map((member) => (
-                  <article
-                    key={member._id}
-                    className="bg-card border border-border rounded-xl overflow-hidden"
-                  >
-                    {/* Photo */}
-                    <div className="relative h-72 w-full bg-muted">
-                      {member.photo ? (
-                        <Image
-                          src={urlFor(member.photo).width(600).height(576).fit("crop").url()}
-                          alt={member.name}
-                          fill
-                          className="object-cover object-top"
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <Users className="h-20 w-20 text-muted-foreground/30" />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Info */}
-                    <div className="p-6">
-                      <h2 className="text-xl font-bold text-foreground mb-1">
-                        {member.name}
-                      </h2>
-                      {member.role && (
-                        <p className="text-accent font-semibold text-sm mb-3">
-                          {member.role}
-                        </p>
-                      )}
-                      {member.bio && (
-                        <p className="text-muted-foreground text-sm leading-relaxed">
-                          {member.bio}
-                        </p>
-                      )}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            ) : (
-              /* Empty state */
-              <div className="text-center py-24">
-                <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Users className="h-10 w-10 text-muted-foreground" />
-                </div>
-                <h2 className="text-2xl font-bold text-foreground mb-3">No staff added yet</h2>
-                <p className="text-muted-foreground mb-2 max-w-md mx-auto">
-                  Staff members will appear here once they are added in the CMS.
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Go to Sanity Studio → About → Meet Our Staff → Add item
-                </p>
-              </div>
-            )}
+            <StaffGrid staff={staff} />
           </div>
         </section>
 

@@ -1,9 +1,8 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import Image from "next/image"
-import { ChevronRight, Tag } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 import { getSiteSettings, getAllProjects } from "@/sanity/queries"
-import { urlFor } from "@/sanity/image"
+import { ProjectsGrid } from "@/components/projects-grid"
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
@@ -77,74 +76,7 @@ export default async function ProjectsPage() {
         {/* PROJECTS GRID */}
         <section className="py-16 md:py-24">
           <div className="container mx-auto">
-            {projects.length > 0 ? (
-              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {projects.map((project) => (
-                  <article
-                    key={project._id}
-                    className="bg-card border border-border rounded-xl overflow-hidden group hover:border-accent/50 transition-colors"
-                  >
-                    <Link href={project.slug ? `/projects/${project.slug}` : "#"} className="block">
-                      {/* Image */}
-                      <div className="relative h-56 w-full bg-muted overflow-hidden">
-                      {project.featuredImage ? (
-                        <Image
-                          src={urlFor(project.featuredImage).width(800).height(448).fit("crop").url()}
-                          alt={project.title}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-muted-foreground text-sm">No image</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-6">
-                      <h2 className="text-lg font-bold text-foreground mb-2 text-balance">
-                        {project.title}
-                      </h2>
-                      {project.description && (
-                        <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-3">
-                          {project.description}
-                        </p>
-                      )}
-                      {project.tags && project.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                          {project.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="inline-flex items-center gap-1 text-xs bg-secondary text-muted-foreground px-2 py-1 rounded-md"
-                            >
-                              <Tag className="h-3 w-3" />
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                      </div>
-                    </article>
-                ))}
-              </div>
-            ) : (
-              /* Empty state */
-              <div className="text-center py-24">
-                <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Tag className="h-10 w-10 text-muted-foreground" />
-                </div>
-                <h2 className="text-2xl font-bold text-foreground mb-3">No projects yet</h2>
-                <p className="text-muted-foreground mb-2 max-w-md mx-auto">
-                  Projects will appear here once they are added in the CMS.
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Go to Sanity Studio → About → Projects → Add item
-                </p>
-              </div>
-            )}
+            <ProjectsGrid projects={projects} />
           </div>
         </section>
 

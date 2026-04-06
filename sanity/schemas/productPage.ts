@@ -16,7 +16,7 @@ export const productPageSchema = defineType({
       name: "slug",
       title: "URL Slug",
       type: "slug",
-      description: "This becomes the URL: /[slug]",
+      description: "This becomes the URL: /products/[slug] — e.g. slug 'braided-hoses' → /products/braided-hoses",
       options: { source: "title", maxLength: 96 },
       validation: (Rule) => Rule.required(),
     }),
