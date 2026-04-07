@@ -89,18 +89,26 @@ const DEFAULT_TICKER_ITEMS = [
   "Qualified Tradespeople", "Transmission Service", "Brake Machining",
 ]
 
-function Ticker({ items }: { items?: string[] }) {
+function Ticker({ items, reverse = false }: { items?: string[]; reverse?: boolean }) {
   const resolved = items?.length ? items : DEFAULT_TICKER_ITEMS
   const doubled = [...resolved, ...resolved]
   return (
-    <div className="overflow-hidden border-y border-border bg-background py-5 select-none">
-      <div className="ticker-track flex items-center gap-0">
+    <div
+      className="overflow-hidden border-b border-border bg-background py-4 select-none"
+      style={{ maskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent)" }}
+    >
+      <div
+        className="ticker-track flex items-center gap-0"
+        style={reverse ? { animationDirection: "reverse" } : undefined}
+      >
         {doubled.map((item, i) => (
           <span key={i} className="flex items-center flex-shrink-0">
-            <span className="text-[10px] font-bold tracking-[0.35em] uppercase text-muted-foreground/60 px-8 whitespace-nowrap">
+            <span className="text-[11px] font-bold tracking-[0.28em] uppercase text-muted-foreground/65 px-6 whitespace-nowrap">
               {item}
             </span>
-            <span className="text-accent text-xs">·</span>
+            <svg aria-hidden className="flex-shrink-0 w-[5px] h-[5px] fill-accent opacity-60" viewBox="0 0 6 6">
+              <polygon points="3,0 6,3 3,6 0,3" />
+            </svg>
           </span>
         ))}
       </div>
@@ -230,20 +238,52 @@ export function HomePageClient({
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:gap-4"
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:gap-4 hover:-translate-y-0.5 active:translate-y-0"
               >
                 <Phone className="h-4 w-4 flex-shrink-0" />
                 {primaryCta}: {phone}
               </a>
               <Link
                 href="/services"
-                className="inline-flex items-center gap-2.5 border border-white/25 hover:border-white/60 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:gap-4"
+                className="inline-flex items-center gap-2.5 border border-white/25 hover:border-white/60 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:gap-4 hover:-translate-y-0.5 active:translate-y-0"
               >
                 {secondaryCta} <ArrowRight className="h-4 w-4 flex-shrink-0" />
               </Link>
             </motion.div>
+
+            {/* Trust signal pills */}
+            {trustSignals.length > 0 && (
+              <motion.div variants={fadeUp} className="flex flex-wrap gap-2 pt-2">
+                {trustSignals.map((signal, i) => (
+                  <span
+                    key={i}
+                    className="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.2em] uppercase text-white/50 border border-white/10 bg-white/[0.04] backdrop-blur-sm px-3 py-1.5"
+                  >
+                    <span className="w-1 h-1 rounded-full bg-accent flex-shrink-0" />
+                    {signal}
+                  </span>
+                ))}
+              </motion.div>
+            )}
           </motion.div>
         </div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.8, duration: 1 }}
+          className="absolute bottom-28 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2.5"
+        >
+          <div className="relative w-px h-12 bg-white/15 overflow-hidden">
+            <motion.div
+              animate={{ y: ["-100%", "200%"] }}
+              transition={{ duration: 1.6, ease: "easeInOut", repeat: Infinity, repeatDelay: 0.3 }}
+              className="absolute top-0 w-full h-1/2 bg-gradient-to-b from-transparent via-accent to-transparent"
+            />
+          </div>
+          <span className="text-[9px] font-bold tracking-[0.4em] uppercase text-white/25">Scroll</span>
+        </motion.div>
 
         {/* Info strip at bottom of hero */}
         <motion.div
@@ -277,7 +317,9 @@ export function HomePageClient({
       {/* ══════════════════════════════════════════════════════════════════════
           TICKER STRIP
       ══════════════════════════════════════════════════════════════════════ */}
-      <Ticker items={tickerItems} />
+      <div className="border-t border-border">
+        <Ticker items={tickerItems} />
+      </div>
 
 
       {/* ══════════════════════════════════════════════════════════════════════
@@ -294,13 +336,13 @@ export function HomePageClient({
           {statsItems.map((stat, i) => (
             <motion.div
               key={i} variants={fadeUp}
-              className="flex flex-col justify-between p-8 md:p-12 lg:p-16 min-h-[280px] md:min-h-[340px] border-b lg:border-b-0 border-border"
+              className="group flex flex-col justify-between p-8 md:p-12 lg:p-16 min-h-[280px] md:min-h-[340px] border-b lg:border-b-0 border-border hover:bg-foreground/[0.025] transition-colors duration-500 cursor-default"
             >
               <div>
-                <p className="text-6xl md:text-7xl lg:text-8xl xl:text-[100px] font-black text-foreground leading-none tracking-tight whitespace-pre-line">
+                <p className="text-6xl md:text-7xl lg:text-8xl xl:text-[100px] font-black text-foreground group-hover:text-accent leading-none tracking-tight whitespace-pre-line transition-colors duration-500">
                   {stat.displayValue}
                 </p>
-                <div className="mt-6 mb-5 w-full h-px bg-border" />
+                <div className="mt-6 mb-5 w-full h-px bg-border group-hover:bg-accent/30 transition-colors duration-500" />
                 <p className="text-[11px] font-bold text-foreground/80 uppercase tracking-[0.2em]">
                   {stat.label}
                 </p>
@@ -419,9 +461,9 @@ export function HomePageClient({
           >
             <Link
               href="/services"
-              className="inline-flex items-center gap-3 text-sm font-bold text-foreground border border-border hover:border-accent hover:text-accent px-8 py-4 transition-all duration-300"
+              className="inline-flex items-center gap-3 text-sm font-bold text-foreground border border-border hover:border-accent hover:text-accent px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
             >
-              View All Services <ArrowRight className="h-4 w-4" />
+              View All {serviceItems.length} Services <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
         </div>
@@ -431,7 +473,7 @@ export function HomePageClient({
       {/* ══════════════════════════════════════════════════════════════════════
           TICKER STRIP 2
       ══════════════════════════════════════════════════════════════════════ */}
-      <Ticker items={tickerItems} />
+      <Ticker items={tickerItems} reverse />
 
 
       {/* ══════════════════════════════════════════════════════════════════════
@@ -494,13 +536,13 @@ export function HomePageClient({
             >
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-colors duration-300"
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
               >
                 <Phone className="h-4 w-4" /> Call {phone}
               </a>
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-colors duration-300"
+                className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
               >
                 Get a Free Quote
               </Link>
