@@ -16,23 +16,6 @@ const nextConfig = {
       },
     ],
   },
-  // Redirect root-level product slugs (e.g. /braided-hoses → /products/braided-hoses)
-  // Handles nav links in Sanity set before the /products/ prefix was established
-  async redirects() {
-    const knownRoutes = [
-      "studio", "api", "_next", "contact", "about", "blog", "projects",
-      "meet-our", "brands", "featured-product", "miscellaneous",
-      "locations", "services", "products",
-    ]
-    const exclusion = knownRoutes.join("|")
-    return [
-      {
-        source: `/:slug((?!${exclusion})[^/]+)`,
-        destination: "/products/:slug",
-        permanent: false,
-      },
-    ]
-  },
   // Sanity Studio requires these headers for the embedded /studio route
   async headers() {
     return [

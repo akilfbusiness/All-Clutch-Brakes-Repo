@@ -89,7 +89,7 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
             <ul className="space-y-2.5">
               {navLinks.map((link, i) => (
                 <li key={i}>
-                  <Link href={link.href}
+                  <Link href={link.href || "#"}
                     className="text-sm text-muted-foreground hover:text-accent transition-all duration-300 hover:pl-1 inline-block">
                     {link.label}
                   </Link>
