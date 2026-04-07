@@ -391,7 +391,11 @@ export const SITE_NAVIGATION_QUERY = `
         linkType == "external"        => externalUrl,
         defined(hardcodedPage)        => hardcodedPage,
         defined(customSlug)           => customSlug,
-        linkType == "page"            => pageReference->slug.current,
+        linkType == "page" && pageReference->_type == "service"     => "/services/" + pageReference->slug.current,
+        linkType == "page" && pageReference->_type == "productPage" => "/products/" + pageReference->slug.current,
+        linkType == "page" && pageReference->_type == "location"    => "/locations/" + pageReference->slug.current,
+        linkType == "page" && pageReference->_type == "article"     => "/blog/" + pageReference->slug.current,
+        linkType == "page" && defined(pageReference->slug.current)  => "/" + pageReference->slug.current,
         "#"
       ),
       "children": children[] {
@@ -400,7 +404,11 @@ export const SITE_NAVIGATION_QUERY = `
           linkType == "external"      => externalUrl,
           defined(hardcodedPage)      => hardcodedPage,
           defined(customSlug)         => customSlug,
-          linkType == "page"          => pageReference->slug.current,
+          linkType == "page" && pageReference->_type == "service"     => "/services/" + pageReference->slug.current,
+          linkType == "page" && pageReference->_type == "productPage" => "/products/" + pageReference->slug.current,
+          linkType == "page" && pageReference->_type == "location"    => "/locations/" + pageReference->slug.current,
+          linkType == "page" && pageReference->_type == "article"     => "/blog/" + pageReference->slug.current,
+          linkType == "page" && defined(pageReference->slug.current)  => "/" + pageReference->slug.current,
           "#"
         )
       }
@@ -472,7 +480,7 @@ export async function getWhatWeDo(): Promise<WhatWeDoPage> {
   return result ?? {}
 }
 
-// ─── PROJECTS ─────────────────────────────────────────────────────��───────────
+// ─── PROJECTS ─────────────────────────────────────────────────────���───────────
 
 export interface ProjectGalleryImage {
   asset?: string
