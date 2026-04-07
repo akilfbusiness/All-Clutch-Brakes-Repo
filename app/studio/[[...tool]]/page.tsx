@@ -2,6 +2,8 @@
 // Accessible only to the business owner/content editors
 // The entire Sanity Studio runs inside the Next.js app — no separate deployment needed
 
+export const dynamic = "force-dynamic"
+
 "use client"
 
 import { NextStudio } from "next-sanity/studio"
