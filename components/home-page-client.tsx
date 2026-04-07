@@ -358,7 +358,7 @@ export function HomePageClient({
 
       {/* ══════════════════════════════════════════════════════════════════════
           03 · SERVICES
-          Full-width accordion list · 001/002 numbering · Autovera architecture
+          Premium card grid · expand on click · Framer stagger entrance
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative py-24 md:py-32 bg-background overflow-hidden">
         <SectionNum n="03" />
@@ -378,81 +378,115 @@ export function HomePageClient({
                 {servicesHeading}
               </h2>
             </div>
-            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs md:text-right">
-              {servicesSubheading}
-            </p>
+            <div className="flex flex-col items-start md:items-end gap-3">
+              <p className="text-muted-foreground text-sm leading-relaxed max-w-xs md:text-right">
+                {servicesSubheading}
+              </p>
+              <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent/70 border border-accent/20 px-3 py-1">
+                {serviceItems.length} Services
+              </span>
+            </div>
           </motion.div>
 
-          {/* Accordion list */}
-          <div className="border-t border-border">
+          {/* Card grid */}
+          <motion.div
+            variants={stagger} initial="hidden"
+            whileInView="show" viewport={{ once: true, margin: "-40px" }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 border-t border-l border-border"
+          >
             {serviceItems.map((service, i) => {
               const isOpen = openService === i
               return (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: Math.min(i * 0.025, 0.3) }}
-                  className="border-b border-border"
+                  variants={fadeUp}
+                  className="relative border-r border-b border-border"
                 >
                   <button
                     onClick={() => setOpenService(isOpen ? null : i)}
-                    className="group w-full flex items-center gap-6 md:gap-10 py-6 md:py-8 text-left cursor-pointer"
+                    className="group w-full text-left cursor-pointer relative overflow-hidden"
                   >
-                    {/* Number */}
-                    <span className="flex-shrink-0 text-[10px] font-bold text-muted-foreground/40 tracking-widest w-10 md:w-14">
-                      {String(i + 1).padStart(3, "0")}
-                    </span>
+                    {/* Hover background wash */}
+                    <div className={`absolute inset-0 bg-accent/[0.03] transition-opacity duration-500 ${isOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`} />
 
-                    {/* Service name */}
-                    <span className="flex-1 text-xl md:text-2xl lg:text-3xl xl:text-4xl font-black text-foreground group-hover:text-accent transition-colors duration-300 leading-tight pr-4">
-                      {service.title}
-                    </span>
+                    {/* Accent bottom line slide-in */}
+                    <div className={`absolute bottom-0 left-0 h-[2px] bg-accent transition-all duration-500 ${isOpen ? "w-full" : "w-0 group-hover:w-full"}`} />
 
-                    {/* Toggle */}
-                    <motion.span
-                      animate={{ rotate: isOpen ? 45 : 0, borderColor: isOpen ? "oklch(0.70 0.19 55)" : undefined }}
-                      transition={{ duration: 0.3, ease }}
-                      className="flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-full border border-border group-hover:border-accent flex items-center justify-center transition-colors duration-300"
-                    >
-                      <Plus className="h-4 w-4 text-accent" />
-                    </motion.span>
-                  </button>
-
-                  {/* Expanded description */}
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.35, ease: "easeInOut" }}
-                        className="overflow-hidden"
+                    <div className="relative z-10 p-7 md:p-9">
+                      {/* Watermark number */}
+                      <span
+                        aria-hidden
+                        className="absolute top-4 right-5 text-[72px] font-black leading-none text-foreground/[0.035] select-none pointer-events-none"
                       >
-                        <div className="pb-10 pl-16 md:pl-24 border-l-2 border-accent ml-4 md:ml-6">
-                          <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-2xl">
-                            {service.description
-                              ? service.description
-                              : `Professional ${service.title.toLowerCase()} for all makes and models. Our qualified tradespeople provide upfront fixed quotes with no hidden costs.`
-                            }
-                          </p>
-                          {service.slug && (
-                            <Link
-                              href={`/services/${service.slug}`}
-                              className="inline-flex items-center gap-2 mt-5 text-accent text-sm font-bold hover:gap-3 transition-all duration-300"
-                            >
-                              Full Service Details <ArrowRight className="h-4 w-4" />
-                            </Link>
-                          )}
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+
+                      {/* Top row: icon + toggle */}
+                      <div className="flex items-start justify-between mb-8">
+                        <div className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300 flex-shrink-0 ${isOpen ? "bg-accent border-accent" : "border-accent/30 bg-accent/8 group-hover:bg-accent group-hover:border-accent"}`}>
+                          <svg
+                            className={`w-4 h-4 transition-colors duration-300 ${isOpen ? "text-black" : "text-accent group-hover:text-black"}`}
+                            fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth={2}
+                          >
+                            <path d="M8 2v12M3 7l5-5 5 5" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
                         </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                        <motion.div
+                          animate={{ rotate: isOpen ? 45 : 0 }}
+                          transition={{ duration: 0.3, ease }}
+                          className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors duration-300 flex-shrink-0 ${isOpen ? "border-accent" : "border-border group-hover:border-accent"}`}
+                        >
+                          <Plus className="h-3.5 w-3.5 text-accent" />
+                        </motion.div>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className={`text-lg md:text-xl font-black leading-snug tracking-tight transition-colors duration-300 pr-6 mb-1 ${isOpen ? "text-accent" : "text-foreground group-hover:text-accent"}`}>
+                        {service.title}
+                      </h3>
+
+                      {/* Collapsed hint */}
+                      {!isOpen && (
+                        <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-muted-foreground/40 mt-2">
+                          Tap to expand
+                        </p>
+                      )}
+
+                      {/* Expanded content */}
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.38, ease: "easeInOut" }}
+                            className="overflow-hidden"
+                          >
+                            <div className="pt-5 mt-4 border-t border-border/50">
+                              <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+                                {service.description
+                                  ? service.description
+                                  : `Professional ${service.title.toLowerCase()} for all makes and models. Upfront fixed pricing — no hidden costs, no surprises.`}
+                              </p>
+                              {service.slug && (
+                                <Link
+                                  href={`/services/${service.slug}`}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="inline-flex items-center gap-1.5 text-accent text-xs font-bold tracking-wide hover:gap-3 transition-all duration-300"
+                                >
+                                  Full Service Details <ArrowRight className="h-3.5 w-3.5" />
+                                </Link>
+                              )}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </button>
                 </motion.div>
               )
             })}
-          </div>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
