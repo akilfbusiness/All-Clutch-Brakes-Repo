@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { Phone, ArrowRight, Plus, ChevronRight } from "lucide-react"
+import { Phone, ArrowRight, Plus, ChevronRight, Wrench } from "lucide-react"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -166,10 +166,7 @@ export function ServicesPageClient({
                       {/* Top row */}
                       <div className="flex items-start justify-between mb-8">
                         <div className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300 ${isOpen ? "bg-accent border-accent" : "border-accent/30 bg-accent/8 group-hover:bg-accent group-hover:border-accent"}`}>
-                          <svg className={`w-4 h-4 transition-colors duration-300 ${isOpen ? "text-black" : "text-accent group-hover:text-black"}`} fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth={2}>
-                            <path d="M2 10l4-6 4 6" strokeLinecap="round" strokeLinejoin="round" />
-                            <path d="M10 14V8h4v6" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
+                          <Wrench className={`w-4 h-4 transition-colors duration-300 ${isOpen ? "text-black" : "text-accent group-hover:text-black"}`} />
                         </div>
                         <motion.div
                           animate={{ rotate: isOpen ? 45 : 0 }}

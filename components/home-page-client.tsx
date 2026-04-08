@@ -7,7 +7,7 @@ import {
   useScroll, useTransform,
   useInView, useMotionValue, useTransform as useMotionTransform, animate,
 } from "framer-motion"
-import { Phone, Plus, ArrowRight, MapPin, Clock } from "lucide-react"
+import { Phone, Plus, ArrowRight, MapPin, Clock, Wrench } from "lucide-react"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -141,9 +141,10 @@ export function HomePageClient({
   inspectionCardBody, aboutDescription, faqs, serviceItems,
 }: HomePageClientProps) {
 
-  const [openService, setOpenService] = useState<number | null>(null)
-  const [openFaq,     setOpenFaq]     = useState<number | null>(null)
-  const [mousePos,    setMousePos]    = useState({ x: 40, y: 60 })
+  const [openService,  setOpenService]  = useState<number | null>(null)
+  const [openFaq,      setOpenFaq]      = useState<number | null>(null)
+  const [showAllFaqs,  setShowAllFaqs]  = useState(false)
+  const [mousePos,     setMousePos]     = useState({ x: 40, y: 60 })
 
   // Split headline into two tone lines
   const words = heroHeading.split(" ")
@@ -394,7 +395,7 @@ export function HomePageClient({
             whileInView="show" viewport={{ once: true, margin: "-40px" }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 border-t border-l border-border"
           >
-            {serviceItems.map((service, i) => {
+            {serviceItems.slice(0, 8).map((service, i) => {
               const isOpen = openService === i
               return (
                 <motion.div
@@ -424,12 +425,7 @@ export function HomePageClient({
                       {/* Top row: icon + toggle */}
                       <div className="flex items-start justify-between mb-8">
                         <div className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300 flex-shrink-0 ${isOpen ? "bg-accent border-accent" : "border-accent/30 bg-accent/8 group-hover:bg-accent group-hover:border-accent"}`}>
-                          <svg
-                            className={`w-4 h-4 transition-colors duration-300 ${isOpen ? "text-black" : "text-accent group-hover:text-black"}`}
-                            fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth={2}
-                          >
-                            <path d="M8 2v12M3 7l5-5 5 5" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
+                          <Wrench className={`w-4 h-4 transition-colors duration-300 ${isOpen ? "text-black" : "text-accent group-hover:text-black"}`} />
                         </div>
                         <motion.div
                           animate={{ rotate: isOpen ? 45 : 0 }}
@@ -629,13 +625,13 @@ export function HomePageClient({
             className="flex flex-col justify-center py-24 md:py-32 px-6 md:px-10 lg:px-16 xl:px-20 border-b lg:border-b-0 lg:border-r border-white/10"
           >
             {[
-              { isNum: true,  num: 30,     suffix: "+",  label: "Years in Business"   },
-              { isNum: false, text: "1000s",              label: "Vehicles Serviced"   },
-              { isNum: false, text: "100%",               label: "Honest Fixed Pricing"},
+              { isNum: true,  num: 30,   suffix: "+", label: "Years in Business"   },
+              { isNum: true,  num: 1000, suffix: "s", label: "Vehicles Serviced"   },
+              { isNum: true,  num: 100,  suffix: "%", label: "Honest Fixed Pricing" },
             ].map((stat, i) => (
               <div key={i} className="py-10 border-b border-white/10 last:border-0">
                 <p className="text-6xl md:text-7xl lg:text-8xl font-black text-white leading-none">
-                  {stat.isNum ? <Counter to={stat.num!} suffix={stat.suffix} /> : stat.text}
+                  <Counter to={stat.num!} suffix={stat.suffix} />
                 </p>
                 <div className="mt-5 mb-4 w-14 h-[2px] bg-accent" />
                 <p className="text-white/45 text-[10px] font-bold tracking-[0.3em] uppercase">
@@ -684,7 +680,7 @@ export function HomePageClient({
           06 · FAQ
           Two-column · heading left · animated accordion right
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="relative py-24 md:py-32 bg-background overflow-hidden">
+      <section className="relative py-24 md:py-32 bg-background">
         <SectionNum n="06" />
         <div className="container">
           <div className="grid lg:grid-cols-[2fr_3fr] gap-16 lg:gap-24">
@@ -714,46 +710,66 @@ export function HomePageClient({
             </motion.div>
 
             {/* Right — Accordion */}
-            <motion.div
-              variants={stagger} initial="hidden"
-              whileInView="show" viewport={{ once: true }}
-              className="border-t border-border"
-            >
-              {faqs.map((faq, i) => (
-                <motion.div key={i} variants={fadeUp} className="border-b border-border">
-                  <button
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="group w-full flex items-center justify-between py-7 text-left cursor-pointer"
-                  >
-                    <span className="font-bold text-foreground text-sm md:text-base pr-8 group-hover:text-accent transition-colors duration-300">
-                      {faq.question}
-                    </span>
-                    <motion.span
-                      animate={{ rotate: openFaq === i ? 45 : 0 }}
-                      transition={{ duration: 0.25, ease }}
-                      className="flex-shrink-0 w-8 h-8 rounded-full border border-border group-hover:border-accent flex items-center justify-center transition-colors duration-300"
+            <div>
+              <motion.div
+                variants={stagger} initial="hidden"
+                whileInView="show" viewport={{ once: true }}
+                className="border-t border-border"
+              >
+                {(showAllFaqs ? faqs : faqs.slice(0, 6)).map((faq, i) => (
+                  <motion.div key={i} variants={fadeUp} className="border-b border-border">
+                    <button
+                      onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                      className="group w-full flex items-center justify-between py-7 text-left cursor-pointer"
                     >
-                      <Plus className="h-3.5 w-3.5 text-accent" />
-                    </motion.span>
-                  </button>
-                  <AnimatePresence initial={false}>
-                    {openFaq === i && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.32, ease: "easeInOut" }}
-                        className="overflow-hidden"
+                      <span className="font-bold text-foreground text-sm md:text-base pr-8 group-hover:text-accent transition-colors duration-300">
+                        {faq.question}
+                      </span>
+                      <motion.span
+                        animate={{ rotate: openFaq === i ? 45 : 0 }}
+                        transition={{ duration: 0.25, ease }}
+                        className="flex-shrink-0 w-8 h-8 rounded-full border border-border group-hover:border-accent flex items-center justify-center transition-colors duration-300"
                       >
-                        <p className="text-muted-foreground text-sm leading-relaxed pb-7">
-                          {faq.answer}
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
-            </motion.div>
+                        <Plus className="h-3.5 w-3.5 text-accent" />
+                      </motion.span>
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {openFaq === i && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.32, ease: "easeInOut" }}
+                          className="overflow-hidden"
+                        >
+                          <p className="text-muted-foreground text-sm leading-relaxed pb-7">
+                            {faq.answer}
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {faqs.length > 6 && (
+                <motion.button
+                  initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }} transition={{ duration: 0.5, ease }}
+                  onClick={() => { setShowAllFaqs(!showAllFaqs); if (showAllFaqs) setOpenFaq(null) }}
+                  className="mt-8 inline-flex items-center gap-2 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-7 py-3.5 transition-all duration-300"
+                >
+                  <motion.span
+                    animate={{ rotate: showAllFaqs ? 45 : 0 }}
+                    transition={{ duration: 0.25, ease }}
+                    className="flex-shrink-0"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                  </motion.span>
+                  {showAllFaqs ? "Show Less" : `Show All ${faqs.length} Questions`}
+                </motion.button>
+              )}
+            </div>
           </div>
         </div>
       </section>
