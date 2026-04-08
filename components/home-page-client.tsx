@@ -129,6 +129,51 @@ function SectionNum({ n }: { n: string }) {
   )
 }
 
+// ─── FAQ ROW ─────────────────────────────────────────────────────────────────
+
+function FaqRow({
+  faq, index, openFaq, setOpenFaq, ease,
+}: {
+  faq: FaqItem
+  index: number
+  openFaq: number | null
+  setOpenFaq: (i: number | null) => void
+  ease: readonly number[]
+}) {
+  return (
+    <motion.div variants={fadeUp} className="border-b border-border">
+      <button
+        onClick={() => setOpenFaq(openFaq === index ? null : index)}
+        className="group w-full flex items-center justify-between py-7 text-left cursor-pointer"
+      >
+        <span className="font-bold text-foreground text-sm md:text-base pr-8 group-hover:text-accent transition-colors duration-300">
+          {faq.question}
+        </span>
+        <motion.span
+          animate={{ rotate: openFaq === index ? 45 : 0 }}
+          transition={{ duration: 0.25, ease }}
+          className="flex-shrink-0 w-8 h-8 rounded-full border border-border group-hover:border-accent flex items-center justify-center transition-colors duration-300"
+        >
+          <Plus className="h-3.5 w-3.5 text-accent" />
+        </motion.span>
+      </button>
+      <AnimatePresence initial={false}>
+        {openFaq === index && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.32, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <p className="text-muted-foreground text-sm leading-relaxed pb-7">{faq.answer}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
 export function HomePageClient({
@@ -711,46 +756,32 @@ export function HomePageClient({
 
             {/* Right — Accordion */}
             <div>
+              {/* First 6 — animated via whileInView stagger */}
               <motion.div
                 variants={stagger} initial="hidden"
                 whileInView="show" viewport={{ once: true }}
                 className="border-t border-border"
               >
-                {(showAllFaqs ? faqs : faqs.slice(0, 6)).map((faq, i) => (
-                  <motion.div key={i} variants={fadeUp} className="border-b border-border">
-                    <button
-                      onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                      className="group w-full flex items-center justify-between py-7 text-left cursor-pointer"
-                    >
-                      <span className="font-bold text-foreground text-sm md:text-base pr-8 group-hover:text-accent transition-colors duration-300">
-                        {faq.question}
-                      </span>
-                      <motion.span
-                        animate={{ rotate: openFaq === i ? 45 : 0 }}
-                        transition={{ duration: 0.25, ease }}
-                        className="flex-shrink-0 w-8 h-8 rounded-full border border-border group-hover:border-accent flex items-center justify-center transition-colors duration-300"
-                      >
-                        <Plus className="h-3.5 w-3.5 text-accent" />
-                      </motion.span>
-                    </button>
-                    <AnimatePresence initial={false}>
-                      {openFaq === i && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.32, ease: "easeInOut" }}
-                          className="overflow-hidden"
-                        >
-                          <p className="text-muted-foreground text-sm leading-relaxed pb-7">
-                            {faq.answer}
-                          </p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
+                {faqs.slice(0, 6).map((faq, i) => (
+                  <FaqRow key={i} faq={faq} index={i} openFaq={openFaq} setOpenFaq={setOpenFaq} ease={ease} />
                 ))}
               </motion.div>
+
+              {/* Items 7+ — animated directly on mount so whileInView doesn't block them */}
+              <AnimatePresence initial={false}>
+                {showAllFaqs && (
+                  <motion.div
+                    initial="hidden"
+                    animate="show"
+                    exit="hidden"
+                    variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
+                  >
+                    {faqs.slice(6).map((faq, i) => (
+                      <FaqRow key={i + 6} faq={faq} index={i + 6} openFaq={openFaq} setOpenFaq={setOpenFaq} ease={ease} />
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {faqs.length > 6 && (
                 <motion.button
