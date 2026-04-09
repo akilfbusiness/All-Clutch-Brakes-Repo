@@ -38,10 +38,7 @@ export async function generateMetadata({
   ])
 
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
-
-  if (!post) {
-    return { title: `Post Not Found | ${businessName}` }
-  }
+  if (!post) return { title: `Post Not Found | ${businessName}` }
 
   const title = post.seoTitle ?? post.title
   const description = post.seoDescription ?? post.answerCapsule
@@ -114,10 +111,8 @@ export default async function BlogPostPage({
   const siteUrl = settings?.siteUrl ?? "https://example.com"
 
   const displayPost = post ?? (slug === FALLBACK_POST.slug ? FALLBACK_POST : null)
-
   if (!displayPost) notFound()
 
-  // Derive display date — prefer updatedAt, fall back to publishedAt
   const displayDate = displayPost.updatedAt ?? displayPost.publishedAt
   const formattedDisplayDate = new Date(displayDate).toLocaleDateString("en-AU", {
     day: "numeric",
@@ -125,7 +120,6 @@ export default async function BlogPostPage({
     year: "numeric",
   })
 
-  // ─── Structured Data ────────────────────────────────────────────────────────
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -134,18 +128,9 @@ export default async function BlogPostPage({
     url: `${siteUrl}/blog/${slug}`,
     datePublished: displayPost.publishedAt,
     dateModified: displayPost.updatedAt ?? displayPost.publishedAt,
-    author: {
-      "@type": "Person",
-      name: displayPost.author?.name ?? businessName,
-    },
-    publisher: {
-      "@type": "LocalBusiness",
-      name: businessName,
-      url: siteUrl,
-    },
-    ...(displayPost.readTimeMinutes && {
-      timeRequired: `PT${displayPost.readTimeMinutes}M`,
-    }),
+    author: { "@type": "Person", name: displayPost.author?.name ?? businessName },
+    publisher: { "@type": "LocalBusiness", name: businessName, url: siteUrl },
+    ...(displayPost.readTimeMinutes && { timeRequired: `PT${displayPost.readTimeMinutes}M` }),
   }
 
   const breadcrumbSchema = {
@@ -154,104 +139,79 @@ export default async function BlogPostPage({
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
       { "@type": "ListItem", position: 2, name: "Blog", item: `${siteUrl}/blog` },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: displayPost.title,
-        item: `${siteUrl}/blog/${slug}`,
-      },
+      { "@type": "ListItem", position: 3, name: displayPost.title, item: `${siteUrl}/blog/${slug}` },
     ],
   }
 
-  const faqSchema =
-    displayPost.faqItems?.length
-      ? {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: displayPost.faqItems.map((item) => ({
-            "@type": "Question",
-            name: item.question,
-            acceptedAnswer: { "@type": "Answer", text: item.answer },
-          })),
-        }
-      : null
+  const faqSchema = displayPost.faqItems?.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: displayPost.faqItems.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: { "@type": "Answer", text: item.answer },
+        })),
+      }
+    : null
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {faqSchema && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       )}
 
       <main className="min-h-screen bg-background">
 
-        {/* ── Hero ───────────────────────────────────────────────────────────── */}
-        <section className="bg-zinc-900 text-white">
-          <div className="container mx-auto px-4 py-12 md:py-16">
+        {/* ── Hero ──────────────────────────────────────────────── */}
+        <section className="relative py-16 md:py-24 bg-background border-b border-border overflow-hidden">
+          <span
+            aria-hidden
+            className="pointer-events-none select-none absolute -right-4 top-1/2 -translate-y-1/2 text-[clamp(5rem,14vw,10rem)] font-black uppercase tracking-tighter text-foreground/[0.04] leading-none"
+          >
+            Article
+          </span>
+          <div className="container mx-auto px-6 relative">
             {/* Breadcrumb */}
-            <nav aria-label="Breadcrumb" className="mb-6">
-              <ol className="flex items-center gap-2 text-sm text-zinc-400 flex-wrap">
-                <li>
-                  <Link href="/" className="hover:text-orange-500 transition-colors">
-                    Home
-                  </Link>
-                </li>
-                <li aria-hidden="true">
-                  <ChevronRight className="h-4 w-4" />
-                </li>
-                <li>
-                  <Link href="/blog" className="hover:text-orange-500 transition-colors">
-                    Blog
-                  </Link>
-                </li>
-                <li aria-hidden="true">
-                  <ChevronRight className="h-4 w-4" />
-                </li>
-                <li aria-current="page" className="text-orange-500 truncate max-w-[220px]">
-                  {displayPost.title}
-                </li>
+            <nav aria-label="Breadcrumb" className="mb-8">
+              <ol className="flex items-center gap-2 text-[11px] text-foreground/40 flex-wrap uppercase tracking-widest">
+                <li><Link href="/" className="hover:text-accent transition-colors">Home</Link></li>
+                <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
+                <li><Link href="/blog" className="hover:text-accent transition-colors">Blog</Link></li>
+                <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
+                <li aria-current="page" className="text-accent truncate max-w-[180px]">{displayPost.title}</li>
               </ol>
             </nav>
 
-            {/* Category badge */}
+            {/* Category */}
             {displayPost.category && (
-              <span className="inline-block px-3 py-1 text-xs font-semibold bg-orange-500 text-white rounded-full mb-4">
+              <span className="inline-block text-[10px] font-bold tracking-[0.15em] uppercase border border-accent/30 text-accent px-2.5 py-1 mb-5">
                 {displayPost.category}
               </span>
             )}
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-balance">
+            <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight leading-tight mb-6 max-w-4xl">
               {displayPost.title}
             </h1>
 
-            {/* Author / date / read time row */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-400">
+            {/* Meta row */}
+            <div className="flex flex-wrap items-center gap-5 text-[11px] text-foreground/50 uppercase tracking-widest">
               {displayPost.author?.name && (
-                <span className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
+                <span className="flex items-center gap-1.5">
+                  <User className="h-3.5 w-3.5" />
                   {displayPost.author.name}
-                  {displayPost.author.role && (
-                    <span className="text-zinc-500">· {displayPost.author.role}</span>
-                  )}
+                  {displayPost.author.role && <span className="text-foreground/30">· {displayPost.author.role}</span>}
                 </span>
               )}
-              <span className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
+              <span className="flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5" />
                 Updated {formattedDisplayDate}
               </span>
               {displayPost.readTimeMinutes && (
-                <span className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
+                <span className="flex items-center gap-1.5">
+                  <Clock className="h-3.5 w-3.5" />
                   {displayPost.readTimeMinutes} min read
                 </span>
               )}
@@ -260,12 +220,9 @@ export default async function BlogPostPage({
             {/* Geo tags */}
             {displayPost.geoTags && displayPost.geoTags.length > 0 && (
               <div className="flex flex-wrap items-center gap-2 mt-4">
-                <MapPin className="h-4 w-4 text-zinc-500 flex-shrink-0" />
+                <MapPin className="h-3.5 w-3.5 text-foreground/30 flex-shrink-0" />
                 {displayPost.geoTags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded"
-                  >
+                  <span key={tag} className="text-[10px] text-foreground/40 border border-border px-2 py-0.5">
                     {tag}
                   </span>
                 ))}
@@ -274,9 +231,9 @@ export default async function BlogPostPage({
           </div>
         </section>
 
-        {/* ── Hero Image ────────────────────────────────────────────────────── */}
+        {/* ── Hero Image ────────────────────────────────────────── */}
         {displayPost.heroImage && (
-          <div className="relative w-full h-64 md:h-96 bg-zinc-200 overflow-hidden">
+          <div className="relative w-full h-64 md:h-[480px] bg-foreground/5 overflow-hidden border-b border-border">
             <Image
               src={urlFor(displayPost.heroImage).width(1400).height(600).url()}
               alt={displayPost.title}
@@ -284,44 +241,38 @@ export default async function BlogPostPage({
               className="object-cover"
               priority
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
           </div>
         )}
 
-        {/* ── Content Layout ─────────────────────────────────────────────────── */}
-        <div className="container mx-auto px-4 py-12 md:py-16">
+        {/* ── Content ───────────────────────────────────────────── */}
+        <div className="container mx-auto px-6 py-12 md:py-16">
           <div className="max-w-3xl mx-auto">
 
-            {/* TL;DR / Answer Capsule box */}
-            <div className="bg-orange-50 border-l-4 border-orange-500 rounded-r-xl p-5 mb-10">
-              <p className="text-xs font-bold text-orange-600 uppercase tracking-widest mb-2">
+            {/* TL;DR box */}
+            <div className="border-l-4 border-accent bg-foreground/[0.03] p-5 mb-10">
+              <p className="text-[10px] font-bold text-accent uppercase tracking-[0.2em] mb-2">
                 TL;DR — Quick Answer
               </p>
-              <p className="text-zinc-800 font-medium leading-relaxed">
+              <p className="text-foreground/80 font-medium leading-relaxed">
                 {displayPost.answerCapsule}
               </p>
             </div>
 
-            {/* Quick Answers section */}
+            {/* Quick Answers */}
             {displayPost.quickAnswers && displayPost.quickAnswers.length > 0 && (
               <section className="mb-12" aria-labelledby="quick-answers-heading">
                 <h2
                   id="quick-answers-heading"
-                  className="text-xl font-bold text-zinc-900 mb-5 flex items-center gap-2"
+                  className="text-xl font-black uppercase tracking-tight mb-5 pb-3 border-b border-border"
                 >
                   Key Questions — Quick Answers
                 </h2>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {displayPost.quickAnswers.map((qa, index) => (
-                    <div
-                      key={index}
-                      className="bg-white border border-zinc-200 rounded-xl p-5 hover:border-orange-200 transition-colors"
-                    >
-                      <h3 className="text-base font-semibold text-zinc-900 mb-2">
-                        {qa.question}
-                      </h3>
-                      <p className="text-zinc-700 leading-relaxed font-medium text-sm">
-                        {qa.quickAnswer}
-                      </p>
+                    <div key={index} className="border border-border p-5 hover:border-accent/40 transition-colors">
+                      <h3 className="text-sm font-bold text-foreground mb-2">{qa.question}</h3>
+                      <p className="text-foreground/60 leading-relaxed text-sm">{qa.quickAnswer}</p>
                     </div>
                   ))}
                 </div>
@@ -329,40 +280,33 @@ export default async function BlogPostPage({
             )}
 
             {/* Main body */}
-            {displayPost.body &&
-            Array.isArray(displayPost.body) &&
-            displayPost.body.length > 0 ? (
-              <div className="prose prose-lg prose-zinc max-w-none prose-headings:font-bold prose-a:text-orange-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-zinc-900 mb-12">
+            {displayPost.body && Array.isArray(displayPost.body) && displayPost.body.length > 0 ? (
+              <div className="prose prose-invert prose-sm md:prose-base max-w-none prose-headings:font-bold prose-headings:uppercase prose-headings:tracking-tight prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground mb-12">
                 <PortableText value={displayPost.body} />
               </div>
             ) : (
-              <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-8 text-center mb-12">
-                <p className="text-zinc-600">
+              <div className="border border-border p-8 text-center mb-12">
+                <p className="text-foreground/60">
                   This post is coming soon. In the meantime, contact our team at{" "}
                   {businessName} and we will answer your question directly.
                 </p>
               </div>
             )}
 
-            {/* FAQ — Short list (for schema + scanning) */}
+            {/* FAQ */}
             {displayPost.faqItems && displayPost.faqItems.length > 0 && (
               <section className="mb-12" aria-labelledby="faq-heading">
                 <h2
                   id="faq-heading"
-                  className="text-2xl font-bold text-zinc-900 mb-6"
+                  className="text-xl font-black uppercase tracking-tight mb-6 pb-3 border-b border-border"
                 >
                   Frequently Asked Questions
                 </h2>
-                <div className="space-y-5">
+                <div className="space-y-3">
                   {displayPost.faqItems.map((item, index) => (
-                    <div
-                      key={index}
-                      className="bg-zinc-50 border border-zinc-200 rounded-xl p-6"
-                    >
-                      <h3 className="text-base font-semibold text-zinc-900 mb-3">
-                        {item.question}
-                      </h3>
-                      <p className="text-zinc-600 leading-relaxed">{item.answer}</p>
+                    <div key={index} className="border border-border p-5">
+                      <h3 className="text-sm font-bold text-foreground mb-3">{item.question}</h3>
+                      <p className="text-foreground/60 leading-relaxed text-sm">{item.answer}</p>
                     </div>
                   ))}
                 </div>
@@ -371,25 +315,22 @@ export default async function BlogPostPage({
 
             {/* Data Sources */}
             {displayPost.dataSources && displayPost.dataSources.length > 0 && (
-              <section
-                className="mb-12 bg-zinc-50 border border-zinc-200 rounded-xl p-6"
-                aria-labelledby="sources-heading"
-              >
+              <section className="mb-12 border border-border p-6" aria-labelledby="sources-heading">
                 <h2
                   id="sources-heading"
-                  className="text-base font-bold text-zinc-900 mb-4"
+                  className="text-[11px] font-bold text-foreground/50 uppercase tracking-[0.2em] mb-4"
                 >
-                  Sources & References
+                  Sources &amp; References
                 </h2>
                 <ul className="space-y-2">
                   {displayPost.dataSources.map((source, index) => (
                     <li key={index} className="flex items-start gap-2 text-sm">
-                      <ExternalLink className="h-4 w-4 text-zinc-400 flex-shrink-0 mt-0.5" />
+                      <ExternalLink className="h-4 w-4 text-foreground/30 flex-shrink-0 mt-0.5" />
                       <a
                         href={source.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-orange-600 hover:underline"
+                        className="text-accent hover:underline"
                       >
                         {source.label}
                       </a>
@@ -401,16 +342,11 @@ export default async function BlogPostPage({
 
             {/* Author Bio */}
             {displayPost.author?.bio && (
-              <section
-                className="mb-12 bg-zinc-50 border border-zinc-200 rounded-xl p-6"
-                aria-label="About the author"
-              >
-                <h2 className="text-base font-semibold text-zinc-900 mb-3">
+              <section className="mb-12 border border-border p-6" aria-label="About the author">
+                <h2 className="text-[11px] font-bold text-foreground/50 uppercase tracking-[0.2em] mb-3">
                   About the Author
                 </h2>
-                <p className="text-zinc-600 leading-relaxed text-sm">
-                  {displayPost.author.bio}
-                </p>
+                <p className="text-foreground/60 leading-relaxed text-sm">{displayPost.author.bio}</p>
               </section>
             )}
 
@@ -419,27 +355,28 @@ export default async function BlogPostPage({
               <section className="mb-12" aria-labelledby="related-heading">
                 <h2
                   id="related-heading"
-                  className="text-2xl font-bold text-zinc-900 mb-6"
+                  className="text-xl font-black uppercase tracking-tight mb-6 pb-3 border-b border-border"
                 >
                   Related Posts
                 </h2>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-l border-border">
                   {displayPost.relatedPosts.map((related) => (
                     <Link
                       key={related.slug}
                       href={`/blog/${related.slug}`}
-                      className="group bg-white border border-zinc-200 rounded-xl p-5 hover:border-orange-300 hover:shadow-sm transition-all"
+                      className="group relative border-r border-b border-border p-5 hover:bg-foreground/[0.02] transition-colors"
                     >
+                      <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-accent group-hover:w-full transition-all duration-300" />
                       {related.category && (
-                        <span className="text-xs font-semibold text-orange-600 uppercase tracking-wide block mb-2">
+                        <span className="text-[10px] font-bold text-accent/70 uppercase tracking-[0.15em] block mb-2">
                           {related.category}
                         </span>
                       )}
-                      <h3 className="font-semibold text-zinc-900 group-hover:text-orange-600 transition-colors mb-2 text-sm leading-snug">
+                      <h3 className="font-bold text-foreground/80 group-hover:text-foreground transition-colors text-sm leading-snug mb-2">
                         {related.title}
                       </h3>
                       {related.readTimeMinutes && (
-                        <span className="flex items-center gap-1 text-xs text-zinc-500">
+                        <span className="flex items-center gap-1 text-[11px] text-foreground/40">
                           <Clock className="h-3 w-3" />
                           {related.readTimeMinutes} min read
                         </span>
@@ -451,10 +388,10 @@ export default async function BlogPostPage({
             )}
 
             {/* Back to Blog */}
-            <div className="border-t border-zinc-200 pt-8">
+            <div className="border-t border-border pt-8">
               <Link
                 href="/blog"
-                className="inline-flex items-center gap-2 text-zinc-600 hover:text-orange-600 font-semibold transition-colors"
+                className="inline-flex items-center gap-2 text-foreground/50 hover:text-accent font-semibold transition-colors text-sm"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to All Posts
@@ -463,28 +400,28 @@ export default async function BlogPostPage({
           </div>
         </div>
 
-        {/* ── End CTA ─────────────────────────────────────────────────────────── */}
-        <section className="bg-zinc-900 text-white py-16">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-4">
+        {/* ── CTA Strip ──────────────────────────────────────────── */}
+        <section className="bg-accent py-16">
+          <div className="container mx-auto px-6 text-center">
+            <h2 className="text-3xl font-black uppercase tracking-tight text-black mb-4">
               {displayPost.ctaHeading ?? "Need Expert Help?"}
             </h2>
-            <p className="text-xl text-zinc-300 mb-8 max-w-2xl mx-auto">
+            <p className="text-black/70 mb-8 max-w-xl mx-auto">
               {displayPost.ctaBody ??
                 `${businessName} provides expert clutch, brake, and transmission services across Adelaide.`}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold transition-colors"
+                className="inline-flex items-center justify-center gap-2 bg-black text-white px-8 py-4 text-sm font-bold uppercase tracking-widest hover:bg-black/80 transition-colors"
               >
                 Get a Free Quote
               </Link>
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-lg font-semibold transition-colors"
+                className="inline-flex items-center justify-center gap-2 border border-black/30 hover:border-black text-black px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
-                <Phone className="h-5 w-5" />
+                <Phone className="h-4 w-4" />
                 {phone}
               </a>
             </div>

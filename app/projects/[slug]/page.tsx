@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
 import { notFound } from "next/navigation"
-import { ChevronRight, Tag } from "lucide-react"
+import { ChevronRight, Phone } from "lucide-react"
 import { getSiteSettings, getProjectBySlug, getAllProjectSlugs } from "@/sanity/queries"
 import { urlFor } from "@/sanity/image"
 
@@ -58,48 +58,57 @@ export default async function ProjectDetailPage({ params }: Props) {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
-      <div className="min-h-screen bg-background">
-        {/* HERO IMAGE */}
-        <section className="relative bg-zinc-900 text-white">
+      <main className="min-h-screen bg-background">
+
+        {/* ── Hero ──────────────────────────────────────────────── */}
+        <section className="relative bg-background border-b border-border overflow-hidden">
+          {/* Full-bleed image */}
           {project.featuredImage && (
-            <div className="relative h-72 md:h-[480px] w-full">
+            <div className="relative h-72 md:h-[520px] w-full">
               <Image
                 src={urlFor(project.featuredImage).width(1600).height(900).fit("crop").url()}
                 alt={project.title}
                 fill
                 priority
-                className="object-cover opacity-60"
+                className="object-cover opacity-50"
                 sizes="100vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
             </div>
           )}
-          <div className={`container mx-auto py-12 md:py-16 ${project.featuredImage ? "relative -mt-40 md:-mt-56" : ""}`}>
+
+          {/* Overlay content */}
+          <div
+            className={`container mx-auto px-6 ${
+              project.featuredImage ? "relative -mt-40 md:-mt-56 pb-16" : "py-24 md:py-36"
+            }`}
+          >
+            {/* Breadcrumb */}
             <nav aria-label="Breadcrumb" className="mb-6">
-              <ol className="flex items-center gap-2 text-sm text-zinc-400">
+              <ol className="flex items-center gap-2 text-[11px] text-foreground/40 flex-wrap uppercase tracking-widest">
                 <li><Link href="/" className="hover:text-accent transition-colors">Home</Link></li>
-                <li aria-hidden="true"><ChevronRight className="h-4 w-4" /></li>
+                <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
                 <li><Link href="/projects" className="hover:text-accent transition-colors">Projects</Link></li>
-                <li aria-hidden="true"><ChevronRight className="h-4 w-4" /></li>
+                <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
                 <li aria-current="page" className="text-accent truncate max-w-[200px]">{project.title}</li>
               </ol>
             </nav>
-            <h1 className="text-4xl md:text-6xl font-bold text-balance text-white mb-4">
+
+            <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-accent mb-4">Case Study</p>
+            <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight leading-none text-foreground mb-6">
               {project.title}
             </h1>
+
+            {/* Tags */}
             {project.tags && project.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="inline-flex items-center gap-1 text-xs bg-accent/20 text-accent px-3 py-1 rounded-full font-medium"
+                    className="text-[10px] font-bold tracking-[0.15em] uppercase border border-accent/20 text-accent/70 px-2.5 py-1"
                   >
-                    <Tag className="h-3 w-3" />
                     {tag}
                   </span>
                 ))}
@@ -108,38 +117,40 @@ export default async function ProjectDetailPage({ params }: Props) {
           </div>
         </section>
 
-        {/* DESCRIPTION */}
+        {/* ── Description ───────────────────────────────────────── */}
         {project.description && (
-          <section className="py-12 md:py-16">
-            <div className="container mx-auto max-w-3xl">
-              <p className="text-foreground text-lg leading-relaxed whitespace-pre-line">
+          <section className="py-16 md:py-20 border-b border-border">
+            <div className="container mx-auto px-6 max-w-3xl">
+              <p className="text-foreground/70 text-lg leading-relaxed whitespace-pre-line">
                 {project.description}
               </p>
             </div>
           </section>
         )}
 
-        {/* GALLERY */}
+        {/* ── Gallery ───────────────────────────────────────────── */}
         {project.gallery && project.gallery.length > 0 && (
-          <section className="py-12 md:py-16 bg-secondary/20 border-y border-border">
-            <div className="container mx-auto">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">Project Gallery</h2>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <section className="py-16 md:py-20 border-b border-border">
+            <div className="container mx-auto px-6">
+              <h2 className="text-2xl font-black uppercase tracking-tight mb-10 pb-4 border-b border-border">
+                Project Gallery
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-border">
                 {project.gallery.map((img, i) => (
-                  <figure key={i} className="overflow-hidden rounded-xl bg-muted">
+                  <figure key={i} className="border-r border-b border-border group overflow-hidden">
                     {img.asset && (
-                      <div className="relative h-56 w-full">
+                      <div className="relative h-56 w-full bg-foreground/5">
                         <Image
                           src={img.asset}
                           alt={img.caption ?? `${project.title} — image ${i + 1}`}
                           fill
-                          className="object-cover hover:scale-105 transition-transform duration-500"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
                       </div>
                     )}
                     {img.caption && (
-                      <figcaption className="px-4 py-2 text-sm text-muted-foreground">
+                      <figcaption className="px-4 py-3 text-xs text-foreground/50 border-t border-border">
                         {img.caption}
                       </figcaption>
                     )}
@@ -150,33 +161,61 @@ export default async function ProjectDetailPage({ params }: Props) {
           </section>
         )}
 
-        {/* BACK + CTA */}
-        <section className="py-12 md:py-16">
-          <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+        {/* ── Back + CTA ────────────────────────────────────────── */}
+        <section className="py-12 md:py-16 border-b border-border">
+          <div className="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
             <Link
               href="/projects"
-              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              className="inline-flex items-center gap-2 text-foreground/50 hover:text-accent transition-colors text-sm font-medium"
             >
               <ChevronRight className="h-4 w-4 rotate-180" />
               Back to all projects
             </Link>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link
+              <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-4 rounded-lg font-semibold transition-colors"
+                className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-black px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
+                <Phone className="h-4 w-4" />
                 Call Now: {phone}
-              </Link>
+              </a>
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary/80 text-foreground px-8 py-4 rounded-lg font-semibold transition-colors"
+                className="inline-flex items-center justify-center gap-2 border border-border hover:border-accent text-foreground px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
                 Get a Quote
               </Link>
             </div>
           </div>
         </section>
-      </div>
+
+        {/* ── CTA Strip ──────────────────────────────────────────── */}
+        <section className="bg-accent py-16">
+          <div className="container mx-auto px-6 text-center">
+            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-black mb-4">
+              Want Similar Work Done?
+            </h2>
+            <p className="text-black/70 mb-8 max-w-xl mx-auto">
+              {businessName} handles clutch, brake, and transmission jobs of all sizes. Get in touch today.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 bg-black text-white px-8 py-4 text-sm font-bold uppercase tracking-widest hover:bg-black/80 transition-colors"
+              >
+                Contact Us
+              </Link>
+              <a
+                href={`tel:${phone.replace(/\s/g, "")}`}
+                className="inline-flex items-center justify-center gap-2 border border-black/30 hover:border-black text-black px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
+              >
+                <Phone className="h-4 w-4" />
+                {phone}
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
     </>
   )
 }

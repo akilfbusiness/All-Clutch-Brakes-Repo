@@ -100,6 +100,17 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
             </span>
           </Link>
 
+          {/* Phone — desktop only, visible between logo and burger */}
+          <a
+            href={`tel:${phone.replace(/\s/g, "")}`}
+            className={`hidden md:flex items-center gap-2 text-[11px] font-bold tracking-[0.08em] transition-colors duration-300 relative z-50 ${
+              open ? "text-white/70 hover:text-white" : "text-foreground/60 hover:text-accent"
+            }`}
+          >
+            <Phone className="h-3.5 w-3.5 flex-shrink-0" />
+            {phone}
+          </a>
+
           {/* Hamburger button */}
           <button
             onClick={() => setOpen((v) => !v)}

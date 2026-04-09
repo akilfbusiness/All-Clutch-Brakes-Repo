@@ -14,6 +14,10 @@ import { projectSchema } from "./project"
 import { featuredItemSchema } from "./featuredItem"
 import { brandSchema } from "./brand"
 import { productPageSchema } from "./productPage"
+import { testimonialSchema } from "./testimonial"
+import { promotionSchema } from "./promotion"
+import { certificationSchema } from "./certification"
+import { gallerySchema } from "./gallery"
 
 export const schemaTypes = [
   // Content types
@@ -26,6 +30,10 @@ export const schemaTypes = [
   featuredItemSchema,
   brandSchema,
   productPageSchema,
+  testimonialSchema,
+  promotionSchema,
+  certificationSchema,
+  gallerySchema,
   // Supporting types
   authorSchema,
   // Global settings (singletons)

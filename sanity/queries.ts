@@ -640,6 +640,62 @@ export interface ProductPage {
   seoDescription?: string
 }
 
+// ─── TESTIMONIALS ─────────────────────────────────────────────────────────────
+
+export interface Testimonial {
+  _id: string
+  customerName: string
+  suburb?: string
+  vehicleType?: string
+  rating: number
+  testimonialText: string
+  serviceDate?: string
+  featured?: boolean
+  order?: number
+}
+
+// ─── PROMOTIONS ───────────────────────────────────────────────────────────────
+
+export interface Promotion {
+  _id: string
+  title: string
+  description: string
+  discountValue?: string
+  discountType?: "percentage" | "fixed" | "text"
+  validFrom?: string
+  validUntil?: string
+  featured?: boolean
+  bannerStyle?: "announcement" | "hero" | "inline"
+  ctaLabel?: string
+  ctaLink?: string
+  order?: number
+}
+
+// ─── CERTIFICATIONS ───────────────────────────────────────────────────────────
+
+export interface Certification {
+  _id: string
+  name: string
+  logo?: any
+  description?: string
+  externalLink?: string
+  expiryDate?: string
+  order?: number
+}
+
+// ─── GALLERY ──────────────────────────────────────────────────────────────────
+
+export interface GalleryImage {
+  _id: string
+  title: string
+  image?: any
+  category?: "workshop" | "before-after" | "team" | "services" | "vehicles"
+  altText?: string
+  caption?: string
+  featured?: boolean
+  order?: number
+}
+
 export const PRODUCT_PAGE_BY_SLUG_QUERY = `
   *[_type == "productPage" && slug.current == $slug][0] {
     _id, title, "slug": slug.current, heading, introText, detailedDescription, sections, specifications,
@@ -654,4 +710,129 @@ export async function getProductPageBySlug(slug: string): Promise<ProductPage | 
     params: { slug },
     tags: ["productPages"],
   })
+}
+
+// ─── TESTIMONIALS ─────────────────────────────────────────────────────────────
+
+export const ALL_TESTIMONIALS_QUERY = `
+  *[_type == "testimonial"] | order(coalesce(order, 9999) asc, serviceDate desc) {
+    _id, customerName, suburb, vehicleType, rating, testimonialText, serviceDate, featured, order
+  }
+`
+
+export const FEATURED_TESTIMONIALS_QUERY = `
+  *[_type == "testimonial" && featured == true] | order(coalesce(order, 9999) asc, serviceDate desc) [0...6] {
+    _id, customerName, suburb, vehicleType, rating, testimonialText, serviceDate, featured, order
+  }
+`
+
+export async function getAllTestimonials(): Promise<Testimonial[]> {
+  const result = await sanityFetch<Testimonial[]>({
+    query: ALL_TESTIMONIALS_QUERY,
+    tags: ["testimonials"],
+  })
+  return result ?? []
+}
+
+export async function getFeaturedTestimonials(): Promise<Testimonial[]> {
+  const result = await sanityFetch<Testimonial[]>({
+    query: FEATURED_TESTIMONIALS_QUERY,
+    tags: ["testimonials"],
+  })
+  return result ?? []
+}
+
+// ─── PROMOTIONS ───────────────────────────────────────────────────────────────
+
+export const ACTIVE_PROMOTIONS_QUERY = `
+  *[_type == "promotion" && (!defined(validUntil) || validUntil >= now())] | order(coalesce(order, 9999) asc) {
+    _id, title, description, discountValue, discountType, validFrom, validUntil, featured, bannerStyle, ctaLabel, ctaLink, order
+  }
+`
+
+export const FEATURED_PROMOTIONS_QUERY = `
+  *[_type == "promotion" && featured == true && (!defined(validUntil) || validUntil >= now())] | order(coalesce(order, 9999) asc) [0...3] {
+    _id, title, description, discountValue, discountType, validFrom, validUntil, featured, bannerStyle, ctaLabel, ctaLink, order
+  }
+`
+
+export async function getActivePromotions(): Promise<Promotion[]> {
+  const result = await sanityFetch<Promotion[]>({
+    query: ACTIVE_PROMOTIONS_QUERY,
+    tags: ["promotions"],
+  })
+  return result ?? []
+}
+
+export async function getFeaturedPromotions(): Promise<Promotion[]> {
+  const result = await sanityFetch<Promotion[]>({
+    query: FEATURED_PROMOTIONS_QUERY,
+    tags: ["promotions"],
+  })
+  return result ?? []
+}
+
+// ─── CERTIFICATIONS ───────────────────────────────────────────────────────────
+
+export const ALL_CERTIFICATIONS_QUERY = `
+  *[_type == "certification" && (!defined(expiryDate) || expiryDate >= now())] | order(coalesce(order, 9999) asc) {
+    _id, name, description, externalLink, expiryDate, order,
+    "logo": logo
+  }
+`
+
+export async function getAllCertifications(): Promise<Certification[]> {
+  const result = await sanityFetch<Certification[]>({
+    query: ALL_CERTIFICATIONS_QUERY,
+    tags: ["certifications"],
+  })
+  return result ?? []
+}
+
+// ─── GALLERY ──────────────────────────────────────────────────────────────────
+
+export const ALL_GALLERY_IMAGES_QUERY = `
+  *[_type == "galleryImage"] | order(coalesce(order, 9999) asc, _createdAt desc) {
+    _id, title, category, altText, caption, featured, order,
+    "image": image
+  }
+`
+
+export const GALLERY_BY_CATEGORY_QUERY = `
+  *[_type == "galleryImage" && category == $category] | order(coalesce(order, 9999) asc, _createdAt desc) {
+    _id, title, category, altText, caption, featured, order,
+    "image": image
+  }
+`
+
+export const FEATURED_GALLERY_IMAGES_QUERY = `
+  *[_type == "galleryImage" && featured == true] | order(coalesce(order, 9999) asc) [0...12] {
+    _id, title, category, altText, caption, featured, order,
+    "image": image
+  }
+`
+
+export async function getAllGalleryImages(): Promise<GalleryImage[]> {
+  const result = await sanityFetch<GalleryImage[]>({
+    query: ALL_GALLERY_IMAGES_QUERY,
+    tags: ["gallery"],
+  })
+  return result ?? []
+}
+
+export async function getGalleryByCategory(category: string): Promise<GalleryImage[]> {
+  const result = await sanityFetch<GalleryImage[]>({
+    query: GALLERY_BY_CATEGORY_QUERY,
+    params: { category },
+    tags: ["gallery"],
+  })
+  return result ?? []
+}
+
+export async function getFeaturedGalleryImages(): Promise<GalleryImage[]> {
+  const result = await sanityFetch<GalleryImage[]>({
+    query: FEATURED_GALLERY_IMAGES_QUERY,
+    tags: ["gallery"],
+  })
+  return result ?? []
 }

@@ -7,7 +7,10 @@ import {
   useScroll, useTransform,
   useInView, useMotionValue, useTransform as useMotionTransform, animate,
 } from "framer-motion"
-import { Phone, Plus, ArrowRight, MapPin, Clock } from "lucide-react"
+import { Phone, Plus, ArrowRight, MapPin, Clock, Wrench } from "lucide-react"
+import { TestimonialsCarousel } from "./testimonials-carousel"
+import { PromotionsBanner } from "./promotions-banner"
+import type { Testimonial, Promotion } from "@/sanity/queries"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -51,6 +54,8 @@ export interface HomePageClientProps {
   aboutDescription: string
   faqs: FaqItem[]
   serviceItems: ServiceItem[]
+  testimonials: Testimonial[]
+  promotions: Promotion[]
 }
 
 // ─── ANIMATION PRESETS ────────────────────────────────────────────────────────
@@ -89,18 +94,26 @@ const DEFAULT_TICKER_ITEMS = [
   "Qualified Tradespeople", "Transmission Service", "Brake Machining",
 ]
 
-function Ticker({ items }: { items?: string[] }) {
+function Ticker({ items, reverse = false }: { items?: string[]; reverse?: boolean }) {
   const resolved = items?.length ? items : DEFAULT_TICKER_ITEMS
   const doubled = [...resolved, ...resolved]
   return (
-    <div className="overflow-hidden border-y border-border bg-background py-5 select-none">
-      <div className="ticker-track flex items-center gap-0">
+    <div
+      className="overflow-hidden border-b border-border bg-background py-4 select-none"
+      style={{ maskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent)" }}
+    >
+      <div
+        className="ticker-track flex items-center gap-0"
+        style={reverse ? { animationDirection: "reverse" } : undefined}
+      >
         {doubled.map((item, i) => (
           <span key={i} className="flex items-center flex-shrink-0">
-            <span className="text-[10px] font-bold tracking-[0.35em] uppercase text-muted-foreground/60 px-8 whitespace-nowrap">
+            <span className="text-[11px] font-bold tracking-[0.28em] uppercase text-muted-foreground/65 px-6 whitespace-nowrap">
               {item}
             </span>
-            <span className="text-accent text-xs">·</span>
+            <svg aria-hidden className="flex-shrink-0 w-[5px] h-[5px] fill-accent opacity-60" viewBox="0 0 6 6">
+              <polygon points="3,0 6,3 3,6 0,3" />
+            </svg>
           </span>
         ))}
       </div>
@@ -121,6 +134,51 @@ function SectionNum({ n }: { n: string }) {
   )
 }
 
+// ─── FAQ ROW ─────────────────────────────────────────────────────────────────
+
+function FaqRow({
+  faq, index, openFaq, setOpenFaq, ease,
+}: {
+  faq: FaqItem
+  index: number
+  openFaq: number | null
+  setOpenFaq: (i: number | null) => void
+  ease: readonly number[]
+}) {
+  return (
+    <motion.div variants={fadeUp} className="border-b border-border">
+      <button
+        onClick={() => setOpenFaq(openFaq === index ? null : index)}
+        className="group w-full flex items-center justify-between py-7 text-left cursor-pointer"
+      >
+        <span className="font-bold text-foreground text-sm md:text-base pr-8 group-hover:text-accent transition-colors duration-300">
+          {faq.question}
+        </span>
+        <motion.span
+          animate={{ rotate: openFaq === index ? 45 : 0 }}
+          transition={{ duration: 0.25, ease }}
+          className="flex-shrink-0 w-8 h-8 rounded-full border border-border group-hover:border-accent flex items-center justify-center transition-colors duration-300"
+        >
+          <Plus className="h-3.5 w-3.5 text-accent" />
+        </motion.span>
+      </button>
+      <AnimatePresence initial={false}>
+        {openFaq === index && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.32, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <p className="text-muted-foreground text-sm leading-relaxed pb-7">{faq.answer}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
 export function HomePageClient({
@@ -131,11 +189,13 @@ export function HomePageClient({
   servicesHeading, servicesSubheading,
   whyUsHeading, whyUsPoints, ctaHeading, ctaBody,
   inspectionCardBody, aboutDescription, faqs, serviceItems,
+  testimonials, promotions,
 }: HomePageClientProps) {
 
-  const [openService, setOpenService] = useState<number | null>(null)
-  const [openFaq,     setOpenFaq]     = useState<number | null>(null)
-  const [mousePos,    setMousePos]    = useState({ x: 40, y: 60 })
+  const [openService,  setOpenService]  = useState<number | null>(null)
+  const [openFaq,      setOpenFaq]      = useState<number | null>(null)
+  const [showAllFaqs,  setShowAllFaqs]  = useState(false)
+  const [mousePos,     setMousePos]     = useState({ x: 40, y: 60 })
 
   // Split headline into two tone lines
   const words = heroHeading.split(" ")
@@ -160,6 +220,10 @@ export function HomePageClient({
 
   return (
     <>
+      {/* PROMOTIONS BANNER */}
+      {promotions && promotions.length > 0 && (
+        <PromotionsBanner promotions={promotions} />
+      )}
 
       {/* ══════════════════════════════════════════════════════════════════════
           01 · HERO
@@ -230,20 +294,52 @@ export function HomePageClient({
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:gap-4"
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:gap-4 hover:-translate-y-0.5 active:translate-y-0"
               >
                 <Phone className="h-4 w-4 flex-shrink-0" />
                 {primaryCta}: {phone}
               </a>
               <Link
                 href="/services"
-                className="inline-flex items-center gap-2.5 border border-white/25 hover:border-white/60 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:gap-4"
+                className="inline-flex items-center gap-2.5 border border-white/25 hover:border-white/60 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:gap-4 hover:-translate-y-0.5 active:translate-y-0"
               >
                 {secondaryCta} <ArrowRight className="h-4 w-4 flex-shrink-0" />
               </Link>
             </motion.div>
+
+            {/* Trust signal pills */}
+            {trustSignals.length > 0 && (
+              <motion.div variants={fadeUp} className="flex flex-wrap gap-2 pt-2">
+                {trustSignals.map((signal, i) => (
+                  <span
+                    key={i}
+                    className="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.2em] uppercase text-white/50 border border-white/10 bg-white/[0.04] backdrop-blur-sm px-3 py-1.5"
+                  >
+                    <span className="w-1 h-1 rounded-full bg-accent flex-shrink-0" />
+                    {signal}
+                  </span>
+                ))}
+              </motion.div>
+            )}
           </motion.div>
         </div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.8, duration: 1 }}
+          className="absolute bottom-28 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2.5"
+        >
+          <div className="relative w-px h-12 bg-white/15 overflow-hidden">
+            <motion.div
+              animate={{ y: ["-100%", "200%"] }}
+              transition={{ duration: 1.6, ease: "easeInOut", repeat: Infinity, repeatDelay: 0.3 }}
+              className="absolute top-0 w-full h-1/2 bg-gradient-to-b from-transparent via-accent to-transparent"
+            />
+          </div>
+          <span className="text-[9px] font-bold tracking-[0.4em] uppercase text-white/25">Scroll</span>
+        </motion.div>
 
         {/* Info strip at bottom of hero */}
         <motion.div
@@ -277,13 +373,15 @@ export function HomePageClient({
       {/* ══════════════════════════════════════════════════════════════════════
           TICKER STRIP
       ══════════════════════════════════════════════════════════════════════ */}
-      <Ticker items={tickerItems} />
+      <div className="border-t border-border">
+        <Ticker items={tickerItems} />
+      </div>
 
 
       {/* ══════════════════════════════════════════════════════════════════════
           02 · STATS
           Giant full-bleed columns · animated counters · cinematic scale
-      ══════════════════════════════════════════════════════════════════════ */}
+      ═════════════════════════════════════════════════════════════════════�� */}
       <section className="relative bg-background border-b border-border overflow-hidden">
         <SectionNum n="02" />
         <motion.div
@@ -294,13 +392,13 @@ export function HomePageClient({
           {statsItems.map((stat, i) => (
             <motion.div
               key={i} variants={fadeUp}
-              className="flex flex-col justify-between p-8 md:p-12 lg:p-16 min-h-[280px] md:min-h-[340px] border-b lg:border-b-0 border-border"
+              className="group flex flex-col justify-between p-8 md:p-12 lg:p-16 min-h-[280px] md:min-h-[340px] border-b lg:border-b-0 border-border hover:bg-foreground/[0.025] transition-colors duration-500 cursor-default"
             >
               <div>
-                <p className="text-6xl md:text-7xl lg:text-8xl xl:text-[100px] font-black text-foreground leading-none tracking-tight whitespace-pre-line">
+                <p className="text-6xl md:text-7xl lg:text-8xl xl:text-[100px] font-black text-foreground group-hover:text-accent leading-none tracking-tight whitespace-pre-line transition-colors duration-500">
                   {stat.displayValue}
                 </p>
-                <div className="mt-6 mb-5 w-full h-px bg-border" />
+                <div className="mt-6 mb-5 w-full h-px bg-border group-hover:bg-accent/30 transition-colors duration-500" />
                 <p className="text-[11px] font-bold text-foreground/80 uppercase tracking-[0.2em]">
                   {stat.label}
                 </p>
@@ -316,7 +414,7 @@ export function HomePageClient({
 
       {/* ══════════════════════════════════════════════════════════════════════
           03 · SERVICES
-          Full-width accordion list · 001/002 numbering · Autovera architecture
+          Premium card grid · expand on click · Framer stagger entrance
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative py-24 md:py-32 bg-background overflow-hidden">
         <SectionNum n="03" />
@@ -336,81 +434,110 @@ export function HomePageClient({
                 {servicesHeading}
               </h2>
             </div>
-            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs md:text-right">
-              {servicesSubheading}
-            </p>
+            <div className="flex flex-col items-start md:items-end gap-3">
+              <p className="text-muted-foreground text-sm leading-relaxed max-w-xs md:text-right">
+                {servicesSubheading}
+              </p>
+              <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent/70 border border-accent/20 px-3 py-1">
+                {serviceItems.length} Services
+              </span>
+            </div>
           </motion.div>
 
-          {/* Accordion list */}
-          <div className="border-t border-border">
-            {serviceItems.map((service, i) => {
+          {/* Card grid */}
+          <motion.div
+            variants={stagger} initial="hidden"
+            whileInView="show" viewport={{ once: true, margin: "-40px" }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 border-t border-l border-border"
+          >
+            {serviceItems.slice(0, 8).map((service, i) => {
               const isOpen = openService === i
               return (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: Math.min(i * 0.025, 0.3) }}
-                  className="border-b border-border"
+                  variants={fadeUp}
+                  className="relative border-r border-b border-border"
                 >
                   <button
                     onClick={() => setOpenService(isOpen ? null : i)}
-                    className="group w-full flex items-center gap-6 md:gap-10 py-6 md:py-8 text-left cursor-pointer"
+                    className="group w-full text-left cursor-pointer relative overflow-hidden"
                   >
-                    {/* Number */}
-                    <span className="flex-shrink-0 text-[10px] font-bold text-muted-foreground/40 tracking-widest w-10 md:w-14">
-                      {String(i + 1).padStart(3, "0")}
-                    </span>
+                    {/* Hover background wash */}
+                    <div className={`absolute inset-0 bg-accent/[0.03] transition-opacity duration-500 ${isOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`} />
 
-                    {/* Service name */}
-                    <span className="flex-1 text-xl md:text-2xl lg:text-3xl xl:text-4xl font-black text-foreground group-hover:text-accent transition-colors duration-300 leading-tight pr-4">
-                      {service.title}
-                    </span>
+                    {/* Accent bottom line slide-in */}
+                    <div className={`absolute bottom-0 left-0 h-[2px] bg-accent transition-all duration-500 ${isOpen ? "w-full" : "w-0 group-hover:w-full"}`} />
 
-                    {/* Toggle */}
-                    <motion.span
-                      animate={{ rotate: isOpen ? 45 : 0, borderColor: isOpen ? "oklch(0.70 0.19 55)" : undefined }}
-                      transition={{ duration: 0.3, ease }}
-                      className="flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-full border border-border group-hover:border-accent flex items-center justify-center transition-colors duration-300"
-                    >
-                      <Plus className="h-4 w-4 text-accent" />
-                    </motion.span>
-                  </button>
-
-                  {/* Expanded description */}
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.35, ease: "easeInOut" }}
-                        className="overflow-hidden"
+                    <div className="relative z-10 p-7 md:p-9">
+                      {/* Watermark number */}
+                      <span
+                        aria-hidden
+                        className="absolute top-4 right-5 text-[72px] font-black leading-none text-foreground/[0.035] select-none pointer-events-none"
                       >
-                        <div className="pb-10 pl-16 md:pl-24 border-l-2 border-accent ml-4 md:ml-6">
-                          <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-2xl">
-                            {service.description
-                              ? service.description
-                              : `Professional ${service.title.toLowerCase()} for all makes and models. Our qualified tradespeople provide upfront fixed quotes with no hidden costs.`
-                            }
-                          </p>
-                          {service.slug && (
-                            <Link
-                              href={`/services/${service.slug}`}
-                              className="inline-flex items-center gap-2 mt-5 text-accent text-sm font-bold hover:gap-3 transition-all duration-300"
-                            >
-                              Full Service Details <ArrowRight className="h-4 w-4" />
-                            </Link>
-                          )}
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+
+                      {/* Top row: icon + toggle */}
+                      <div className="flex items-start justify-between mb-8">
+                        <div className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300 flex-shrink-0 ${isOpen ? "bg-accent border-accent" : "border-accent/30 bg-accent/8 group-hover:bg-accent group-hover:border-accent"}`}>
+                          <Wrench className={`w-4 h-4 transition-colors duration-300 ${isOpen ? "text-black" : "text-accent group-hover:text-black"}`} />
                         </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                        <motion.div
+                          animate={{ rotate: isOpen ? 45 : 0 }}
+                          transition={{ duration: 0.3, ease }}
+                          className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors duration-300 flex-shrink-0 ${isOpen ? "border-accent" : "border-border group-hover:border-accent"}`}
+                        >
+                          <Plus className="h-3.5 w-3.5 text-accent" />
+                        </motion.div>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className={`text-lg md:text-xl font-black leading-snug tracking-tight transition-colors duration-300 pr-6 mb-1 ${isOpen ? "text-accent" : "text-foreground group-hover:text-accent"}`}>
+                        {service.title}
+                      </h3>
+
+                      {/* Collapsed hint */}
+                      {!isOpen && (
+                        <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-muted-foreground/40 mt-2">
+                          Tap to expand
+                        </p>
+                      )}
+
+                      {/* Expanded content */}
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.38, ease: "easeInOut" }}
+                            className="overflow-hidden"
+                          >
+                            <div className="pt-5 mt-4 border-t border-border/50">
+                              <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+                                {service.description
+                                  ? service.description
+                                  : `Professional ${service.title.toLowerCase()} for all makes and models. Upfront fixed pricing — no hidden costs, no surprises.`}
+                              </p>
+                              {service.slug && (
+                                <Link
+                                  href={`/services/${service.slug}`}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="inline-flex items-center gap-1.5 text-accent text-xs font-bold tracking-wide hover:gap-3 transition-all duration-300"
+                                >
+                                  Full Service Details <ArrowRight className="h-3.5 w-3.5" />
+                                </Link>
+                              )}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </button>
                 </motion.div>
               )
             })}
-          </div>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
@@ -419,9 +546,9 @@ export function HomePageClient({
           >
             <Link
               href="/services"
-              className="inline-flex items-center gap-3 text-sm font-bold text-foreground border border-border hover:border-accent hover:text-accent px-8 py-4 transition-all duration-300"
+              className="inline-flex items-center gap-3 text-sm font-bold text-foreground border border-border hover:border-accent hover:text-accent px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
             >
-              View All Services <ArrowRight className="h-4 w-4" />
+              View All {serviceItems.length} Services <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
         </div>
@@ -431,7 +558,7 @@ export function HomePageClient({
       {/* ══════════════════════════════════════════════════════════════════════
           TICKER STRIP 2
       ══════════════════════════════════════════════════════════════════════ */}
-      <Ticker items={tickerItems} />
+      <Ticker items={tickerItems} reverse />
 
 
       {/* ══════════════════════════════════════════════════════════════════════
@@ -494,13 +621,13 @@ export function HomePageClient({
             >
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-colors duration-300"
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
               >
                 <Phone className="h-4 w-4" /> Call {phone}
               </a>
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-colors duration-300"
+                className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
               >
                 Get a Free Quote
               </Link>
@@ -553,13 +680,13 @@ export function HomePageClient({
             className="flex flex-col justify-center py-24 md:py-32 px-6 md:px-10 lg:px-16 xl:px-20 border-b lg:border-b-0 lg:border-r border-white/10"
           >
             {[
-              { isNum: true,  num: 30,     suffix: "+",  label: "Years in Business"   },
-              { isNum: false, text: "1000s",              label: "Vehicles Serviced"   },
-              { isNum: false, text: "100%",               label: "Honest Fixed Pricing"},
+              { isNum: true,  num: 30,   suffix: "+", label: "Years in Business"   },
+              { isNum: true,  num: 1000, suffix: "s", label: "Vehicles Serviced"   },
+              { isNum: true,  num: 100,  suffix: "%", label: "Honest Fixed Pricing" },
             ].map((stat, i) => (
               <div key={i} className="py-10 border-b border-white/10 last:border-0">
                 <p className="text-6xl md:text-7xl lg:text-8xl font-black text-white leading-none">
-                  {stat.isNum ? <Counter to={stat.num!} suffix={stat.suffix} /> : stat.text}
+                  <Counter to={stat.num!} suffix={stat.suffix} />
                 </p>
                 <div className="mt-5 mb-4 w-14 h-[2px] bg-accent" />
                 <p className="text-white/45 text-[10px] font-bold tracking-[0.3em] uppercase">
@@ -608,7 +735,7 @@ export function HomePageClient({
           06 · FAQ
           Two-column · heading left · animated accordion right
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="relative py-24 md:py-32 bg-background overflow-hidden">
+      <section className="relative py-24 md:py-32 bg-background">
         <SectionNum n="06" />
         <div className="container">
           <div className="grid lg:grid-cols-[2fr_3fr] gap-16 lg:gap-24">
@@ -638,53 +765,68 @@ export function HomePageClient({
             </motion.div>
 
             {/* Right — Accordion */}
-            <motion.div
-              variants={stagger} initial="hidden"
-              whileInView="show" viewport={{ once: true }}
-              className="border-t border-border"
-            >
-              {faqs.map((faq, i) => (
-                <motion.div key={i} variants={fadeUp} className="border-b border-border">
-                  <button
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="group w-full flex items-center justify-between py-7 text-left cursor-pointer"
+            <div>
+              {/* First 6 — animated via whileInView stagger */}
+              <motion.div
+                variants={stagger} initial="hidden"
+                whileInView="show" viewport={{ once: true }}
+                className="border-t border-border"
+              >
+                {faqs.slice(0, 6).map((faq, i) => (
+                  <FaqRow key={i} faq={faq} index={i} openFaq={openFaq} setOpenFaq={setOpenFaq} ease={ease} />
+                ))}
+              </motion.div>
+
+              {/* Items 7+ — animated directly on mount so whileInView doesn't block them */}
+              <AnimatePresence initial={false}>
+                {showAllFaqs && (
+                  <motion.div
+                    initial="hidden"
+                    animate="show"
+                    exit="hidden"
+                    variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
                   >
-                    <span className="font-bold text-foreground text-sm md:text-base pr-8 group-hover:text-accent transition-colors duration-300">
-                      {faq.question}
-                    </span>
-                    <motion.span
-                      animate={{ rotate: openFaq === i ? 45 : 0 }}
-                      transition={{ duration: 0.25, ease }}
-                      className="flex-shrink-0 w-8 h-8 rounded-full border border-border group-hover:border-accent flex items-center justify-center transition-colors duration-300"
-                    >
-                      <Plus className="h-3.5 w-3.5 text-accent" />
-                    </motion.span>
-                  </button>
-                  <AnimatePresence initial={false}>
-                    {openFaq === i && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.32, ease: "easeInOut" }}
-                        className="overflow-hidden"
-                      >
-                        <p className="text-muted-foreground text-sm leading-relaxed pb-7">
-                          {faq.answer}
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
-            </motion.div>
+                    {faqs.slice(6).map((faq, i) => (
+                      <FaqRow key={i + 6} faq={faq} index={i + 6} openFaq={openFaq} setOpenFaq={setOpenFaq} ease={ease} />
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {faqs.length > 6 && (
+                <motion.button
+                  initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }} transition={{ duration: 0.5, ease }}
+                  onClick={() => { setShowAllFaqs(!showAllFaqs); if (showAllFaqs) setOpenFaq(null) }}
+                  className="mt-8 inline-flex items-center gap-2 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-7 py-3.5 transition-all duration-300"
+                >
+                  <motion.span
+                    animate={{ rotate: showAllFaqs ? 45 : 0 }}
+                    transition={{ duration: 0.25, ease }}
+                    className="flex-shrink-0"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                  </motion.span>
+                  {showAllFaqs ? "Show Less" : `Show All ${faqs.length} Questions`}
+                </motion.button>
+              )}
+            </div>
           </div>
         </div>
       </section>
 
 
       {/* ══════════════════════════════════════════════════════════════════════
-          07 · CTA STRIP
+          07 · TESTIMONIALS
+          Customer reviews carousel
+      ══════════════════════════════════════════════════════════════════════ */}
+      {testimonials && testimonials.length > 0 && (
+        <TestimonialsCarousel testimonials={testimonials} />
+      )}
+
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          08 · CTA STRIP
           Full-width accent bar · heading left · buttons right
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="bg-accent overflow-hidden">
