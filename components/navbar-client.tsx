@@ -37,11 +37,19 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
   const [scrolled,    setScrolled]    = useState(false)
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
   const [mounted,     setMounted]     = useState(false)
+  const [isHomePage,  setIsHomePage]  = useState(false)
   const { theme, setTheme } = useTheme()
   const pathname = usePathname()
-  const useHeroWhite = pathname === "/" && !scrolled && !open
+  const useHeroWhite = isHomePage && !scrolled && !open
 
-  useEffect(() => { setMounted(true) }, [])
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Use window.location directly — reliable on initial paint and on SPA navigation
+  useEffect(() => {
+    setIsHomePage(window.location.pathname === "/")
+  }, [pathname])
 
   const links = navItems.length > 0 ? navItems : FALLBACK_NAV_LINKS
 
