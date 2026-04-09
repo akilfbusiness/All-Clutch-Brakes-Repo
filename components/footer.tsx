@@ -1,8 +1,11 @@
 import Link from "next/link"
 import { Phone, Mail, MapPin, Clock } from "lucide-react"
 import type { SiteSettings } from "@/sanity/queries"
+import { getAllCertifications } from "@/sanity/queries"
+import { CertificationsDisplay } from "./certifications-display"
 
 export async function Footer({ settings }: { settings: SiteSettings }) {
+  const certifications = await getAllCertifications().catch(() => [])
   const businessName  = settings.businessName  || "All Clutch & Brake Service"
   const address       = settings.address
   const phone         = settings.phone?.[0]    || "(08) 8277 8122"
@@ -124,6 +127,15 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
           </div>
         </div>
       </div>
+
+      {/* Certifications */}
+      {certifications && certifications.length > 0 && (
+        <div className="relative z-10 border-t border-border/50">
+          <div className="container py-8">
+            <CertificationsDisplay certifications={certifications} variant="footer" />
+          </div>
+        </div>
+      )}
 
       {/* Bottom bar */}
       <div className="relative z-10 border-t border-border/50">

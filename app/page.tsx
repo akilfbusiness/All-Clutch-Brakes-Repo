@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { getSiteSettings, getAllServices } from "@/sanity/queries"
+import { getSiteSettings, getAllServices, getFeaturedTestimonials, getFeaturedPromotions } from "@/sanity/queries"
 import { HomePageClient } from "@/components/home-page-client"
 
 // ─── DEFAULT CONTENT ──────────────────────────────────────────────────────────
@@ -78,11 +78,20 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   let settings: Awaited<ReturnType<typeof getSiteSettings>>
   let services: Awaited<ReturnType<typeof getAllServices>>
+  let testimonials: Awaited<ReturnType<typeof getFeaturedTestimonials>>
+  let promotions: Awaited<ReturnType<typeof getFeaturedPromotions>>
   try {
-    ;[settings, services] = await Promise.all([getSiteSettings(), getAllServices()])
+    ;[settings, services, testimonials, promotions] = await Promise.all([
+      getSiteSettings(),
+      getAllServices(),
+      getFeaturedTestimonials(),
+      getFeaturedPromotions(),
+    ])
   } catch {
     settings = {}
     services = []
+    testimonials = []
+    promotions = []
   }
 
   const businessName = settings.businessName || "All Clutch & Brake Service"
@@ -165,6 +174,8 @@ export default async function HomePage() {
         aboutDescription={aboutDescription}
         faqs={faqs}
         serviceItems={serviceItems}
+        testimonials={testimonials}
+        promotions={promotions}
       />
     </>
   )
