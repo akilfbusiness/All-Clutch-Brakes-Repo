@@ -131,6 +131,29 @@ const deskStructure = (S: any) =>
         .child(S.documentTypeList("post").title("Blog")),
       S.divider(),
 
+      // === Marketing & Trust Section ===
+      S.listItem()
+        .title("Testimonials")
+        .icon(() => "💬")
+        .schemaType("testimonial")
+        .child(S.documentTypeList("testimonial").title("Testimonials")),
+      S.listItem()
+        .title("Promotions & Specials")
+        .icon(() => "🎉")
+        .schemaType("promotion")
+        .child(S.documentTypeList("promotion").title("Promotions & Specials")),
+      S.listItem()
+        .title("Certifications & Affiliations")
+        .icon(() => "🏆")
+        .schemaType("certification")
+        .child(S.documentTypeList("certification").title("Certifications & Affiliations")),
+      S.listItem()
+        .title("Gallery")
+        .icon(() => "📸")
+        .schemaType("galleryImage")
+        .child(S.documentTypeList("galleryImage").title("Gallery")),
+      S.divider(),
+
       // === About Section (nested pages) ===
       S.listItem()
         .title("About")

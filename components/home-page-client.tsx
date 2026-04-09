@@ -8,6 +8,9 @@ import {
   useInView, useMotionValue, useTransform as useMotionTransform, animate,
 } from "framer-motion"
 import { Phone, Plus, ArrowRight, MapPin, Clock, Wrench } from "lucide-react"
+import { TestimonialsCarousel } from "./testimonials-carousel"
+import { PromotionsBanner } from "./promotions-banner"
+import type { Testimonial, Promotion } from "@/sanity/queries"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -51,6 +54,8 @@ export interface HomePageClientProps {
   aboutDescription: string
   faqs: FaqItem[]
   serviceItems: ServiceItem[]
+  testimonials: Testimonial[]
+  promotions: Promotion[]
 }
 
 // ─── ANIMATION PRESETS ────────────────────────────────────────────────────────
@@ -184,6 +189,7 @@ export function HomePageClient({
   servicesHeading, servicesSubheading,
   whyUsHeading, whyUsPoints, ctaHeading, ctaBody,
   inspectionCardBody, aboutDescription, faqs, serviceItems,
+  testimonials, promotions,
 }: HomePageClientProps) {
 
   const [openService,  setOpenService]  = useState<number | null>(null)
@@ -214,6 +220,10 @@ export function HomePageClient({
 
   return (
     <>
+      {/* PROMOTIONS BANNER */}
+      {promotions && promotions.length > 0 && (
+        <PromotionsBanner promotions={promotions} />
+      )}
 
       {/* ══════════════════════════════════════════════════════════════════════
           01 · HERO
@@ -371,7 +381,7 @@ export function HomePageClient({
       {/* ══════════════════════════════════════════════════════════════════════
           02 · STATS
           Giant full-bleed columns · animated counters · cinematic scale
-      ══════════════════════════════════════════════════════════════════════ */}
+      ═════════════════════════════════════════════════════════════════════�� */}
       <section className="relative bg-background border-b border-border overflow-hidden">
         <SectionNum n="02" />
         <motion.div
@@ -807,7 +817,16 @@ export function HomePageClient({
 
 
       {/* ══════════════════════════════════════════════════════════════════════
-          07 · CTA STRIP
+          07 · TESTIMONIALS
+          Customer reviews carousel
+      ══════════════════════════════════════════════════════════════════════ */}
+      {testimonials && testimonials.length > 0 && (
+        <TestimonialsCarousel testimonials={testimonials} />
+      )}
+
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          08 · CTA STRIP
           Full-width accent bar · heading left · buttons right
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="bg-accent overflow-hidden">
