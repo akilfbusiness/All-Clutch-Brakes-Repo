@@ -50,9 +50,18 @@ export const productPageSchema = defineType({
               description: "Optional caption for this image.",
             },
           ],
+          validation: (Rule) =>
+            Rule.custom((asset: any) => {
+              if (!asset) return true
+              if (asset?.asset?._ref) return true
+              if (asset?.asset?.size && asset.asset.size > 5 * 1024 * 1024) {
+                return "Image must be less than 5MB. Please compress your image before uploading."
+              }
+              return true
+            }),
         },
       ],
-      description: "Product photos, demonstration images, or installation shots.",
+      description: "Product photos, demonstration images, or installation shots. Max file size per image: 5MB.",
     }),
     defineField({
       name: "detailedDescription",

@@ -20,8 +20,15 @@ export const gallerySchema = defineType({
       title: "Image",
       type: "image",
       options: { hotspot: true },
-      description: "Upload the photo here. High quality recommended (min 1200px wide).",
-      validation: (Rule) => Rule.required(),
+      description: "Upload the photo here. High quality recommended (min 1200px wide). Max file size: 5MB.",
+      validation: (Rule) =>
+        Rule.required().assetRequired().custom((asset: any) => {
+          if (asset?.asset?._ref) return true
+          if (asset?.asset?.size && asset.asset.size > 5 * 1024 * 1024) {
+            return "Image must be less than 5MB. Please compress your image before uploading."
+          }
+          return true
+        }),
     }),
     defineField({
       name: "altText",

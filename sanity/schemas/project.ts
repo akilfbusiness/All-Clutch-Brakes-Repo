@@ -25,8 +25,15 @@ export const projectSchema = defineType({
       title: "Featured Image",
       type: "image",
       options: { hotspot: true },
-      validation: (Rule) => Rule.required(),
-      description: "Main image shown in the projects grid and at the top of the project page.",
+      validation: (Rule) =>
+        Rule.required().assetRequired().custom((asset: any) => {
+          if (asset?.asset?._ref) return true
+          if (asset?.asset?.size && asset.asset.size > 5 * 1024 * 1024) {
+            return "Image must be less than 5MB. Please compress your image before uploading."
+          }
+          return true
+        }),
+      description: "Main image shown in the projects grid and at the top of the project page. Max file size: 5MB.",
     }),
     defineField({
       name: "gallery",
@@ -44,9 +51,18 @@ export const projectSchema = defineType({
               description: "Optional caption for this image.",
             },
           ],
+          validation: (Rule) =>
+            Rule.custom((asset: any) => {
+              if (!asset) return true
+              if (asset?.asset?._ref) return true
+              if (asset?.asset?.size && asset.asset.size > 5 * 1024 * 1024) {
+                return "Image must be less than 5MB. Please compress your image before uploading."
+              }
+              return true
+            }),
         },
       ],
-      description: "Additional project photos — before, during, after, detail shots, etc.",
+      description: "Additional project photos — before, during, after, detail shots, etc. Max file size per image: 5MB.",
     }),
     defineField({
       name: "description",
