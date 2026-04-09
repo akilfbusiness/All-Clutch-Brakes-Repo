@@ -162,7 +162,7 @@ export function ServicePageClient({
             <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 Enquire About This Service
               </Link>
@@ -360,7 +360,7 @@ export function ServicePageClient({
                   <div className="space-y-3">
                     <Link
                       href="/contact"
-                      className="flex items-center justify-center gap-2 w-full bg-accent hover:bg-accent/90 text-black font-bold text-sm py-3.5 transition-all duration-300 hover:-translate-y-0.5"
+                      className="flex items-center justify-center gap-2 w-full bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm py-3.5 transition-all duration-300 hover:-translate-y-0.5"
                     >
                       Request a Quote
                     </Link>
@@ -447,23 +447,23 @@ export function ServicePageClient({
             className="grid md:grid-cols-[1fr_auto] items-center gap-10 py-16 md:py-20"
           >
             <div>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black tracking-tight leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-accent-foreground tracking-tight leading-tight">
                 Ready for {service.title}?
               </h2>
-              <p className="mt-3 text-black/55 text-sm md:text-base max-w-lg leading-relaxed">
+              <p className="mt-3 text-accent-foreground/55 text-sm md:text-base max-w-lg leading-relaxed">
                 Contact {businessName} today for expert service, upfront pricing, and same-day availability.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 bg-black hover:bg-black/80 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 bg-background hover:bg-background/90 text-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 Contact Us
               </Link>
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 border-2 border-black hover:bg-black hover:text-white text-black font-bold text-sm px-8 py-4 transition-all duration-300"
+                className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"
               >
                 <Phone className="h-4 w-4" /> {phone}
               </a>

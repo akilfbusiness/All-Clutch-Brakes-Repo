@@ -190,7 +190,7 @@ export function FeaturedItemsGrid({ items }: Props) {
                   <Link
                     href={selected.ctaLink}
                     onClick={close}
-                    className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-black px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors"
+                    className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors"
                   >
                     {selected.ctaLabel}
                   </Link>

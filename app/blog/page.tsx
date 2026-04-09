@@ -223,10 +223,10 @@ export default async function BlogPage() {
         {/* ── CTA Strip ──────────────────────────────────────────── */}
         <section className="bg-accent py-16" aria-label="Contact call to action">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-black mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-accent-foreground mb-4">
               Have a Question We Can Answer?
             </h2>
-            <p className="text-black/70 mb-8 max-w-xl mx-auto">
+            <p className="text-accent-foreground/70 mb-8 max-w-xl mx-auto">
               Contact our team — we&apos;re happy to provide expert advice on clutch, brake, and transmission issues.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -238,7 +238,7 @@ export default async function BlogPage() {
               </Link>
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 border border-black/30 hover:border-black text-black px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
+                className="inline-flex items-center justify-center gap-2 border border-accent-foreground/30 hover:border-accent-foreground text-accent-foreground px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
                 <Phone className="h-4 w-4" />
                 {phone}

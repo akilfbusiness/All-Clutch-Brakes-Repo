@@ -403,10 +403,10 @@ export default async function BlogPostPage({
         {/* ── CTA Strip ──────────────────────────────────────────── */}
         <section className="bg-accent py-16">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-black mb-4">
+            <h2 className="text-3xl font-bold tracking-tight text-accent-foreground mb-4">
               {displayPost.ctaHeading ?? "Need Expert Help?"}
             </h2>
-            <p className="text-black/70 mb-8 max-w-xl mx-auto">
+            <p className="text-accent-foreground/70 mb-8 max-w-xl mx-auto">
               {displayPost.ctaBody ??
                 `${businessName} provides expert clutch, brake, and transmission services across Adelaide.`}
             </p>
@@ -419,7 +419,7 @@ export default async function BlogPostPage({
               </Link>
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 border border-black/30 hover:border-black text-black px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
+                className="inline-flex items-center justify-center gap-2 border border-accent-foreground/30 hover:border-accent-foreground text-accent-foreground px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
                 <Phone className="h-4 w-4" />
                 {phone}

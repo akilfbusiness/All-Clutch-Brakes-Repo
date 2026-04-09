@@ -137,7 +137,7 @@ export function BrandsGrid({ brands }: Props) {
                 )}
                 {selected.website && (
                   <a href={selected.website} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-6 py-3 transition-all duration-300 hover:-translate-y-0.5">
+                    className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-6 py-3 transition-all duration-300 hover:-translate-y-0.5">
                     Visit Website <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                 )}

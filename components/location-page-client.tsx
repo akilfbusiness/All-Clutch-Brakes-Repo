@@ -96,7 +96,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
             <motion.div variants={fadeUp}>
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-3 bg-accent text-black px-8 py-4 text-sm font-bold uppercase tracking-widest hover:bg-accent/90 transition-colors"
+                className="inline-flex items-center gap-3 bg-accent text-accent-foreground px-8 py-4 text-sm font-bold uppercase tracking-widest hover:bg-accent/90 transition-colors"
               >
                 Get Service in {location.title}
               </Link>
@@ -239,7 +239,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
                     <div className="space-y-3">
                       <Link
                         href="/contact"
-                        className="block w-full text-center bg-accent text-black px-6 py-3 text-sm font-bold uppercase tracking-widest hover:bg-accent/90 transition-colors"
+                        className="block w-full text-center bg-accent text-accent-foreground px-6 py-3 text-sm font-bold uppercase tracking-widest hover:bg-accent/90 transition-colors"
                       >
                         Request a Quote
                       </Link>
@@ -276,10 +276,10 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
       {/* ── CTA Strip ─────────────────────────────────────────── */}
       <section className="bg-accent py-16">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-black mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-accent-foreground mb-4">
             Ready for Service in {location.title}?
           </h2>
-          <p className="text-black/70 mb-8 max-w-xl mx-auto">
+          <p className="text-accent-foreground/70 mb-8 max-w-xl mx-auto">
             Contact {businessName} today for your clutch, brake, or transmission needs.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -291,7 +291,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
             </Link>
             <a
               href={`tel:${phone.replace(/\s/g, "")}`}
-              className="inline-flex items-center justify-center gap-2 border border-black/30 hover:border-black text-black px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
+              className="inline-flex items-center justify-center gap-2 border border-accent-foreground/30 hover:border-accent-foreground text-accent-foreground px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
             >
               <Phone className="h-4 w-4" />
               {phone}

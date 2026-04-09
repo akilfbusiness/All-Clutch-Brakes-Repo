@@ -85,10 +85,10 @@ export default async function FeaturedProductPage() {
         {/* ── CTA Strip ──────────────────────────────────────────── */}
         <section className="bg-accent py-16">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-black mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-accent-foreground mb-4">
               Interested in Any of These?
             </h2>
-            <p className="text-black/70 mb-8 max-w-xl mx-auto">
+            <p className="text-accent-foreground/70 mb-8 max-w-xl mx-auto">
               Call us or send an enquiry and we will get you sorted.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -101,7 +101,7 @@ export default async function FeaturedProductPage() {
               </a>
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 border border-black/30 hover:border-black text-black px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
+                className="inline-flex items-center justify-center gap-2 border border-accent-foreground/30 hover:border-accent-foreground text-accent-foreground px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
                 Send an Enquiry
               </Link>

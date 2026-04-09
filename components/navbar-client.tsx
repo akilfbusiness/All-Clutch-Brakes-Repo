@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, ChevronDown, Sun, Moon } from "lucide-react"
 import { useTheme } from "next-themes"
@@ -37,6 +38,8 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
   const [mounted,     setMounted]     = useState(false)
   const { theme, setTheme } = useTheme()
+  const pathname = usePathname()
+  const useHeroWhite = pathname === "/" && !scrolled && !open
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -97,7 +100,7 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
           {/* Logo */}
           <Link href="/" onClick={() => setOpen(false)} className="relative z-50">
             <span
-              className="text-xs font-bold tracking-[0.2em] uppercase transition-colors duration-300 text-foreground"
+              className={`text-xs font-bold tracking-[0.2em] uppercase transition-colors duration-300 ${useHeroWhite ? "text-white" : "text-foreground"}`}
             >
               {businessName}
             </span>
@@ -106,7 +109,7 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
           {/* Phone — desktop only */}
           <a
             href={`tel:${phone.replace(/\s/g, "")}`}
-            className="hidden md:flex items-center gap-2 text-[11px] font-bold tracking-[0.08em] transition-colors duration-300 relative z-50 text-foreground/60 hover:text-accent"
+            className={`hidden md:flex items-center gap-2 text-[11px] font-bold tracking-[0.08em] transition-colors duration-300 relative z-50 hover:text-accent ${useHeroWhite ? "text-white/80" : "text-foreground/60"}`}
           >
             <Phone className="h-3.5 w-3.5 flex-shrink-0" />
             {phone}
@@ -117,11 +120,11 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               aria-label="Toggle theme"
-              className="relative z-50 hidden md:flex w-9 h-9 border border-border hover:border-accent items-center justify-center transition-colors"
+              className="relative z-50 hidden md:flex w-9 h-9 items-center justify-center transition-colors"
             >
               {theme === "dark"
-                ? <Sun className="h-4 w-4 text-foreground/60" />
-                : <Moon className="h-4 w-4 text-foreground/60" />
+                ? <Sun className={`h-4 w-4 ${useHeroWhite ? "text-white/70" : "text-foreground/60"}`} />
+                : <Moon className={`h-4 w-4 ${useHeroWhite ? "text-white/70" : "text-foreground/60"}`} />
               }
             </button>
           )}
@@ -135,17 +138,17 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
             <motion.span
               animate={{ rotate: open ? 45 : 0, y: open ? 9 : 0 }}
               transition={{ duration: 0.35, ease }}
-              className={`block h-[2px] w-7 origin-center transition-colors duration-300 ${open ? "bg-foreground" : "bg-foreground"}`}
+              className={`block h-[2px] w-7 origin-center transition-colors duration-300 ${open ? "bg-foreground" : useHeroWhite ? "bg-white" : "bg-foreground"}`}
             />
             <motion.span
               animate={{ opacity: open ? 0 : 1, scaleX: open ? 0 : 1 }}
               transition={{ duration: 0.25 }}
-              className={`block h-[2px] w-5 transition-colors duration-300 ${open ? "bg-foreground" : "bg-foreground"}`}
+              className={`block h-[2px] w-5 transition-colors duration-300 ${open ? "bg-foreground" : useHeroWhite ? "bg-white" : "bg-foreground"}`}
             />
             <motion.span
               animate={{ rotate: open ? -45 : 0, y: open ? -9 : 0 }}
               transition={{ duration: 0.35, ease }}
-              className={`block h-[2px] w-7 origin-center transition-colors duration-300 ${open ? "bg-foreground" : "bg-foreground"}`}
+              className={`block h-[2px] w-7 origin-center transition-colors duration-300 ${open ? "bg-foreground" : useHeroWhite ? "bg-white" : "bg-foreground"}`}
             />
           </button>
         </div>
@@ -280,7 +283,7 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
                 <Link
                   href={ctaLink}
                   onClick={() => setOpen(false)}
-                  className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-colors"
+                  className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-colors"
                 >
                   {ctaLabel}
                 </Link>

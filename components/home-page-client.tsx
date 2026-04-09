@@ -8,6 +8,7 @@ import {
   useInView, useMotionValue, useTransform as useMotionTransform, animate,
 } from "framer-motion"
 import { Phone, Plus, ArrowRight, MapPin, Clock, Wrench } from "lucide-react"
+import { useTheme } from "next-themes"
 import { TestimonialsCarousel } from "./testimonials-carousel"
 import { PromotionsBanner } from "./promotions-banner"
 import type { Testimonial, Promotion } from "@/sanity/queries"
@@ -197,6 +198,11 @@ export function HomePageClient({
   const [showAllFaqs,  setShowAllFaqs]  = useState(false)
   const [mousePos,     setMousePos]     = useState({ x: 40, y: 60 })
 
+  const { theme } = useTheme()
+  const glowColor = theme === "light"
+    ? "oklch(0.52 0.20 245 / 0.18)"
+    : "oklch(0.70 0.19 55 / 0.12)"
+
   // Split headline into two tone lines
   const words = heroHeading.split(" ")
   const half  = Math.ceil(words.length / 2)
@@ -257,7 +263,7 @@ export function HomePageClient({
         <div
           className="absolute inset-0 pointer-events-none transition-opacity duration-500"
           style={{
-            background: `radial-gradient(700px circle at ${mousePos.x}% ${mousePos.y}%, oklch(0.70 0.19 55 / 0.12), transparent 55%)`,
+            background: `radial-gradient(700px circle at ${mousePos.x}% ${mousePos.y}%, ${glowColor}, transparent 55%)`,
           }}
         />
 
@@ -294,7 +300,7 @@ export function HomePageClient({
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:gap-4 hover:-translate-y-0.5 active:translate-y-0"
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:gap-4 hover:-translate-y-0.5 active:translate-y-0"
               >
                 <Phone className="h-4 w-4 flex-shrink-0" />
                 {primaryCta}: {phone}
@@ -621,7 +627,7 @@ export function HomePageClient({
             >
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
               >
                 <Phone className="h-4 w-4" /> Call {phone}
               </a>
@@ -715,7 +721,7 @@ export function HomePageClient({
             <div className="flex flex-wrap gap-4">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-colors duration-300"
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-colors duration-300"
               >
                 <Phone className="h-4 w-4" /> Call Now
               </a>
@@ -837,23 +843,23 @@ export function HomePageClient({
             className="grid md:grid-cols-[1fr_auto] items-center gap-10 py-16 md:py-20"
           >
             <div>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black tracking-tight leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-accent-foreground tracking-tight leading-tight">
                 {ctaHeading}
               </h2>
-              <p className="mt-3 text-black/55 text-sm md:text-base max-w-lg leading-relaxed">
+              <p className="mt-3 text-accent-foreground/55 text-sm md:text-base max-w-lg leading-relaxed">
                 {ctaBody}
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2.5 bg-black hover:bg-black/80 text-white font-bold text-sm px-8 py-4 transition-colors duration-300"
+                className="inline-flex items-center justify-center gap-2.5 bg-background hover:bg-background/90 text-foreground font-bold text-sm px-8 py-4 transition-colors duration-300"
               >
                 <Phone className="h-4 w-4" /> {phone}
               </a>
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 border-2 border-black hover:bg-black hover:text-white text-black font-bold text-sm px-8 py-4 transition-all duration-300"
+                className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"
               >
                 Get a Quote Online
               </Link>

@@ -133,7 +133,7 @@ export function ContactPageClient({
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
               </a>
@@ -343,7 +343,7 @@ export function ContactPageClient({
                   {/* Submit */}
                   <button
                     type="submit"
-                    className="w-full bg-accent hover:bg-accent/90 text-black font-bold text-sm py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+                    className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
                   >
                     Send Enquiry
                   </button>
