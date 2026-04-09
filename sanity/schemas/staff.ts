@@ -23,7 +23,15 @@ export const staffSchema = defineType({
       title: "Staff Photo",
       type: "image",
       options: { hotspot: true },
-      validation: (Rule) => Rule.required(),
+      description: "Max file size: 5MB.",
+      validation: (Rule) =>
+        Rule.required().assetRequired().custom((asset: any) => {
+          if (asset?.asset?._ref) return true
+          if (asset?.asset?.size && asset.asset.size > 5 * 1024 * 1024) {
+            return "Image must be less than 5MB. Please compress your image before uploading."
+          }
+          return true
+        }),
     }),
     defineField({
       name: "bio",

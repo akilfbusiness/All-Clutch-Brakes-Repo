@@ -1,56 +1,61 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Phone, ChevronRight, ArrowRight } from "lucide-react"
-import { getSiteSettings } from "@/sanity/queries"
+import { Phone, ArrowRight } from "lucide-react"
+import { getSiteSettings, getPageBySlug } from "@/sanity/queries"
+import { PageHero } from "@/components/page-hero"
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
+  const page = await getPageBySlug("miscellaneous")
+  
   return {
-    title: `Miscellaneous | ${businessName}`,
-    description: `Miscellaneous products and parts from ${businessName}.`,
+    title: page?.metaTitle || `Miscellaneous | ${businessName}`,
+    description: page?.metaDescription || `Miscellaneous products and parts from ${businessName}.`,
     alternates: { canonical: "/miscellaneous" },
   }
 }
 
 export default async function MiscellaneousPage() {
   const settings = await getSiteSettings()
+  const page = await getPageBySlug("miscellaneous")
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
-  const phone        = settings?.phone?.[0]   ?? "(08) 8277 8122"
-  const siteUrl      = settings?.siteUrl      ?? "https://example.com"
+  const phone = settings?.phone?.[0] ?? "(08) 8277 8122"
+
+  const title = page?.title || "Miscellaneous"
+  const heroHeading = page?.heroHeading
+  const heroSubheading = page?.heroSubheading || `Additional products and parts available from ${businessName}. Content for this section is being updated — get in touch and we can help you find what you need.`
+  const heroImage = page?.heroImage
 
   return (
     <>
-      <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">
-        <span aria-hidden className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-black leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap">
-          Miscellaneous
-        </span>
-        <div className="container relative z-10">
-          <nav aria-label="Breadcrumb" className="mb-10">
-            <ol className="flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] uppercase text-muted-foreground/50">
-              <li><Link href="/" className="hover:text-accent transition-colors">Home</Link></li>
-              <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
-              <li className="text-accent">Miscellaneous</li>
-            </ol>
-          </nav>
-          <div className="max-w-4xl">
-            <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">Parts &amp; Products</p>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-black tracking-tight leading-[0.95] text-foreground mb-8">
-              Miscellaneous
-            </h1>
-            <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mb-10">
-              Additional products and parts available from {businessName}. Content for this section is being updated — get in touch and we can help you find what you need.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <a href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
-                <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
-              </a>
-              <Link href="/contact"
-                className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
-                Send an Enquiry <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
+      <PageHero
+        title={title}
+        heading={heroHeading}
+        subheading={heroSubheading}
+        heroImage={heroImage}
+        breadcrumb={[
+          { label: "Home", href: "/" },
+          { label: "Miscellaneous", href: "/miscellaneous" },
+        ]}
+        category="Parts & Products"
+      />
+
+      <section className="container py-16 md:py-20">
+        <div className="max-w-4xl">
+          <div className="flex flex-wrap gap-4">
+            <a
+              href={`tel:${phone.replace(/\s/g, "")}`}
+              className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+            >
+              <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
+            </a>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+            >
+              Send an Enquiry <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>

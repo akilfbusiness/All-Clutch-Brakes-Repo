@@ -25,9 +25,16 @@ export const certificationSchema = defineType({
       name: "logo",
       title: "Logo / Badge",
       type: "image",
-      description: "Upload the certification logo or badge. Transparent PNG recommended.",
+      description: "Upload the certification logo or badge. Transparent PNG recommended. Max file size: 5MB.",
       options: { hotspot: true },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) =>
+        Rule.required().assetRequired().custom((asset: any) => {
+          if (asset?.asset?._ref) return true
+          if (asset?.asset?.size && asset.asset.size > 5 * 1024 * 1024) {
+            return "Image must be less than 5MB. Please compress your image before uploading."
+          }
+          return true
+        }),
     }),
     defineField({
       name: "description",
