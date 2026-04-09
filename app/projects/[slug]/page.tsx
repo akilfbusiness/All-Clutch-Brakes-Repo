@@ -97,7 +97,7 @@ export default async function ProjectDetailPage({ params }: Props) {
             </nav>
 
             <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-accent mb-4">Case Study</p>
-            <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight leading-none text-foreground mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-none text-foreground mb-6">
               {project.title}
             </h1>
 
@@ -132,7 +132,7 @@ export default async function ProjectDetailPage({ params }: Props) {
         {project.gallery && project.gallery.length > 0 && (
           <section className="py-16 md:py-20 border-b border-border">
             <div className="container mx-auto px-6">
-              <h2 className="text-2xl font-black uppercase tracking-tight mb-10 pb-4 border-b border-border">
+              <h2 className="text-2xl font-bold tracking-tight mb-10 pb-4 border-b border-border">
                 Project Gallery
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-border">
@@ -174,7 +174,7 @@ export default async function ProjectDetailPage({ params }: Props) {
             <div className="flex flex-col sm:flex-row gap-4">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-black px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
+                className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
                 <Phone className="h-4 w-4" />
                 Call Now: {phone}
@@ -192,10 +192,10 @@ export default async function ProjectDetailPage({ params }: Props) {
         {/* ── CTA Strip ──────────────────────────────────────────── */}
         <section className="bg-accent py-16">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-black mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-accent-foreground mb-4">
               Want Similar Work Done?
             </h2>
-            <p className="text-black/70 mb-8 max-w-xl mx-auto">
+            <p className="text-accent-foreground/70 mb-8 max-w-xl mx-auto">
               {businessName} handles clutch, brake, and transmission jobs of all sizes. Get in touch today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -207,7 +207,7 @@ export default async function ProjectDetailPage({ params }: Props) {
               </Link>
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 border border-black/30 hover:border-black text-black px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
+                className="inline-flex items-center justify-center gap-2 border border-accent-foreground/30 hover:border-accent-foreground text-accent-foreground px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
                 <Phone className="h-4 w-4" />
                 {phone}

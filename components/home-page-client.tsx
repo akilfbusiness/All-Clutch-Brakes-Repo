@@ -8,6 +8,7 @@ import {
   useInView, useMotionValue, useTransform as useMotionTransform, animate,
 } from "framer-motion"
 import { Phone, Plus, ArrowRight, MapPin, Clock, Wrench } from "lucide-react"
+import { useTheme } from "next-themes"
 import { TestimonialsCarousel } from "./testimonials-carousel"
 import { PromotionsBanner } from "./promotions-banner"
 import type { Testimonial, Promotion } from "@/sanity/queries"
@@ -127,7 +128,7 @@ function SectionNum({ n }: { n: string }) {
   return (
     <span
       aria-hidden
-      className="absolute top-6 right-6 md:right-10 text-[100px] md:text-[160px] font-black leading-none text-foreground/[0.03] select-none pointer-events-none"
+      className="absolute top-6 right-6 md:right-10 text-[100px] md:text-[160px] font-bold leading-none text-foreground/[0.03] select-none pointer-events-none"
     >
       {n}
     </span>
@@ -197,6 +198,11 @@ export function HomePageClient({
   const [showAllFaqs,  setShowAllFaqs]  = useState(false)
   const [mousePos,     setMousePos]     = useState({ x: 40, y: 60 })
 
+  const { theme } = useTheme()
+  const glowColor = theme === "light"
+    ? "oklch(0.52 0.20 245 / 0.18)"
+    : "oklch(0.70 0.19 55 / 0.12)"
+
   // Split headline into two tone lines
   const words = heroHeading.split(" ")
   const half  = Math.ceil(words.length / 2)
@@ -257,7 +263,7 @@ export function HomePageClient({
         <div
           className="absolute inset-0 pointer-events-none transition-opacity duration-500"
           style={{
-            background: `radial-gradient(700px circle at ${mousePos.x}% ${mousePos.y}%, oklch(0.70 0.19 55 / 0.12), transparent 55%)`,
+            background: `radial-gradient(700px circle at ${mousePos.x}% ${mousePos.y}%, ${glowColor}, transparent 55%)`,
           }}
         />
 
@@ -276,10 +282,10 @@ export function HomePageClient({
 
             {/* Two-tone headline */}
             <motion.h1 variants={fadeUp} className="leading-[1.0] tracking-tight mb-8">
-              <span className="block text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-black text-white">
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white">
                 {line1}
               </span>
-              <span className="block text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-black text-accent">
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-accent">
                 {line2}
               </span>
             </motion.h1>
@@ -294,7 +300,7 @@ export function HomePageClient({
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:gap-4 hover:-translate-y-0.5 active:translate-y-0"
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:gap-4 hover:-translate-y-0.5 active:translate-y-0"
               >
                 <Phone className="h-4 w-4 flex-shrink-0" />
                 {primaryCta}: {phone}
@@ -395,7 +401,7 @@ export function HomePageClient({
               className="group flex flex-col justify-between p-8 md:p-12 lg:p-16 min-h-[280px] md:min-h-[340px] border-b lg:border-b-0 border-border hover:bg-foreground/[0.025] transition-colors duration-500 cursor-default"
             >
               <div>
-                <p className="text-6xl md:text-7xl lg:text-8xl xl:text-[100px] font-black text-foreground group-hover:text-accent leading-none tracking-tight whitespace-pre-line transition-colors duration-500">
+                <p className="text-6xl md:text-7xl lg:text-8xl xl:text-[100px] font-bold text-foreground group-hover:text-accent leading-none tracking-tight whitespace-pre-line transition-colors duration-500">
                   {stat.displayValue}
                 </p>
                 <div className="mt-6 mb-5 w-full h-px bg-border group-hover:bg-accent/30 transition-colors duration-500" />
@@ -430,7 +436,7 @@ export function HomePageClient({
               <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-4">
                 What We Do
               </p>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-none text-foreground">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-none text-foreground">
                 {servicesHeading}
               </h2>
             </div>
@@ -472,7 +478,7 @@ export function HomePageClient({
                       {/* Watermark number */}
                       <span
                         aria-hidden
-                        className="absolute top-4 right-5 text-[72px] font-black leading-none text-foreground/[0.035] select-none pointer-events-none"
+                        className="absolute top-4 right-5 text-[72px] font-bold leading-none text-foreground/[0.035] select-none pointer-events-none"
                       >
                         {String(i + 1).padStart(2, "0")}
                       </span>
@@ -492,7 +498,7 @@ export function HomePageClient({
                       </div>
 
                       {/* Title */}
-                      <h3 className={`text-lg md:text-xl font-black leading-snug tracking-tight transition-colors duration-300 pr-6 mb-1 ${isOpen ? "text-accent" : "text-foreground group-hover:text-accent"}`}>
+                      <h3 className={`text-lg md:text-xl font-bold leading-snug tracking-tight transition-colors duration-300 pr-6 mb-1 ${isOpen ? "text-accent" : "text-foreground group-hover:text-accent"}`}>
                         {service.title}
                       </h3>
 
@@ -581,7 +587,7 @@ export function HomePageClient({
               </p>
               {/* Autovera-style orange left-border heading */}
               <div className="border-l-[3px] border-accent pl-6 mb-16">
-                <h2 className="text-4xl md:text-5xl lg:text-[56px] font-black tracking-tight leading-tight text-foreground">
+                <h2 className="text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-tight text-foreground">
                   {whyUsHeading}
                 </h2>
               </div>
@@ -621,7 +627,7 @@ export function HomePageClient({
             >
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
               >
                 <Phone className="h-4 w-4" /> Call {phone}
               </a>
@@ -651,7 +657,7 @@ export function HomePageClient({
             <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-transparent lg:flex" />
             {/* Badge */}
             <div className="absolute bottom-8 left-8 bg-black/80 backdrop-blur-sm border border-border/60 px-6 py-4">
-              <p className="text-accent font-black text-3xl leading-none">30+</p>
+              <p className="text-accent font-bold text-3xl leading-none">30+</p>
               <p className="text-white/60 text-[10px] uppercase tracking-widest mt-1.5">Years Experience</p>
             </div>
           </motion.div>
@@ -685,7 +691,7 @@ export function HomePageClient({
               { isNum: true,  num: 100,  suffix: "%", label: "Honest Fixed Pricing" },
             ].map((stat, i) => (
               <div key={i} className="py-10 border-b border-white/10 last:border-0">
-                <p className="text-6xl md:text-7xl lg:text-8xl font-black text-white leading-none">
+                <p className="text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-none">
                   <Counter to={stat.num!} suffix={stat.suffix} />
                 </p>
                 <div className="mt-5 mb-4 w-14 h-[2px] bg-accent" />
@@ -705,7 +711,7 @@ export function HomePageClient({
             <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-6">
               Our Story
             </p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight mb-8">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight mb-8">
               Adelaide&apos;s Most Trusted Clutch &amp; Brake Specialists.
             </h2>
             <div className="space-y-4 text-white/55 text-sm leading-relaxed mb-10">
@@ -715,7 +721,7 @@ export function HomePageClient({
             <div className="flex flex-wrap gap-4">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-colors duration-300"
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-colors duration-300"
               >
                 <Phone className="h-4 w-4" /> Call Now
               </a>
@@ -749,7 +755,7 @@ export function HomePageClient({
               <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-6">
                 Got Questions?
               </p>
-              <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tight leading-tight mb-8">
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight leading-tight mb-8">
                 Frequently Asked Questions
               </h2>
               <div className="w-14 h-[2px] bg-accent mb-6" />
@@ -837,23 +843,23 @@ export function HomePageClient({
             className="grid md:grid-cols-[1fr_auto] items-center gap-10 py-16 md:py-20"
           >
             <div>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-black tracking-tight leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-accent-foreground tracking-tight leading-tight">
                 {ctaHeading}
               </h2>
-              <p className="mt-3 text-black/55 text-sm md:text-base max-w-lg leading-relaxed">
+              <p className="mt-3 text-accent-foreground/55 text-sm md:text-base max-w-lg leading-relaxed">
                 {ctaBody}
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2.5 bg-black hover:bg-black/80 text-white font-bold text-sm px-8 py-4 transition-colors duration-300"
+                className="inline-flex items-center justify-center gap-2.5 bg-background hover:bg-background/90 text-foreground font-bold text-sm px-8 py-4 transition-colors duration-300"
               >
                 <Phone className="h-4 w-4" /> {phone}
               </a>
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 border-2 border-black hover:bg-black hover:text-white text-black font-bold text-sm px-8 py-4 transition-all duration-300"
+                className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"
               >
                 Get a Quote Online
               </Link>

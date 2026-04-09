@@ -39,7 +39,7 @@ export function FaqPageClient({ businessName, phone, faqCategories }: FaqPageCli
     <>
       {/* HERO */}
       <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">
-        <span aria-hidden className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-black leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap">
+        <span aria-hidden className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap">
           FAQ
         </span>
         <div className="container relative z-10">
@@ -52,7 +52,7 @@ export function FaqPageClient({ businessName, phone, faqCategories }: FaqPageCli
           </nav>
           <div className="max-w-4xl">
             <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">Got Questions?</p>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-black tracking-tight leading-[0.95] text-foreground mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] text-foreground mb-8">
               Frequently Asked Questions
             </h1>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mb-10">
@@ -60,7 +60,7 @@ export function FaqPageClient({ businessName, phone, faqCategories }: FaqPageCli
             </p>
             <div className="flex flex-wrap gap-4">
               <a href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
               </a>
               <Link href="/contact"
@@ -109,7 +109,7 @@ export function FaqPageClient({ businessName, phone, faqCategories }: FaqPageCli
               {faqCategories.map((cat) => (
                 <div key={cat.category} id={cat.category.toLowerCase().replace(/\s+/g, "-")}>
                   <div className="flex items-center gap-4 mb-6">
-                    <h2 className="text-xl md:text-2xl font-black text-foreground tracking-tight">
+                    <h2 className="text-xl md:text-2xl font-bold text-foreground tracking-tight">
                       {cat.category}
                     </h2>
                     <span className="text-[10px] font-bold tracking-[0.25em] uppercase text-accent/60 border border-accent/20 px-2.5 py-1">
@@ -171,20 +171,20 @@ export function FaqPageClient({ businessName, phone, faqCategories }: FaqPageCli
         <div className="container">
           <div className="grid md:grid-cols-[1fr_auto] items-center gap-10 py-16 md:py-20">
             <div>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-black tracking-tight leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-accent-foreground tracking-tight leading-tight">
                 Still Have a Question?
               </h2>
-              <p className="mt-3 text-black/55 text-sm md:text-base max-w-lg leading-relaxed">
+              <p className="mt-3 text-accent-foreground/55 text-sm md:text-base max-w-lg leading-relaxed">
                 Call us directly or send an enquiry — we&apos;re always happy to help.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
               <a href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 bg-black hover:bg-black/80 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
+                className="inline-flex items-center justify-center gap-2 bg-background hover:bg-background/90 text-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 <Phone className="h-4 w-4" /> {phone}
               </a>
               <Link href="/contact"
-                className="inline-flex items-center justify-center gap-2 border-2 border-black hover:bg-black hover:text-white text-black font-bold text-sm px-8 py-4 transition-all duration-300">
+                className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300">
                 Send an Enquiry
               </Link>
             </div>

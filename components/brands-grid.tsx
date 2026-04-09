@@ -39,7 +39,7 @@ export function BrandsGrid({ brands }: Props) {
   if (brands.length === 0) {
     return (
       <div className="text-center py-32 border border-dashed border-border">
-        <p className="text-4xl font-black text-foreground/10 mb-4">B</p>
+        <p className="text-4xl font-bold text-foreground/10 mb-4">B</p>
         <p className="text-muted-foreground/50 text-sm">Add brands via Sanity Studio → Products → Brands</p>
       </div>
     )
@@ -73,13 +73,13 @@ export function BrandsGrid({ brands }: Props) {
               </div>
             ) : (
               <div className="h-16 w-full flex items-center justify-center mb-4">
-                <span className="text-3xl font-black text-accent/60 group-hover:text-accent transition-colors duration-300">
+                <span className="text-3xl font-bold text-accent/60 group-hover:text-accent transition-colors duration-300">
                   {brand.name.slice(0, 2).toUpperCase()}
                 </span>
               </div>
             )}
 
-            <h2 className="text-sm font-black text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight">{brand.name}</h2>
+            <h2 className="text-sm font-bold text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight">{brand.name}</h2>
             {brand.description && (
               <p className="text-muted-foreground/60 text-xs leading-relaxed line-clamp-2 mt-1">{brand.description}</p>
             )}
@@ -128,7 +128,7 @@ export function BrandsGrid({ brands }: Props) {
 
               <div className="p-7">
                 <p className="text-accent text-[10px] font-bold tracking-[0.35em] uppercase mb-2">Brand</p>
-                <h2 className="text-2xl font-black text-foreground tracking-tight mb-4">{selected.name}</h2>
+                <h2 className="text-2xl font-bold text-foreground tracking-tight mb-4">{selected.name}</h2>
                 <div className="w-10 h-[2px] bg-accent mb-5" />
                 {selected.description && (
                   <p className="text-muted-foreground leading-relaxed text-sm whitespace-pre-line mb-6">
@@ -137,7 +137,7 @@ export function BrandsGrid({ brands }: Props) {
                 )}
                 {selected.website && (
                   <a href={selected.website} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-6 py-3 transition-all duration-300 hover:-translate-y-0.5">
+                    className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-6 py-3 transition-all duration-300 hover:-translate-y-0.5">
                     Visit Website <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                 )}

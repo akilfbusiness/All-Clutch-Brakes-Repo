@@ -50,10 +50,10 @@ const ptComponents = {
       <p className="text-muted-foreground text-sm md:text-base leading-relaxed mb-5">{children}</p>
     ),
     h2: ({ children }: { children?: React.ReactNode }) => (
-      <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight mt-10 mb-5">{children}</h2>
+      <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mt-10 mb-5">{children}</h2>
     ),
     h3: ({ children }: { children?: React.ReactNode }) => (
-      <h3 className="text-xl font-black text-foreground tracking-tight mt-8 mb-4">{children}</h3>
+      <h3 className="text-xl font-bold text-foreground tracking-tight mt-8 mb-4">{children}</h3>
     ),
   },
   marks: {
@@ -150,7 +150,7 @@ export function ServicePageClient({
 
             <motion.h1
               variants={fadeUp}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.95] text-white mb-6"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] text-white mb-6"
             >
               {service.title}
             </motion.h1>
@@ -162,7 +162,7 @@ export function ServicePageClient({
             <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 Enquire About This Service
               </Link>
@@ -197,7 +197,7 @@ export function ServicePageClient({
                 >
                   <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">About This Service</p>
                   <div className="border-l-[3px] border-accent pl-6 mb-8">
-                    <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight leading-tight">
+                    <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight">
                       About {service.title}
                     </h2>
                   </div>
@@ -226,7 +226,7 @@ export function ServicePageClient({
                 className="mb-14"
               >
                 <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">Our Approach</p>
-                <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
                   {howWeDeliverHeading}
                 </h2>
                 <motion.div
@@ -260,7 +260,7 @@ export function ServicePageClient({
                   className="mb-14"
                 >
                   <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">Gallery</p>
-                  <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight mb-8">
+                  <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
                     Service Photos
                   </h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -300,7 +300,7 @@ export function ServicePageClient({
                   viewport={{ once: true }} transition={{ duration: 0.6, ease }}
                 >
                   <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">FAQ</p>
-                  <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight mb-10">
+                  <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-10">
                     Common Questions
                   </h2>
                   <div className="border-t border-border">
@@ -353,14 +353,14 @@ export function ServicePageClient({
                 >
                   <div className="absolute top-0 right-0 w-20 h-20 bg-accent/[0.06] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                   <p className="text-accent text-[10px] font-bold tracking-[0.4em] uppercase mb-3">Free Quote</p>
-                  <h3 className="text-xl font-black text-foreground tracking-tight mb-4">Get a Quote</h3>
+                  <h3 className="text-xl font-bold text-foreground tracking-tight mb-4">Get a Quote</h3>
                   <p className="text-xs text-muted-foreground leading-relaxed mb-6">
                     Contact us today for expert {service.title.toLowerCase()} at competitive prices. No obligation.
                   </p>
                   <div className="space-y-3">
                     <Link
                       href="/contact"
-                      className="flex items-center justify-center gap-2 w-full bg-accent hover:bg-accent/90 text-black font-bold text-sm py-3.5 transition-all duration-300 hover:-translate-y-0.5"
+                      className="flex items-center justify-center gap-2 w-full bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm py-3.5 transition-all duration-300 hover:-translate-y-0.5"
                     >
                       Request a Quote
                     </Link>
@@ -447,23 +447,23 @@ export function ServicePageClient({
             className="grid md:grid-cols-[1fr_auto] items-center gap-10 py-16 md:py-20"
           >
             <div>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-black tracking-tight leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-accent-foreground tracking-tight leading-tight">
                 Ready for {service.title}?
               </h2>
-              <p className="mt-3 text-black/55 text-sm md:text-base max-w-lg leading-relaxed">
+              <p className="mt-3 text-accent-foreground/55 text-sm md:text-base max-w-lg leading-relaxed">
                 Contact {businessName} today for expert service, upfront pricing, and same-day availability.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 bg-black hover:bg-black/80 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 bg-background hover:bg-background/90 text-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 Contact Us
               </Link>
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 border-2 border-black hover:bg-black hover:text-white text-black font-bold text-sm px-8 py-4 transition-all duration-300"
+                className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"
               >
                 <Phone className="h-4 w-4" /> {phone}
               </a>

@@ -64,7 +64,7 @@ export default async function MeetOurStaffPage() {
       <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">
         <span
           aria-hidden
-          className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-black leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap"
+          className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap"
         >
           Our Team
         </span>
@@ -83,7 +83,7 @@ export default async function MeetOurStaffPage() {
             <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">
               The Team
             </p>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-black tracking-tight leading-[0.95] text-foreground mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] text-foreground mb-8">
               Meet Our Staff
             </h1>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mb-10">
@@ -92,7 +92,7 @@ export default async function MeetOurStaffPage() {
             <div className="flex flex-wrap gap-4">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
               </a>
@@ -121,7 +121,7 @@ export default async function MeetOurStaffPage() {
               { value: "All",       label: "Makes & models" },
             ].map((item, i) => (
               <div key={i} className="group px-6 py-8 md:px-10 md:py-12 hover:bg-foreground/[0.025] transition-colors duration-500 cursor-default">
-                <p className="text-3xl md:text-4xl font-black text-foreground group-hover:text-accent transition-colors duration-500 mb-3">
+                <p className="text-3xl md:text-4xl font-bold text-foreground group-hover:text-accent transition-colors duration-500 mb-3">
                   {item.value}
                 </p>
                 <div className="w-10 h-px bg-border group-hover:bg-accent/40 transition-colors duration-500 mb-3" />
@@ -141,7 +141,7 @@ export default async function MeetOurStaffPage() {
       <section className="py-20 md:py-28 bg-background">
         <div className="container">
           <div className="flex items-center justify-between mb-14">
-            <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
               The Team
             </h2>
             {staff.length > 0 && (
@@ -163,23 +163,23 @@ export default async function MeetOurStaffPage() {
         <div className="container">
           <div className="grid md:grid-cols-[1fr_auto] items-center gap-10 py-16 md:py-20">
             <div>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-black tracking-tight leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-accent-foreground tracking-tight leading-tight">
                 Get in Touch With Our Team
               </h2>
-              <p className="mt-3 text-black/55 text-sm md:text-base max-w-lg leading-relaxed">
+              <p className="mt-3 text-accent-foreground/55 text-sm md:text-base max-w-lg leading-relaxed">
                 Call us or send an enquiry and one of our team members will get back to you promptly.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2.5 bg-black hover:bg-black/80 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2.5 bg-background hover:bg-background/90 text-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4" /> {phone}
               </a>
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 border-2 border-black hover:bg-black hover:text-white text-black font-bold text-sm px-8 py-4 transition-all duration-300"
+                className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"
               >
                 Send an Enquiry
               </Link>

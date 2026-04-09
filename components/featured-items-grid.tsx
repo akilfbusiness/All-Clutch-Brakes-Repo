@@ -89,7 +89,7 @@ export function FeaturedItemsGrid({ items }: Props) {
                   {CATEGORY_LABELS[item.category] ?? item.category}
                 </span>
               )}
-              <h2 className="text-base font-black uppercase tracking-tight text-foreground mb-2 group-hover:text-accent transition-colors">
+              <h2 className="text-base font-bold tracking-tight text-foreground mb-2 group-hover:text-accent transition-colors">
                 {item.title}
               </h2>
               {item.description && (
@@ -159,7 +159,7 @@ export function FeaturedItemsGrid({ items }: Props) {
                   </span>
                 )}
 
-                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-foreground mb-3">
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground mb-3">
                   {selected.title}
                 </h2>
 
@@ -190,7 +190,7 @@ export function FeaturedItemsGrid({ items }: Props) {
                   <Link
                     href={selected.ctaLink}
                     onClick={close}
-                    className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-black px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors"
+                    className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors"
                   >
                     {selected.ctaLabel}
                   </Link>

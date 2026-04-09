@@ -41,7 +41,7 @@ export default async function WhatWeDoPage() {
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
       <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">
-        <span aria-hidden className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-black leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap">
+        <span aria-hidden className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap">
           What We Do
         </span>
         <div className="container relative z-10">
@@ -54,7 +54,7 @@ export default async function WhatWeDoPage() {
           </nav>
           <div className="max-w-4xl">
             <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">Our Expertise</p>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-black tracking-tight leading-[0.95] text-foreground mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] text-foreground mb-8">
               {page?.pageHeading ?? "What We Do"}
             </h1>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mb-10">
@@ -62,7 +62,7 @@ export default async function WhatWeDoPage() {
             </p>
             <div className="flex flex-wrap gap-4">
               <a href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
               </a>
               <Link href="/services"
@@ -81,7 +81,7 @@ export default async function WhatWeDoPage() {
             <div className="grid gap-16 lg:grid-cols-2 items-start">
               <div>
                 <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-6">Our Story</p>
-                <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight leading-tight mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-tight mb-8">
                   {page?.ourBeginningsHeading ?? "Our Beginnings"}
                 </h2>
                 <div className="w-14 h-[2px] bg-accent mb-8" />
@@ -102,7 +102,7 @@ export default async function WhatWeDoPage() {
                     { value: "Free", label: "Quotes & Inspections" },
                   ].map((stat) => (
                     <div key={stat.label} className="group cursor-default">
-                      <dt className="text-4xl md:text-5xl font-black text-foreground group-hover:text-accent transition-colors duration-300 mb-2">{stat.value}</dt>
+                      <dt className="text-4xl md:text-5xl font-bold text-foreground group-hover:text-accent transition-colors duration-300 mb-2">{stat.value}</dt>
                       <div className="w-8 h-[2px] bg-accent/40 mb-2" />
                       <dd className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground/60">{stat.label}</dd>
                     </div>
@@ -119,12 +119,12 @@ export default async function WhatWeDoPage() {
         <section className="py-20 md:py-28 bg-accent">
           <div className="container">
             <div className="max-w-3xl">
-              <p className="text-black/60 text-[10px] font-bold tracking-[0.45em] uppercase mb-6">Our Mission</p>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-black tracking-tight leading-tight mb-8">
+              <p className="text-accent-foreground/60 text-[10px] font-bold tracking-[0.45em] uppercase mb-6">Our Mission</p>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-accent-foreground tracking-tight leading-tight mb-8">
                 {page?.ourMissionHeading ?? "Our Mission"}
               </h2>
               <div className="w-14 h-[2px] bg-black/30 mb-8" />
-              <p className="text-black/70 text-base md:text-lg leading-relaxed">
+              <p className="text-accent-foreground/70 text-base md:text-lg leading-relaxed">
                 {page?.ourMissionText ?? "To provide Adelaide drivers with expert clutch, brake, and transmission services — delivered with honesty, quality, and fair pricing."}
               </p>
             </div>
@@ -138,7 +138,7 @@ export default async function WhatWeDoPage() {
           <div className="container">
             <div className="max-w-3xl">
               <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-6">Why Us</p>
-              <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight leading-tight mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-tight mb-8">
                 {page?.whyChooseUsHeading ?? "Why Choose Us"}
               </h2>
               <div className="w-14 h-[2px] bg-accent mb-8" />
@@ -159,7 +159,7 @@ export default async function WhatWeDoPage() {
           <div className="container">
             <figure className="max-w-3xl">
               <Quote className="h-10 w-10 text-accent mb-8 opacity-70" />
-              <blockquote className="text-2xl md:text-3xl font-black text-foreground leading-snug tracking-tight mb-8">
+              <blockquote className="text-2xl md:text-3xl font-bold text-foreground leading-snug tracking-tight mb-8">
                 &ldquo;{page.testimonialQuote}&rdquo;
               </blockquote>
               <div className="w-14 h-[2px] bg-accent mb-6" />
@@ -178,20 +178,20 @@ export default async function WhatWeDoPage() {
         <div className="container">
           <div className="grid md:grid-cols-[1fr_auto] items-center gap-10 py-16 md:py-20">
             <div>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-black tracking-tight leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-accent-foreground tracking-tight leading-tight">
                 Ready to Work With Us?
               </h2>
-              <p className="mt-3 text-black/55 text-sm md:text-base max-w-lg leading-relaxed">
+              <p className="mt-3 text-accent-foreground/55 text-sm md:text-base max-w-lg leading-relaxed">
                 Call us today for a free quote or bring your vehicle in for a no-obligation inspection.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
               <a href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 bg-black hover:bg-black/80 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
+                className="inline-flex items-center justify-center gap-2 bg-background hover:bg-background/90 text-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 <Phone className="h-4 w-4" /> {phone}
               </a>
               <Link href="/contact"
-                className="inline-flex items-center justify-center gap-2 border-2 border-black hover:bg-black hover:text-white text-black font-bold text-sm px-8 py-4 transition-all duration-300">
+                className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300">
                 Send an Enquiry
               </Link>
             </div>

@@ -98,7 +98,7 @@ export function ContactPageClient({
         {/* Giant watermark */}
         <span
           aria-hidden
-          className="absolute bottom-0 right-0 text-[120px] md:text-[200px] font-black leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap"
+          className="absolute bottom-0 right-0 text-[120px] md:text-[200px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap"
         >
           Contact
         </span>
@@ -123,7 +123,7 @@ export function ContactPageClient({
             </motion.p>
             <motion.h1
               variants={fadeUp}
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-black tracking-tight leading-[0.95] text-foreground mb-8"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] text-foreground mb-8"
             >
               Contact {businessName}
             </motion.h1>
@@ -133,7 +133,7 @@ export function ContactPageClient({
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-black font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
               </a>
@@ -162,7 +162,7 @@ export function ContactPageClient({
               viewport={{ once: true }} transition={{ duration: 0.7, ease }}
             >
               <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">Contact Details</p>
-              <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight mb-10">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-10">
                 {contactInfoHeading}
               </h2>
 
@@ -253,7 +253,7 @@ export function ContactPageClient({
                 <div className="absolute top-0 left-0 right-0 h-[2px] bg-accent" />
 
                 <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-4">Free Quote</p>
-                <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight mb-2">{formHeading}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-2">{formHeading}</h2>
                 {formSubheading && (
                   <p className="text-sm text-muted-foreground leading-relaxed mb-8">{formSubheading}</p>
                 )}
@@ -343,7 +343,7 @@ export function ContactPageClient({
                   {/* Submit */}
                   <button
                     type="submit"
-                    className="w-full bg-accent hover:bg-accent/90 text-black font-bold text-sm py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+                    className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
                   >
                     Send Enquiry
                   </button>
@@ -368,7 +368,7 @@ export function ContactPageClient({
       ══════════════════════════════════════════════════════════════════════ */}
       {faqs.length > 0 && (
         <section className="relative py-24 md:py-32 bg-background border-t border-border overflow-hidden">
-          <span aria-hidden className="absolute top-6 right-6 md:right-10 text-[100px] md:text-[160px] font-black leading-none text-foreground/[0.03] select-none pointer-events-none">
+          <span aria-hidden className="absolute top-6 right-6 md:right-10 text-[100px] md:text-[160px] font-bold leading-none text-foreground/[0.03] select-none pointer-events-none">
             FAQ
           </span>
           <div className="container">
@@ -379,7 +379,7 @@ export function ContactPageClient({
                 className="lg:sticky lg:top-32 lg:self-start"
               >
                 <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-6">Got Questions?</p>
-                <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tight leading-tight mb-8">
+                <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight leading-tight mb-8">
                   Frequently Asked Questions
                 </h2>
                 <div className="w-14 h-[2px] bg-accent mb-6" />

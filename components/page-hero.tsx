@@ -44,7 +44,7 @@ export function PageHero({
       {/* Watermark Text */}
       <span
         aria-hidden
-        className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-black leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap z-[1]"
+        className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.06] select-none pointer-events-none whitespace-nowrap z-[1]"
       >
         {title.split(" ")[0]}
       </span>
@@ -92,7 +92,7 @@ export function PageHero({
 
           {/* Heading */}
           <h1
-            className={`text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-black tracking-tight leading-[0.95] mb-8 ${
+            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] mb-8 ${
               heroImage ? "text-white" : "text-foreground"
             }`}
           >

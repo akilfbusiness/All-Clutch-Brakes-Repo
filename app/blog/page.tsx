@@ -101,7 +101,7 @@ export default async function BlogPage() {
         <section className="relative py-24 md:py-36 bg-background border-b border-border overflow-hidden">
           <span
             aria-hidden
-            className="pointer-events-none select-none absolute -right-4 top-1/2 -translate-y-1/2 text-[clamp(5rem,16vw,13rem)] font-black uppercase tracking-tighter text-foreground/[0.04] leading-none"
+            className="pointer-events-none select-none absolute -right-4 top-1/2 -translate-y-1/2 text-[clamp(5rem,16vw,13rem)] font-bold tracking-tighter text-foreground/[0.06] leading-none"
           >
             Blog
           </span>
@@ -117,7 +117,7 @@ export default async function BlogPage() {
             <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-accent mb-4">
               Resources &amp; Insights
             </p>
-            <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight leading-none mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-none mb-6">
               {settings?.articlesPageHeroTitle ?? "Blog & Resources"}
             </h1>
             <p className="text-lg text-foreground/60 max-w-2xl leading-relaxed">
@@ -177,7 +177,7 @@ export default async function BlogPage() {
                       </div>
                     )}
 
-                    <h2 className="text-lg font-black uppercase tracking-tight leading-snug mb-3 group-hover:text-accent transition-colors flex-1">
+                    <h2 className="text-lg font-bold tracking-tight leading-snug mb-3 group-hover:text-accent transition-colors flex-1">
                       <Link href={`/blog/${post.slug}`} className="before:absolute before:inset-0">
                         {post.title}
                       </Link>
@@ -223,10 +223,10 @@ export default async function BlogPage() {
         {/* ── CTA Strip ──────────────────────────────────────────── */}
         <section className="bg-accent py-16" aria-label="Contact call to action">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-black mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-accent-foreground mb-4">
               Have a Question We Can Answer?
             </h2>
-            <p className="text-black/70 mb-8 max-w-xl mx-auto">
+            <p className="text-accent-foreground/70 mb-8 max-w-xl mx-auto">
               Contact our team — we&apos;re happy to provide expert advice on clutch, brake, and transmission issues.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -238,7 +238,7 @@ export default async function BlogPage() {
               </Link>
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 border border-black/30 hover:border-black text-black px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
+                className="inline-flex items-center justify-center gap-2 border border-accent-foreground/30 hover:border-accent-foreground text-accent-foreground px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
                 <Phone className="h-4 w-4" />
                 {phone}
