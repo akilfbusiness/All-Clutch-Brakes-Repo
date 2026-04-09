@@ -472,7 +472,7 @@ export async function getWhatWeDo(): Promise<WhatWeDoPage> {
   return result ?? {}
 }
 
-// ─── PROJECTS ─────────────────────────────────────────────────────���───────────
+// ─── PROJECTS ─────────────────────────────────────────────────────����───────────
 
 export interface ProjectGalleryImage {
   asset?: string
@@ -688,6 +688,22 @@ export interface GalleryImage {
   order?: number
 }
 
+// ─── PAGES ────────────────────────────────────────────────────────────────────
+
+export interface Page {
+  _id: string
+  title: string
+  slug: string
+  heroHeading?: string
+  heroSubheading?: string
+  heroImage?: any
+  body?: any[]
+  metaTitle?: string
+  metaDescription?: string
+  ogImage?: any
+  category?: string
+}
+
 export const PRODUCT_PAGE_BY_SLUG_QUERY = `
   *[_type == "productPage" && slug.current == $slug][0] {
     _id, title, "slug": slug.current, heading, introText, detailedDescription, sections, specifications,
@@ -827,4 +843,30 @@ export async function getFeaturedGalleryImages(): Promise<GalleryImage[]> {
     tags: ["gallery"],
   })
   return result ?? []
+}
+
+// ─── PAGES ────────────────────────────────────────────────────────────────────
+
+export const PAGE_BY_SLUG_QUERY = `
+  *[_type == "page" && slug.current == $slug][0] {
+    _id,
+    title,
+    "slug": slug.current,
+    heroHeading,
+    heroSubheading,
+    heroImage,
+    body,
+    metaTitle,
+    metaDescription,
+    ogImage,
+    category
+  }
+`
+
+export async function getPageBySlug(slug: string): Promise<Page | null> {
+  return await sanityFetch<Page | null>({
+    query: PAGE_BY_SLUG_QUERY,
+    params: { slug },
+    tags: ["pages"],
+  })
 }
