@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { urlFor } from "@/sanity/client"
+import { urlFor } from "@/sanity/image"
 import type { GalleryImage } from "@/sanity/queries"
 import { X } from "lucide-react"
 
