@@ -22,7 +22,7 @@ interface NavbarClientProps {
   ctaLink?: string
 }
 
-const FALLBACK_NAV_LINKS = [
+const FALLBACK_NAV_LINKS: NavItem[] = [
   { href: "/services",  label: "Services"  },
   { href: "/locations", label: "Locations" },
   { href: "/blog",      label: "Blog"      },
@@ -74,6 +74,7 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
+    onScroll() // initialise on mount so white text shows immediately without needing to scroll
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
