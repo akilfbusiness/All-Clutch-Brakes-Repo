@@ -36,19 +36,24 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
   const [open,        setOpen]        = useState(false)
   const [scrolled,    setScrolled]    = useState(false)
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
-  const [mounted,     setMounted]     = useState(false)
-  const [isHomePage,  setIsHomePage]  = useState(false)
+  const [mounted,        setMounted]        = useState(false)
+  const [isDarkHeroPage, setIsDarkHeroPage] = useState(false)
   const { theme, setTheme } = useTheme()
   const pathname = usePathname()
-  const useHeroWhite = isHomePage && !scrolled && !open
+  const useHeroWhite = isDarkHeroPage && !scrolled && !open
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Use window.location directly — reliable on initial paint and on SPA navigation
+  // Pages that always have a full-bleed dark hero image behind the transparent nav
   useEffect(() => {
-    setIsHomePage(window.location.pathname === "/")
+    const p = window.location.pathname
+    const darkHero =
+      p === "/" ||
+      /^\/services\/.+/.test(p) ||
+      /^\/blog\/.+/.test(p)
+    setIsDarkHeroPage(darkHero)
   }, [pathname])
 
   const links = navItems.length > 0 ? navItems : FALLBACK_NAV_LINKS

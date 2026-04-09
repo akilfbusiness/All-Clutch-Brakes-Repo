@@ -118,8 +118,11 @@ export function ServicePageClient({
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
           </>
         ) : (
-          /* No image — pure dark gradient background */
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-foreground/[0.04]" />
+          /* No image — dark fallback so white text remains legible */
+          <>
+            <div className="absolute inset-0 bg-zinc-900" />
+            <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-transparent to-accent/10" />
+          </>
         )}
 
         {/* Content */}
