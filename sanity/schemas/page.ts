@@ -54,7 +54,16 @@ export const pageSchema = defineType({
       title: "Hero Image",
       type: "image",
       options: { hotspot: true },
-      description: "Optional hero/banner image for the page.",
+      description: "Optional hero/banner image for the page. Max file size: 5MB.",
+      validation: (Rule) =>
+        Rule.custom((asset: any) => {
+          if (!asset) return true
+          if (asset?.asset?._ref) return true
+          if (asset?.asset?.size && asset.asset.size > 5 * 1024 * 1024) {
+            return "Image must be less than 5MB. Please compress your image before uploading."
+          }
+          return true
+        }),
       group: "content",
     }),
     defineField({
@@ -147,7 +156,16 @@ export const pageSchema = defineType({
       name: "ogImage",
       title: "Social Share Image",
       type: "image",
-      description: "Image shown when the page is shared on social media.",
+      description: "Image shown when the page is shared on social media. Max file size: 5MB.",
+      validation: (Rule) =>
+        Rule.custom((asset: any) => {
+          if (!asset) return true
+          if (asset?.asset?._ref) return true
+          if (asset?.asset?.size && asset.asset.size > 5 * 1024 * 1024) {
+            return "Image must be less than 5MB. Please compress your image before uploading."
+          }
+          return true
+        }),
       group: "seo",
     }),
     defineField({

@@ -145,8 +145,17 @@ export const articleSchema = defineType({
       name: "ogImage",
       title: "Social Share Image",
       type: "image",
-      description: "Appears when this article is shared on social media or cited by AI. Recommended: 1200x630px",
+      description: "Appears when this article is shared on social media or cited by AI. Recommended: 1200x630px. Max file size: 5MB.",
       options: { hotspot: true },
+      validation: (Rule) =>
+        Rule.custom((asset: any) => {
+          if (!asset) return true
+          if (asset?.asset?._ref) return true
+          if (asset?.asset?.size && asset.asset.size > 5 * 1024 * 1024) {
+            return "Image must be less than 5MB. Please compress your image before uploading."
+          }
+          return true
+        }),
     }),
   ],
   preview: {
