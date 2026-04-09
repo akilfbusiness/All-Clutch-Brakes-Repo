@@ -4,7 +4,7 @@ import Image from "next/image"
 import { getAllPosts, getSiteSettings } from "@/sanity/queries"
 import type { Post } from "@/sanity/queries"
 import { urlFor } from "@/sanity/image"
-import { Phone, ChevronRight, Calendar, User, Clock } from "lucide-react"
+import { ChevronRight, Calendar, User, Clock, Phone, ArrowRight } from "lucide-react"
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
@@ -85,134 +85,134 @@ export default async function BlogPage() {
     "@context": "https://schema.org",
     "@type": "Blog",
     name: `Blog | ${businessName}`,
-    description:
-      "Expert guides and answers about clutch, brake, and transmission repairs.",
+    description: "Expert guides and answers about clutch, brake, and transmission repairs.",
     url: `${siteUrl}/blog`,
-    publisher: {
-      "@type": "LocalBusiness",
-      name: businessName,
-      url: siteUrl,
-    },
+    publisher: { "@type": "LocalBusiness", name: businessName, url: siteUrl },
   }
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionPageSchema) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionPageSchema) }} />
 
       <main className="min-h-screen bg-background">
-        {/* Hero */}
-        <section className="bg-zinc-900 text-white">
-          <div className="container mx-auto px-4 py-16 md:py-24">
-            <nav aria-label="Breadcrumb" className="mb-6">
-              <ol className="flex items-center gap-2 text-sm text-zinc-400">
-                <li>
-                  <Link href="/" className="hover:text-orange-500 transition-colors">
-                    Home
-                  </Link>
-                </li>
-                <li aria-hidden="true">
-                  <ChevronRight className="h-4 w-4" />
-                </li>
-                <li aria-current="page" className="text-orange-500">
-                  Blog
-                </li>
+
+        {/* ── Hero ──────────────────────────────────────────────── */}
+        <section className="relative py-24 md:py-36 bg-background border-b border-border overflow-hidden">
+          <span
+            aria-hidden
+            className="pointer-events-none select-none absolute -right-4 top-1/2 -translate-y-1/2 text-[clamp(5rem,16vw,13rem)] font-black uppercase tracking-tighter text-foreground/[0.04] leading-none"
+          >
+            Blog
+          </span>
+          <div className="container mx-auto px-6 relative">
+            <nav aria-label="Breadcrumb" className="mb-8">
+              <ol className="flex items-center gap-2 text-[11px] text-foreground/40 uppercase tracking-widest">
+                <li><Link href="/" className="hover:text-accent transition-colors">Home</Link></li>
+                <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
+                <li aria-current="page" className="text-accent">Blog</li>
               </ol>
             </nav>
 
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-accent mb-4">
+              Resources &amp; Insights
+            </p>
+            <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight leading-none mb-6">
               {settings?.articlesPageHeroTitle ?? "Blog & Resources"}
             </h1>
-            <p className="text-xl text-zinc-300 max-w-3xl">
+            <p className="text-lg text-foreground/60 max-w-2xl leading-relaxed">
               {settings?.articlesPageHeroSubtitle ??
-                "Expert guides and answers about clutch, brake, and transmission repairs. Tips, maintenance advice, and industry insights from Adelaide's specialists."}
+                "Expert guides and answers about clutch, brake, and transmission repairs from Adelaide's specialists."}
+            </p>
+            <p className="mt-4 text-sm text-foreground/40 font-medium">
+              {posts.length} {posts.length === 1 ? "article" : "articles"}
             </p>
           </div>
         </section>
 
-        {/* Posts Grid */}
+        {/* ── Posts Grid ─────────────────────────────────────────── */}
         <section className="py-16 md:py-24" aria-label="Blog post listing">
-          <div className="container mx-auto px-4">
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="container mx-auto px-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-border">
               {posts.map((post) => (
                 <article
                   key={post.slug}
-                  className="group bg-white border border-zinc-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow flex flex-col"
+                  className="group border-r border-b border-border flex flex-col relative overflow-hidden"
                 >
+                  {/* Accent hover line */}
+                  <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-accent group-hover:w-full transition-all duration-500 z-10" />
+
                   {/* Featured image */}
-                  {post.heroImage && (
-                    <div className="relative h-48 w-full overflow-hidden bg-zinc-100 flex-shrink-0">
+                  {post.heroImage ? (
+                    <div className="relative h-52 w-full overflow-hidden bg-foreground/5 flex-shrink-0">
                       <Image
                         src={urlFor(post.heroImage).width(600).height(300).url()}
                         alt={post.title}
                         fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                    </div>
-                  )}
-
-                  <div className="p-6 flex flex-col flex-1">
-                    {/* Category + read time */}
-                    <div className="flex items-center justify-between mb-3">
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
                       {post.category && (
-                        <span className="inline-block px-3 py-1 text-xs font-semibold bg-orange-100 text-orange-700 rounded-full">
+                        <span className="absolute top-4 left-4 text-[10px] font-bold tracking-[0.15em] uppercase border border-accent/30 text-accent bg-background/80 px-2.5 py-1 backdrop-blur-sm">
                           {post.category}
                         </span>
                       )}
-                      {post.readTimeMinutes && (
-                        <span className="flex items-center gap-1 text-xs text-zinc-500">
-                          <Clock className="h-3 w-3" />
-                          {post.readTimeMinutes} min read
-                        </span>
-                      )}
                     </div>
+                  ) : (
+                    post.category && (
+                      <div className="px-6 pt-6">
+                        <span className="text-[10px] font-bold tracking-[0.15em] uppercase border border-accent/20 text-accent/70 px-2.5 py-1">
+                          {post.category}
+                        </span>
+                      </div>
+                    )
+                  )}
 
-                    <h2 className="text-xl font-bold text-zinc-900 mb-3 group-hover:text-orange-600 transition-colors flex-1">
-                      <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+                  <div className="p-6 flex flex-col flex-1">
+                    {/* Read time */}
+                    {post.readTimeMinutes && (
+                      <div className="flex items-center gap-1.5 text-[11px] text-foreground/40 mb-3">
+                        <Clock className="h-3 w-3" />
+                        {post.readTimeMinutes} min read
+                      </div>
+                    )}
+
+                    <h2 className="text-lg font-black uppercase tracking-tight leading-snug mb-3 group-hover:text-accent transition-colors flex-1">
+                      <Link href={`/blog/${post.slug}`} className="before:absolute before:inset-0">
+                        {post.title}
+                      </Link>
                     </h2>
 
                     {post.answerCapsule && (
-                      <p className="text-zinc-600 mb-4 line-clamp-3 text-sm leading-relaxed">
+                      <p className="text-foreground/60 mb-5 line-clamp-3 text-sm leading-relaxed">
                         {post.answerCapsule}
                       </p>
                     )}
 
-                    {/* Meta */}
-                    <div className="flex items-center gap-4 text-xs text-zinc-500 mb-5">
-                      {post.publishedAt && (
-                        <span className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          <time dateTime={post.publishedAt}>
-                            {new Date(post.publishedAt).toLocaleDateString("en-AU", {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            })}
-                          </time>
-                        </span>
-                      )}
-                      {post.author?.name && (
-                        <span className="flex items-center gap-1">
-                          <User className="h-3 w-3" />
-                          {post.author.name}
-                        </span>
-                      )}
+                    {/* Meta row */}
+                    <div className="flex items-center justify-between text-[11px] text-foreground/40 mt-auto pt-4 border-t border-border">
+                      <div className="flex items-center gap-3">
+                        {post.publishedAt && (
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            <time dateTime={post.publishedAt}>
+                              {new Date(post.publishedAt).toLocaleDateString("en-AU", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </time>
+                          </span>
+                        )}
+                        {post.author?.name && (
+                          <span className="flex items-center gap-1">
+                            <User className="h-3 w-3" />
+                            {post.author.name}
+                          </span>
+                        )}
+                      </div>
+                      <ArrowRight className="h-3.5 w-3.5 text-accent group-hover:translate-x-1 transition-transform" />
                     </div>
-
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      className="inline-flex items-center gap-2 text-orange-600 font-semibold hover:text-orange-700 transition-colors text-sm mt-auto"
-                      aria-label={`Read full post: ${post.title}`}
-                    >
-                      Read Post
-                      <ChevronRight className="h-4 w-4" />
-                    </Link>
                   </div>
                 </article>
               ))}
@@ -220,28 +220,27 @@ export default async function BlogPage() {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="bg-zinc-900 text-white py-16" aria-label="Contact call to action">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+        {/* ── CTA Strip ──────────────────────────────────────────── */}
+        <section className="bg-accent py-16" aria-label="Contact call to action">
+          <div className="container mx-auto px-6 text-center">
+            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-black mb-4">
               Have a Question We Can Answer?
             </h2>
-            <p className="text-xl text-zinc-300 mb-8 max-w-2xl mx-auto">
-              Contact our team — we&apos;re happy to provide expert advice on clutch,
-              brake, and transmission issues.
+            <p className="text-black/70 mb-8 max-w-xl mx-auto">
+              Contact our team — we&apos;re happy to provide expert advice on clutch, brake, and transmission issues.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold transition-colors"
+                className="inline-flex items-center justify-center gap-2 bg-black text-white px-8 py-4 text-sm font-bold uppercase tracking-widest hover:bg-black/80 transition-colors"
               >
                 Get in Touch
               </Link>
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-lg font-semibold transition-colors"
+                className="inline-flex items-center justify-center gap-2 border border-black/30 hover:border-black text-black px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
-                <Phone className="h-5 w-5" />
+                <Phone className="h-4 w-4" />
                 {phone}
               </a>
             </div>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Phone } from "lucide-react"
 import { getSiteSettings, getAllFeaturedItems } from "@/sanity/queries"
 import { FeaturedItemsGrid } from "@/components/featured-items-grid"
 
@@ -40,72 +40,75 @@ export default async function FeaturedProductPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
-      <div className="min-h-screen bg-background">
-        {/* HERO */}
-        <section className="bg-zinc-900 text-white py-16 md:py-24">
-          <div className="container mx-auto">
-            <nav aria-label="Breadcrumb" className="mb-6">
-              <ol className="flex items-center gap-2 text-sm text-zinc-400">
-                <li>
-                  <Link href="/" className="hover:text-accent transition-colors">
-                    Home
-                  </Link>
-                </li>
-                <li aria-hidden="true">
-                  <ChevronRight className="h-4 w-4" />
-                </li>
-                <li aria-current="page" className="text-accent">
-                  Featured Products &amp; News
-                </li>
+      <main className="min-h-screen bg-background">
+
+        {/* ── Hero ──────────────────────────────────────────────── */}
+        <section className="relative py-24 md:py-36 bg-background border-b border-border overflow-hidden">
+          <span
+            aria-hidden
+            className="pointer-events-none select-none absolute -right-4 top-1/2 -translate-y-1/2 text-[clamp(3rem,12vw,9rem)] font-black uppercase tracking-tighter text-foreground/[0.04] leading-none"
+          >
+            Featured
+          </span>
+          <div className="container mx-auto px-6 relative">
+            <nav aria-label="Breadcrumb" className="mb-8">
+              <ol className="flex items-center gap-2 text-[11px] text-foreground/40 uppercase tracking-widest">
+                <li><Link href="/" className="hover:text-accent transition-colors">Home</Link></li>
+                <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
+                <li aria-current="page" className="text-accent">Featured Products &amp; News</li>
               </ol>
             </nav>
-            <h1 className="text-4xl md:text-6xl font-bold text-balance mb-4">
-              Featured Products &amp; News
+            <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-accent mb-4">
+              Latest from {businessName}
+            </p>
+            <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight leading-none mb-6">
+              Featured Products<br />&amp; News
             </h1>
-            <p className="text-xl text-zinc-300 max-w-2xl">
+            <p className="text-lg text-foreground/60 max-w-2xl leading-relaxed">
               The latest products, promotions, and news from {businessName}.
             </p>
+            {items.length > 0 && (
+              <p className="mt-4 text-sm text-foreground/40 font-medium">{items.length} items</p>
+            )}
           </div>
         </section>
 
-        {/* ITEMS GRID */}
-        <section className="py-16 md:py-24">
-          <div className="container mx-auto">
+        {/* ── Items Grid ────────────────────────────────────────── */}
+        <section className="py-16 md:py-24 border-b border-border">
+          <div className="container mx-auto px-6">
             <FeaturedItemsGrid items={items} />
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="bg-zinc-900 py-16">
-          <div className="container mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 text-balance">
+        {/* ── CTA Strip ──────────────────────────────────────────── */}
+        <section className="bg-accent py-16">
+          <div className="container mx-auto px-6 text-center">
+            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-black mb-4">
               Interested in Any of These?
             </h2>
-            <p className="text-zinc-300 text-lg mb-8 max-w-xl mx-auto">
+            <p className="text-black/70 mb-8 max-w-xl mx-auto">
               Call us or send an enquiry and we will get you sorted.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
+              <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-4 rounded-lg font-semibold transition-colors"
+                className="inline-flex items-center justify-center gap-2 bg-black text-white px-8 py-4 text-sm font-bold uppercase tracking-widest hover:bg-black/80 transition-colors"
               >
+                <Phone className="h-4 w-4" />
                 Call Now: {phone}
-              </Link>
+              </a>
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-lg font-semibold transition-colors"
+                className="inline-flex items-center justify-center gap-2 border border-black/30 hover:border-black text-black px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
                 Send an Enquiry
               </Link>
             </div>
           </div>
         </section>
-      </div>
+      </main>
     </>
   )
 }
