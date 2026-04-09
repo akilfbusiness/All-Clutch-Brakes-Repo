@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { Phone, ChevronDown } from "lucide-react"
+import { Phone, ChevronDown, Sun, Moon } from "lucide-react"
+import { useTheme } from "next-themes"
 
 interface NavItem {
   label: string
@@ -34,6 +35,10 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
   const [open,        setOpen]        = useState(false)
   const [scrolled,    setScrolled]    = useState(false)
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
+  const [mounted,     setMounted]     = useState(false)
+  const { theme, setTheme } = useTheme()
+
+  useEffect(() => { setMounted(true) }, [])
 
   const links = navItems.length > 0 ? navItems : FALLBACK_NAV_LINKS
 
@@ -92,24 +97,34 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
           {/* Logo */}
           <Link href="/" onClick={() => setOpen(false)} className="relative z-50">
             <span
-              className={`text-xs font-black tracking-[0.2em] uppercase transition-colors duration-300 ${
-                open ? "text-white" : "text-foreground"
-              }`}
+              className="text-xs font-bold tracking-[0.2em] uppercase transition-colors duration-300 text-foreground"
             >
               {businessName}
             </span>
           </Link>
 
-          {/* Phone — desktop only, visible between logo and burger */}
+          {/* Phone — desktop only */}
           <a
             href={`tel:${phone.replace(/\s/g, "")}`}
-            className={`hidden md:flex items-center gap-2 text-[11px] font-bold tracking-[0.08em] transition-colors duration-300 relative z-50 ${
-              open ? "text-white/70 hover:text-white" : "text-foreground/60 hover:text-accent"
-            }`}
+            className="hidden md:flex items-center gap-2 text-[11px] font-bold tracking-[0.08em] transition-colors duration-300 relative z-50 text-foreground/60 hover:text-accent"
           >
             <Phone className="h-3.5 w-3.5 flex-shrink-0" />
             {phone}
           </a>
+
+          {/* Theme toggle */}
+          {mounted && (
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              aria-label="Toggle theme"
+              className="relative z-50 hidden md:flex w-9 h-9 border border-border hover:border-accent items-center justify-center transition-colors"
+            >
+              {theme === "dark"
+                ? <Sun className="h-4 w-4 text-foreground/60" />
+                : <Moon className="h-4 w-4 text-foreground/60" />
+              }
+            </button>
+          )}
 
           {/* Hamburger button */}
           <button
@@ -120,17 +135,17 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
             <motion.span
               animate={{ rotate: open ? 45 : 0, y: open ? 9 : 0 }}
               transition={{ duration: 0.35, ease }}
-              className={`block h-[2px] w-7 origin-center transition-colors duration-300 ${open ? "bg-white" : "bg-foreground"}`}
+              className={`block h-[2px] w-7 origin-center transition-colors duration-300 ${open ? "bg-foreground" : "bg-foreground"}`}
             />
             <motion.span
               animate={{ opacity: open ? 0 : 1, scaleX: open ? 0 : 1 }}
               transition={{ duration: 0.25 }}
-              className={`block h-[2px] w-5 transition-colors duration-300 ${open ? "bg-white" : "bg-foreground"}`}
+              className={`block h-[2px] w-5 transition-colors duration-300 ${open ? "bg-foreground" : "bg-foreground"}`}
             />
             <motion.span
               animate={{ rotate: open ? -45 : 0, y: open ? -9 : 0 }}
               transition={{ duration: 0.35, ease }}
-              className={`block h-[2px] w-7 origin-center transition-colors duration-300 ${open ? "bg-white" : "bg-foreground"}`}
+              className={`block h-[2px] w-7 origin-center transition-colors duration-300 ${open ? "bg-foreground" : "bg-foreground"}`}
             />
           </button>
         </div>
@@ -174,7 +189,7 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
                           }}
                         >
                           {hasChildren ? (
-                            <span className={`${parentSize} font-black text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight leading-none select-none`}>
+                            <span className={`${parentSize} font-bold text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight leading-none select-none`}>
                               {link.label}
                             </span>
                           ) : (
@@ -183,7 +198,7 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
                               target={link.openInNewTab ? "_blank" : undefined}
                               rel={link.openInNewTab ? "noopener noreferrer" : undefined}
                               onClick={() => setOpen(false)}
-                              className={`${parentSize} font-black text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight leading-none`}
+                              className={`${parentSize} font-bold text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight leading-none`}
                             >
                               {link.label}
                             </Link>

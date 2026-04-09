@@ -32,7 +32,7 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
         aria-hidden
         className="absolute bottom-0 left-0 right-0 overflow-hidden pointer-events-none select-none"
       >
-        <span className="block text-[80px] md:text-[140px] lg:text-[180px] font-black text-foreground/[0.03] leading-none whitespace-nowrap tracking-tight -mb-4 pl-2">
+        <span className="block text-[80px] md:text-[140px] lg:text-[180px] font-bold text-foreground/[0.03] leading-none whitespace-nowrap tracking-tight -mb-4 pl-2">
           {businessName}
         </span>
       </div>
@@ -47,7 +47,7 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
               <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-accent mb-3">
                 {footerBrandLabel}
               </p>
-              <h3 className="text-lg font-black tracking-tight text-foreground">
+              <h3 className="text-lg font-bold tracking-tight text-foreground">
                 {businessName}
               </h3>
             </div>

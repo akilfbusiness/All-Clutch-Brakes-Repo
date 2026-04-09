@@ -67,7 +67,7 @@ export function AboutPageClient({
       <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">
         <span
           aria-hidden
-          className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-black leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap"
+          className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap"
         >
           About Us
         </span>
@@ -92,7 +92,7 @@ export function AboutPageClient({
             </motion.p>
             <motion.h1
               variants={fadeUp}
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-black tracking-tight leading-[0.95] text-foreground mb-8"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] text-foreground mb-8"
             >
               {aboutHeading ?? `About ${businessName}`}
             </motion.h1>
@@ -132,7 +132,7 @@ export function AboutPageClient({
               className="max-w-3xl"
             >
               <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-6">Our Mission</p>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground tracking-tight leading-tight mb-8">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground tracking-tight leading-tight mb-8">
                 {aboutMissionHeading ?? "Our Mission"}
               </h2>
               <div className="w-14 h-[2px] bg-accent mb-8" />
@@ -160,7 +160,7 @@ export function AboutPageClient({
               <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-6">
                 Who We Are
               </p>
-              <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight leading-tight mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-tight mb-8">
                 {whoWeAreHeading ?? `Adelaide's Trusted Clutch &amp; Brake Specialists`}
               </h2>
               <div className="w-14 h-[2px] bg-accent mb-8" />
@@ -205,7 +205,7 @@ export function AboutPageClient({
                     <Check className="h-3.5 w-3.5 text-accent group-hover:text-black transition-colors duration-300" />
                   </span>
                   <div>
-                    <h3 className="text-base font-black text-foreground tracking-tight mb-1.5 group-hover:text-accent transition-colors duration-300">
+                    <h3 className="text-base font-bold text-foreground tracking-tight mb-1.5 group-hover:text-accent transition-colors duration-300">
                       {value.title}
                     </h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">{value.description}</p>
@@ -236,7 +236,7 @@ export function AboutPageClient({
                     <Icon className="h-3.5 w-3.5 text-accent group-hover:text-black transition-colors duration-300" />
                   </div>
                   <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-muted-foreground/50 mb-1.5">{label}</p>
-                  <p className="text-base font-black text-foreground">{value}</p>
+                  <p className="text-base font-bold text-foreground">{value}</p>
                 </motion.div>
               ))}
             </div>
@@ -256,7 +256,7 @@ export function AboutPageClient({
             className="grid md:grid-cols-[1fr_auto] items-center gap-10 py-16 md:py-20"
           >
             <div>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-black tracking-tight leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black tracking-tight leading-tight">
                 {ctaHeading}
               </h2>
               <p className="mt-3 text-black/55 text-sm md:text-base max-w-lg leading-relaxed">{ctaBody}</p>

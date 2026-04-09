@@ -61,7 +61,7 @@ export function ServicesPageClient({
         {/* Giant watermark */}
         <span
           aria-hidden
-          className="absolute bottom-0 right-0 text-[120px] md:text-[200px] font-black leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap"
+          className="absolute bottom-0 right-0 text-[120px] md:text-[200px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap"
         >
           Services
         </span>
@@ -89,7 +89,7 @@ export function ServicesPageClient({
             </motion.p>
             <motion.h1
               variants={fadeUp}
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-black tracking-tight leading-[0.95] text-foreground mb-8"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] text-foreground mb-8"
             >
               {pageTitle}
             </motion.h1>
@@ -127,7 +127,7 @@ export function ServicesPageClient({
             viewport={{ once: true }} transition={{ duration: 0.6, ease }}
             className="flex items-center justify-between mb-14"
           >
-            <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
               All Services
             </h2>
             <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent/70 border border-accent/20 px-3 py-1">
@@ -159,7 +159,7 @@ export function ServicesPageClient({
 
                     <div className="relative z-10 p-7 md:p-9">
                       {/* Watermark number */}
-                      <span aria-hidden className="absolute top-4 right-5 text-[72px] font-black leading-none text-foreground/[0.035] select-none pointer-events-none">
+                      <span aria-hidden className="absolute top-4 right-5 text-[72px] font-bold leading-none text-foreground/[0.035] select-none pointer-events-none">
                         {String(i + 1).padStart(2, "0")}
                       </span>
 
@@ -178,7 +178,7 @@ export function ServicesPageClient({
                       </div>
 
                       {/* Title */}
-                      <h3 className={`text-lg md:text-xl font-black leading-snug tracking-tight transition-colors duration-300 pr-6 ${isOpen ? "text-accent" : "text-foreground group-hover:text-accent"}`}>
+                      <h3 className={`text-lg md:text-xl font-bold leading-snug tracking-tight transition-colors duration-300 pr-6 ${isOpen ? "text-accent" : "text-foreground group-hover:text-accent"}`}>
                         {service.title}
                       </h3>
 
@@ -232,7 +232,7 @@ export function ServicesPageClient({
       ══════════════════════════════════════════════════════════════════════ */}
       {faqs.length > 0 && (
         <section className="relative py-24 md:py-32 bg-background border-t border-border overflow-hidden">
-          <span aria-hidden className="absolute top-6 right-6 md:right-10 text-[100px] md:text-[160px] font-black leading-none text-foreground/[0.03] select-none pointer-events-none">
+          <span aria-hidden className="absolute top-6 right-6 md:right-10 text-[100px] md:text-[160px] font-bold leading-none text-foreground/[0.03] select-none pointer-events-none">
             FAQ
           </span>
           <div className="container">
@@ -245,7 +245,7 @@ export function ServicesPageClient({
                 className="lg:sticky lg:top-32 lg:self-start"
               >
                 <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-6">Got Questions?</p>
-                <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tight leading-tight mb-8">
+                <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight leading-tight mb-8">
                   Frequently Asked Questions
                 </h2>
                 <div className="w-14 h-[2px] bg-accent mb-6" />
@@ -316,7 +316,7 @@ export function ServicesPageClient({
             className="grid md:grid-cols-[1fr_auto] items-center gap-10 py-16 md:py-20"
           >
             <div>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-black tracking-tight leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black tracking-tight leading-tight">
                 {ctaHeading}
               </h2>
               <p className="mt-3 text-black/55 text-sm md:text-base max-w-lg leading-relaxed">{ctaBody}</p>

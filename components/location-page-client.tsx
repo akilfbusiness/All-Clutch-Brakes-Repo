@@ -39,7 +39,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
       <section className="relative py-24 md:py-36 bg-background border-b border-border overflow-hidden">
         <span
           aria-hidden
-          className="pointer-events-none select-none absolute -right-4 top-1/2 -translate-y-1/2 text-[clamp(4rem,14vw,12rem)] font-black uppercase tracking-tighter text-foreground/[0.04] leading-none"
+          className="pointer-events-none select-none absolute -right-4 top-1/2 -translate-y-1/2 text-[clamp(4rem,14vw,12rem)] font-bold tracking-tighter text-foreground/[0.06] leading-none"
         >
           {location.title}
         </span>
@@ -81,7 +81,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
 
             <motion.h1
               variants={fadeUp}
-              className="text-5xl md:text-7xl font-black uppercase tracking-tight leading-none mb-6"
+              className="text-4xl md:text-6xl font-bold tracking-tight leading-none mb-6"
             >
               Clutch &amp; Brake<br />
               <span className="text-accent">{location.title}</span>
@@ -116,7 +116,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
               {/* Body prose */}
               {location.body && (
                 <div>
-                  <h2 className="text-xl font-black uppercase tracking-tight mb-8 border-b border-border pb-4">
+                  <h2 className="text-xl font-bold tracking-tight mb-8 border-b border-border pb-4">
                     Services in {location.title}
                   </h2>
                   <div className="prose prose-invert max-w-none prose-headings:font-bold prose-a:text-accent prose-strong:text-foreground">
@@ -127,7 +127,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
 
               {/* Services grid */}
               <div>
-                <h2 className="text-xl font-black uppercase tracking-tight mb-8 border-b border-border pb-4">
+                <h2 className="text-xl font-bold tracking-tight mb-8 border-b border-border pb-4">
                   Services Available in {location.title}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-l border-border">
@@ -151,7 +151,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
               {/* Suburbs (region only) */}
               {isRegion && location.suburbsIncluded && location.suburbsIncluded.length > 0 && (
                 <div>
-                  <h2 className="text-xl font-black uppercase tracking-tight mb-4 border-b border-border pb-4">
+                  <h2 className="text-xl font-bold tracking-tight mb-4 border-b border-border pb-4">
                     Suburbs We Service in {location.title}
                   </h2>
                   <p className="text-foreground/60 mb-6">
@@ -174,7 +174,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
               {/* FAQ */}
               {location.faqItems && location.faqItems.length > 0 && (
                 <div>
-                  <h2 className="text-xl font-black uppercase tracking-tight mb-8 border-b border-border pb-4">
+                  <h2 className="text-xl font-bold tracking-tight mb-8 border-b border-border pb-4">
                     Frequently Asked Questions
                   </h2>
                   <motion.div
@@ -230,7 +230,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
                 <div className="border border-border relative">
                   <div className="absolute top-0 left-0 right-0 h-[2px] bg-accent" />
                   <div className="p-6 pt-8">
-                    <h3 className="text-base font-black uppercase tracking-tight mb-3">
+                    <h3 className="text-base font-bold tracking-tight mb-3">
                       Get Service in {location.title}
                     </h3>
                     <p className="text-foreground/60 text-sm mb-6 leading-relaxed">
@@ -256,7 +256,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
 
                 {/* Other locations */}
                 <div className="border border-border p-6">
-                  <h3 className="text-[11px] font-black uppercase tracking-widest mb-4 text-foreground/50">
+                  <h3 className="text-[11px] font-bold uppercase tracking-widest mb-4 text-foreground/50">
                     Other Service Areas
                   </h3>
                   <Link
@@ -276,7 +276,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
       {/* ── CTA Strip ─────────────────────────────────────────── */}
       <section className="bg-accent py-16">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-black mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-black mb-4">
             Ready for Service in {location.title}?
           </h2>
           <p className="text-black/70 mb-8 max-w-xl mx-auto">

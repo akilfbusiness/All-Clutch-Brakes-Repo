@@ -169,7 +169,7 @@ export default async function BlogPostPage({
         <section className="relative py-16 md:py-24 bg-background border-b border-border overflow-hidden">
           <span
             aria-hidden
-            className="pointer-events-none select-none absolute -right-4 top-1/2 -translate-y-1/2 text-[clamp(5rem,14vw,10rem)] font-black uppercase tracking-tighter text-foreground/[0.04] leading-none"
+            className="pointer-events-none select-none absolute -right-4 top-1/2 -translate-y-1/2 text-[clamp(5rem,14vw,10rem)] font-bold tracking-tighter text-foreground/[0.06] leading-none"
           >
             Article
           </span>
@@ -192,7 +192,7 @@ export default async function BlogPostPage({
               </span>
             )}
 
-            <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight leading-tight mb-6 max-w-4xl">
+            <h1 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight mb-6 max-w-4xl">
               {displayPost.title}
             </h1>
 
@@ -264,7 +264,7 @@ export default async function BlogPostPage({
               <section className="mb-12" aria-labelledby="quick-answers-heading">
                 <h2
                   id="quick-answers-heading"
-                  className="text-xl font-black uppercase tracking-tight mb-5 pb-3 border-b border-border"
+                  className="text-xl font-bold tracking-tight mb-5 pb-3 border-b border-border"
                 >
                   Key Questions — Quick Answers
                 </h2>
@@ -298,7 +298,7 @@ export default async function BlogPostPage({
               <section className="mb-12" aria-labelledby="faq-heading">
                 <h2
                   id="faq-heading"
-                  className="text-xl font-black uppercase tracking-tight mb-6 pb-3 border-b border-border"
+                  className="text-xl font-bold tracking-tight mb-6 pb-3 border-b border-border"
                 >
                   Frequently Asked Questions
                 </h2>
@@ -355,7 +355,7 @@ export default async function BlogPostPage({
               <section className="mb-12" aria-labelledby="related-heading">
                 <h2
                   id="related-heading"
-                  className="text-xl font-black uppercase tracking-tight mb-6 pb-3 border-b border-border"
+                  className="text-xl font-bold tracking-tight mb-6 pb-3 border-b border-border"
                 >
                   Related Posts
                 </h2>
@@ -403,7 +403,7 @@ export default async function BlogPostPage({
         {/* ── CTA Strip ──────────────────────────────────────────── */}
         <section className="bg-accent py-16">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl font-black uppercase tracking-tight text-black mb-4">
+            <h2 className="text-3xl font-bold tracking-tight text-black mb-4">
               {displayPost.ctaHeading ?? "Need Expert Help?"}
             </h2>
             <p className="text-black/70 mb-8 max-w-xl mx-auto">

@@ -82,7 +82,7 @@ export function ProjectsGrid({ projects }: Props) {
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               {/* Watermark number */}
-              <span aria-hidden className="absolute top-4 right-5 text-[64px] font-black leading-none text-white/[0.08] select-none pointer-events-none">
+              <span aria-hidden className="absolute top-4 right-5 text-[64px] font-bold leading-none text-white/[0.08] select-none pointer-events-none">
                 {String(i + 1).padStart(2, "0")}
               </span>
               {/* Gallery count badge */}
@@ -98,7 +98,7 @@ export function ProjectsGrid({ projects }: Props) {
               {/* Hover accent line */}
               <div className="absolute top-0 left-0 right-0 h-[2px] bg-accent scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
 
-              <h2 className="text-base font-black text-foreground tracking-tight mb-2 group-hover:text-accent transition-colors duration-300">
+              <h2 className="text-base font-bold text-foreground tracking-tight mb-2 group-hover:text-accent transition-colors duration-300">
                 {project.title}
               </h2>
               {project.description && (
@@ -186,7 +186,7 @@ export function ProjectsGrid({ projects }: Props) {
                   </div>
                 )}
 
-                <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight mb-2">
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-2">
                   {selected.title}
                 </h2>
                 <div className="w-10 h-[2px] bg-accent mb-6" />

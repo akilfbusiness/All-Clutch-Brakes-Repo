@@ -79,12 +79,12 @@ export function StaffGrid({ staff }: Props) {
               {/* Gradient overlay — always present, intensifies on hover */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
               {/* Watermark number */}
-              <span aria-hidden className="absolute top-4 right-5 text-[64px] font-black leading-none text-white/[0.06] select-none pointer-events-none">
+              <span aria-hidden className="absolute top-4 right-5 text-[64px] font-bold leading-none text-white/[0.06] select-none pointer-events-none">
                 {String(i + 1).padStart(2, "0")}
               </span>
               {/* Name overlay */}
               <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-1 group-hover:translate-y-0 transition-transform duration-500">
-                <h2 className="text-xl font-black text-white tracking-tight">{member.name}</h2>
+                <h2 className="text-xl font-bold text-white tracking-tight">{member.name}</h2>
                 {member.role && (
                   <p className="text-accent text-[10px] font-bold tracking-[0.25em] uppercase mt-1">{member.role}</p>
                 )}
@@ -161,7 +161,7 @@ export function StaffGrid({ staff }: Props) {
                 <p className="text-accent text-[10px] font-bold tracking-[0.35em] uppercase mb-2">
                   {selected.role ?? "Team Member"}
                 </p>
-                <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight mb-5">
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-5">
                   {selected.name}
                 </h2>
                 <div className="w-10 h-[2px] bg-accent mb-6" />

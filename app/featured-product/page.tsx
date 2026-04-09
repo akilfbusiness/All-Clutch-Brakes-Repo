@@ -48,7 +48,7 @@ export default async function FeaturedProductPage() {
         <section className="relative py-24 md:py-36 bg-background border-b border-border overflow-hidden">
           <span
             aria-hidden
-            className="pointer-events-none select-none absolute -right-4 top-1/2 -translate-y-1/2 text-[clamp(3rem,12vw,9rem)] font-black uppercase tracking-tighter text-foreground/[0.04] leading-none"
+            className="pointer-events-none select-none absolute -right-4 top-1/2 -translate-y-1/2 text-[clamp(3rem,12vw,9rem)] font-bold tracking-tighter text-foreground/[0.06] leading-none"
           >
             Featured
           </span>
@@ -63,7 +63,7 @@ export default async function FeaturedProductPage() {
             <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-accent mb-4">
               Latest from {businessName}
             </p>
-            <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight leading-none mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-none mb-6">
               Featured Products<br />&amp; News
             </h1>
             <p className="text-lg text-foreground/60 max-w-2xl leading-relaxed">
@@ -85,7 +85,7 @@ export default async function FeaturedProductPage() {
         {/* ── CTA Strip ──────────────────────────────────────────── */}
         <section className="bg-accent py-16">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-black mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-black mb-4">
               Interested in Any of These?
             </h2>
             <p className="text-black/70 mb-8 max-w-xl mx-auto">

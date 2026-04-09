@@ -38,7 +38,7 @@ export default async function BrandsPage() {
 
       {/* HERO */}
       <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">
-        <span aria-hidden className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-black leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap">
+        <span aria-hidden className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap">
           Brands
         </span>
         <div className="container relative z-10">
@@ -51,7 +51,7 @@ export default async function BrandsPage() {
           </nav>
           <div className="max-w-4xl">
             <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">Quality Parts</p>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-black tracking-tight leading-[0.95] text-foreground mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] text-foreground mb-8">
               Brands We Stock
             </h1>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mb-10">
@@ -75,7 +75,7 @@ export default async function BrandsPage() {
       <section className="py-20 md:py-28 bg-background">
         <div className="container">
           <div className="flex items-center justify-between mb-14">
-            <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight">All Brands</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">All Brands</h2>
             {brands.length > 0 && (
               <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent/70 border border-accent/20 px-3 py-1">
                 {brands.length} Brands
@@ -100,7 +100,7 @@ export default async function BrandsPage() {
         <div className="container">
           <div className="grid md:grid-cols-[1fr_auto] items-center gap-10 py-16 md:py-20">
             <div>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-black tracking-tight leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black tracking-tight leading-tight">
                 Need a Part or a Quote?
               </h2>
               <p className="mt-3 text-black/55 text-sm md:text-base max-w-lg leading-relaxed">

@@ -1,14 +1,14 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono, Syne } from "next/font/google"
+import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google"
+import { ThemeProvider } from "@/components/theme-provider"
 import { Analytics } from "@vercel/analytics/next"
 import { getSiteSettings } from "@/sanity/queries"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import "./globals.css"
 
-const _geist    = Geist({ subsets: ["latin"], variable: "--font-sans" })
-const _geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
-const _syne      = Syne({ subsets: ["latin"], variable: "--font-syne", weight: ["400", "700", "800"] })
+const _plusJakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans", weight: ["400", "500", "600", "700", "800"] })
+const _geistMono   = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
 // ─── METADATA ──────────────────────────────────────────────────────────────────
 // metadataBase and all title/description values are pulled from Sanity siteSettings.
@@ -176,7 +176,7 @@ export default async function RootLayout({
 
   return (
     // lang="en-AU" — declares Australian English content to all search and AI engines
-    <html lang="en-AU">
+    <html lang="en-AU" suppressHydrationWarning>
       <head>
         {/* WebSite schema — injected once at root, applies site-wide */}
         <script
@@ -189,10 +189,12 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
         />
       </head>
-      <body className={`${_geist.variable} ${_geistMono.variable} ${_syne.variable} font-sans antialiased`}>
-        <Header settings={settings} />
-        <main>{children}</main>
-        <Footer settings={settings} />
+      <body className={`${_plusJakarta.variable} ${_geistMono.variable} font-sans antialiased`}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <Header settings={settings} />
+          <main>{children}</main>
+          <Footer settings={settings} />
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>

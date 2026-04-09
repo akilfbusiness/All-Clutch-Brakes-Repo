@@ -4,21 +4,57 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* All Clutch & Brake Service — premium dark automotive aesthetic */
+  /* Light theme — professional white and blue */
+  --background: oklch(0.99 0 0);
+  --foreground: oklch(0.13 0.02 245);
+  --card: oklch(0.97 0.004 240);
+  --card-foreground: oklch(0.13 0.02 245);
+  --popover: oklch(0.99 0 0);
+  --popover-foreground: oklch(0.13 0.02 245);
+  --primary: oklch(0.52 0.20 245);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.93 0.008 240);
+  --secondary-foreground: oklch(0.13 0.02 245);
+  --muted: oklch(0.95 0.005 240);
+  --muted-foreground: oklch(0.48 0.01 240);
+  /* Accent = professional blue */
+  --accent: oklch(0.52 0.20 245);
+  --accent-foreground: oklch(0.99 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.88 0.01 240);
+  --input: oklch(0.88 0.01 240);
+  --ring: oklch(0.52 0.20 245);
+  --chart-1: oklch(0.52 0.20 245);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.5rem;
+  --sidebar: oklch(0.97 0.004 240);
+  --sidebar-foreground: oklch(0.13 0.02 245);
+  --sidebar-primary: oklch(0.52 0.20 245);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.93 0.008 240);
+  --sidebar-accent-foreground: oklch(0.13 0.02 245);
+  --sidebar-border: oklch(0.88 0.01 240);
+  --sidebar-ring: oklch(0.52 0.20 245);
+}
+
+.dark {
+  /* Dark theme — premium black and amber */
   --background: oklch(0.09 0 0);
   --foreground: oklch(0.94 0 0);
   --card: oklch(0.13 0.003 260);
   --card-foreground: oklch(0.94 0 0);
   --popover: oklch(0.13 0.003 260);
   --popover-foreground: oklch(0.94 0 0);
-  /* Primary = deep dark for section backgrounds */
   --primary: oklch(0.11 0.004 260);
   --primary-foreground: oklch(0.94 0 0);
   --secondary: oklch(0.17 0.003 260);
   --secondary-foreground: oklch(0.94 0 0);
   --muted: oklch(0.15 0.003 260);
   --muted-foreground: oklch(0.52 0 0);
-  /* Accent = gold/amber — premium, action */
   --accent: oklch(0.70 0.19 55);
   --accent-foreground: oklch(0.09 0 0);
   --destructive: oklch(0.577 0.245 27.325);
@@ -42,43 +78,8 @@
   --sidebar-ring: oklch(0.70 0.19 55);
 }
 
-.dark {
-  --background: oklch(0.07 0 0);
-  --foreground: oklch(0.96 0 0);
-  --card: oklch(0.11 0.003 260);
-  --card-foreground: oklch(0.96 0 0);
-  --popover: oklch(0.11 0.003 260);
-  --popover-foreground: oklch(0.96 0 0);
-  --primary: oklch(0.09 0.004 260);
-  --primary-foreground: oklch(0.96 0 0);
-  --secondary: oklch(0.15 0.003 260);
-  --secondary-foreground: oklch(0.96 0 0);
-  --muted: oklch(0.13 0.003 260);
-  --muted-foreground: oklch(0.55 0 0);
-  --accent: oklch(0.70 0.19 55);
-  --accent-foreground: oklch(0.07 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.19 0.003 260);
-  --input: oklch(0.19 0.003 260);
-  --ring: oklch(0.70 0.19 55);
-  --chart-1: oklch(0.70 0.19 55);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.09 0.004 260);
-  --sidebar-foreground: oklch(0.96 0 0);
-  --sidebar-primary: oklch(0.70 0.19 55);
-  --sidebar-primary-foreground: oklch(0.07 0 0);
-  --sidebar-accent: oklch(0.13 0.003 260);
-  --sidebar-accent-foreground: oklch(0.96 0 0);
-  --sidebar-border: oklch(0.19 0.003 260);
-  --sidebar-ring: oklch(0.70 0.19 55);
-}
-
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback';
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
   --font-mono: 'Geist Mono', 'Geist Mono Fallback';
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -125,9 +126,9 @@
   body {
     @apply bg-background text-foreground;
   }
-  /* Premium display font for all headings */
+  /* Headings use the same font as body — Plus Jakarta Sans */
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-syne), sans-serif;
+    font-family: var(--font-sans), sans-serif;
   }
   /* Container with proper breathing room */
   .container {
