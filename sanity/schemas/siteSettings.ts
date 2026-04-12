@@ -226,8 +226,18 @@ export const siteSettingsSchema = defineType({
       title: "Hero Background Image",
       type: "image",
       group: "homepage",
-      description: "Full-viewport background image shown behind the hero heading.",
+      description: "Full-viewport background image shown behind the hero heading. Used as fallback when no video is set.",
       options: { hotspot: true },
+    }),
+    defineField({
+      name: "heroVideo",
+      title: "Hero Background Video",
+      type: "file",
+      group: "homepage",
+      description: "Optional looping background video for the hero section. Upload an MP4 (H.264, 1080p, 5–15 MB, no audio). When set, this plays instead of the background image.",
+      options: {
+        accept: "video/mp4,video/webm",
+      },
     }),
     defineField({
       name: "mechanicImage",

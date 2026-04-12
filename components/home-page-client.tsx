@@ -37,6 +37,7 @@ export interface HomePageClientProps {
   heroAnswer: string
   heroTagline: string
   heroImage: string
+  heroVideo?: string | null
   mechanicImage: string
   workshopImage: string
   primaryCta: string
@@ -184,7 +185,7 @@ function FaqRow({
 
 export function HomePageClient({
   businessName, phone, address, hours,
-  heroHeading, heroAnswer, heroTagline, heroImage, mechanicImage, workshopImage,
+  heroHeading, heroAnswer, heroTagline, heroImage, heroVideo, mechanicImage, workshopImage,
   primaryCta, secondaryCta,
   trustSignals, tickerItems, statsItems,
   servicesHeading, servicesSubheading,
@@ -240,20 +241,35 @@ export function HomePageClient({
         onMouseMove={handleMouseMove}
         className="relative min-h-screen flex flex-col justify-center overflow-hidden"
       >
-          {/* Parallax image wrapper */}
+          {/* Parallax background wrapper — video takes priority over image */}
           <motion.div
             style={{ y: imageY }}
             className="absolute inset-[-15%] will-change-transform"
           >
-            {/* Ken Burns zoom */}
-            <motion.img
-              src={heroImage}
-              alt="Mechanic working on vehicle"
-            initial={{ scale: 1.0 }}
-            animate={{ scale: 1.12 }}
-            transition={{ duration: 12, ease: "linear" }}
-            className="w-full h-full object-cover object-center"
-          />
+            {heroVideo ? (
+              /* Looping muted autoplay background video */
+              <video
+                key={heroVideo}
+                autoPlay
+                muted
+                loop
+                playsInline
+                aria-hidden="true"
+                className="w-full h-full object-cover object-center"
+              >
+                <source src={heroVideo} type="video/mp4" />
+              </video>
+            ) : (
+              /* Ken Burns zoom fallback image */
+              <motion.img
+                src={heroImage}
+                alt="Mechanic working on vehicle"
+                initial={{ scale: 1.0 }}
+                animate={{ scale: 1.12 }}
+                transition={{ duration: 12, ease: "linear" }}
+                className="w-full h-full object-cover object-center"
+              />
+            )}
         </motion.div>
 
         {/* Static dark overlay */}

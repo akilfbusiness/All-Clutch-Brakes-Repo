@@ -105,6 +105,7 @@ export default async function HomePage() {
   const heroAnswer     = settings.heroAnswerCapsule || "Expert clutch replacement, brake repairs, and transmission service for all makes and models. Based in St Marys, serving all of Adelaide."
   const heroTagline    = settings.heroTagline    || "Clutch · Brake · Transmission · Adelaide"
   const heroImage      = settings.heroImage      || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1920&q=80"
+  const heroVideo      = settings.heroVideo      || null
   const mechanicImage  = settings.mechanicImage  || "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=900&q=80"
   const workshopImage  = settings.workshopImage  || "https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=1920&q=80"
   const primaryCta     = settings.heroPrimaryCtaLabel   || "Call Now"
@@ -156,6 +157,7 @@ export default async function HomePage() {
         heroAnswer={heroAnswer}
         heroTagline={heroTagline}
         heroImage={heroImage}
+        heroVideo={heroVideo}
         mechanicImage={mechanicImage}
         workshopImage={workshopImage}
         primaryCta={primaryCta}
