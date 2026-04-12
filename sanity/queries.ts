@@ -748,12 +748,21 @@ export interface Page {
   slug: string
   heroHeading?: string
   heroSubheading?: string
-  heroImage?: any
+  heroEyebrow?: string
+  heroImage?: string
+  heroVideo?: string
+  heroPrimaryCta?: { label?: string; href?: string }
+  heroSecondaryCta?: { label?: string; href?: string }
+  sections?: any[]
+  // Legacy body field — kept for backwards compatibility
   body?: any[]
   metaTitle?: string
   metaDescription?: string
   ogImage?: any
+  noIndex?: boolean
   category?: string
+  showInSitemap?: boolean
+  publishedAt?: string
 }
 
 export const PRODUCT_PAGE_BY_SLUG_QUERY = `
@@ -908,12 +917,40 @@ export const PAGE_BY_SLUG_QUERY = `
     "slug": slug.current,
     heroHeading,
     heroSubheading,
-    heroImage,
+    heroEyebrow,
+    "heroImage": heroImage.asset->url,
+    "heroVideo": heroVideo.asset->url,
+    heroPrimaryCta,
+    heroSecondaryCta,
+    sections[] {
+      ...,
+      _type == "imageTextSection" => {
+        ...,
+        "imageUrl": image.asset->url,
+        "imageAlt": image.alt
+      },
+      _type == "fullWidthBannerSection" => {
+        ...,
+        "backgroundImageUrl": backgroundImage.asset->url,
+        "backgroundVideoUrl": backgroundVideo.asset->url
+      },
+      _type == "gallerySection" => {
+        ...,
+        "images": images[] {
+          "url": asset->url,
+          alt,
+          caption
+        }
+      }
+    },
     body,
     metaTitle,
     metaDescription,
     ogImage,
-    category
+    noIndex,
+    category,
+    showInSitemap,
+    publishedAt
   }
 `
 
