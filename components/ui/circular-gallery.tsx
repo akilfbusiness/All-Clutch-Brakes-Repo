@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, HTMLAttributes } from "react"
 import Link from "next/link"
-import { ArrowRight, Wrench } from "lucide-react"
+import { ArrowRight, Wrench, ChevronLeft, ChevronRight } from "lucide-react"
 
 export interface ServiceGalleryItem {
   title: string
@@ -15,28 +15,47 @@ interface CircularGalleryProps extends HTMLAttributes<HTMLDivElement> {
   items: ServiceGalleryItem[]
   radius?: number
   autoRotateSpeed?: number
-  sectionRef?: React.RefObject<HTMLDivElement>
 }
 
 const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
-  ({ items, className, radius = 560, autoRotateSpeed = 0.015, sectionRef, ...props }, ref) => {
+  ({ items, className, radius = 560, autoRotateSpeed = 0.015, ...props }, ref) => {
     const [rotation, setRotation] = useState(0)
-    const [isScrolling, setIsScrolling] = useState(false)
+    const [isInteracting, setIsInteracting] = useState(false)
     const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const interactTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const animationFrameRef = useRef<number | null>(null)
     const lastScrollRef = useRef(0)
+    const touchStartXRef = useRef<number | null>(null)
+    const lastTouchXRef = useRef<number | null>(null)
 
+    const anglePerItem = 360 / items.length
+
+    // Pause auto-rotate temporarily after any interaction
+    const pauseAutoRotate = () => {
+      setIsInteracting(true)
+      if (interactTimeoutRef.current) clearTimeout(interactTimeoutRef.current)
+      interactTimeoutRef.current = setTimeout(() => setIsInteracting(false), 2000)
+    }
+
+    // Arrow navigation — snap by one card angle
+    const goNext = () => {
+      pauseAutoRotate()
+      setRotation(prev => prev - anglePerItem)
+    }
+    const goPrev = () => {
+      pauseAutoRotate()
+      setRotation(prev => prev + anglePerItem)
+    }
+
+    // Scroll-driven rotation
     useEffect(() => {
       const handleScroll = () => {
-        setIsScrolling(true)
         if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current)
-
-        // Track rotation based on scroll delta — smoother than full-page mapping
         const delta = window.scrollY - lastScrollRef.current
         lastScrollRef.current = window.scrollY
         setRotation(prev => prev + delta * 0.08)
-
-        scrollTimeoutRef.current = setTimeout(() => setIsScrolling(false), 150)
+        pauseAutoRotate()
+        scrollTimeoutRef.current = setTimeout(() => {}, 150)
       }
 
       window.addEventListener("scroll", handleScroll, { passive: true })
@@ -46,18 +65,36 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
       }
     }, [])
 
+    // Auto-rotate when not interacting
     useEffect(() => {
       const autoRotate = () => {
-        if (!isScrolling) setRotation(prev => prev + autoRotateSpeed)
+        if (!isInteracting) setRotation(prev => prev + autoRotateSpeed)
         animationFrameRef.current = requestAnimationFrame(autoRotate)
       }
       animationFrameRef.current = requestAnimationFrame(autoRotate)
       return () => {
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current)
       }
-    }, [isScrolling, autoRotateSpeed])
+    }, [isInteracting, autoRotateSpeed])
 
-    const anglePerItem = 360 / items.length
+    // Touch swipe handlers
+    const handleTouchStart = (e: React.TouchEvent) => {
+      touchStartXRef.current = e.touches[0].clientX
+      lastTouchXRef.current = e.touches[0].clientX
+      pauseAutoRotate()
+    }
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+      if (lastTouchXRef.current === null) return
+      const delta = e.touches[0].clientX - lastTouchXRef.current
+      lastTouchXRef.current = e.touches[0].clientX
+      setRotation(prev => prev + delta * 0.3)
+    }
+
+    const handleTouchEnd = () => {
+      touchStartXRef.current = null
+      lastTouchXRef.current = null
+    }
 
     return (
       <div
@@ -66,8 +103,28 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
         aria-label="Services carousel"
         className={`relative w-full h-full flex items-center justify-center ${className ?? ""}`}
         style={{ perspective: "2000px" }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         {...props}
       >
+        {/* Prev / Next arrows */}
+        <button
+          onClick={goPrev}
+          aria-label="Previous service"
+          className="absolute left-4 md:left-8 z-20 w-11 h-11 flex items-center justify-center border border-white/20 hover:border-accent text-white/60 hover:text-accent transition-all duration-300 hover:-translate-x-0.5 bg-black/30 backdrop-blur-sm"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button
+          onClick={goNext}
+          aria-label="Next service"
+          className="absolute right-4 md:right-8 z-20 w-11 h-11 flex items-center justify-center border border-white/20 hover:border-accent text-white/60 hover:text-accent transition-all duration-300 hover:translate-x-0.5 bg-black/30 backdrop-blur-sm"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
+
+        {/* 3D ring */}
         <div
           className="relative w-full h-full"
           style={{ transform: `rotateY(${rotation}deg)`, transformStyle: "preserve-3d" }}
@@ -78,19 +135,20 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
             const relativeAngle = (itemAngle + totalRotation + 360) % 360
             const normalizedAngle = Math.abs(relativeAngle > 180 ? 360 - relativeAngle : relativeAngle)
             const opacity = Math.max(0.25, 1 - normalizedAngle / 180)
+            const isFront = normalizedAngle < 45
 
             return (
               <div
                 key={i}
                 role="group"
                 aria-label={service.title}
-                className="absolute w-[280px] h-[380px]"
+                className="absolute w-[260px] h-[360px] md:w-[280px] md:h-[380px]"
                 style={{
                   transform: `rotateY(${itemAngle}deg) translateZ(${radius}px)`,
                   left: "50%",
                   top: "50%",
-                  marginLeft: "-140px",
-                  marginTop: "-190px",
+                  marginLeft: "-130px",
+                  marginTop: "-180px",
                   opacity,
                   transition: "opacity 0.3s linear",
                 }}
@@ -98,9 +156,8 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                 <Link
                   href={service.slug ? `/services/${service.slug}` : "/services"}
                   className="group block relative w-full h-full overflow-hidden shadow-2xl"
-                  tabIndex={normalizedAngle < 45 ? 0 : -1}
+                  tabIndex={isFront ? 0 : -1}
                 >
-                  {/* Image */}
                   {service.image ? (
                     <img
                       src={service.image}
@@ -113,18 +170,14 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                     </div>
                   )}
 
-                  {/* Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10 group-hover:from-black/80 transition-all duration-500" />
 
-                  {/* Number badge */}
                   <span className="absolute top-3 left-3 text-[10px] font-bold tracking-[0.25em] text-white/60 bg-black/50 px-2 py-0.5">
                     {String(i + 1).padStart(2, "0")}
                   </span>
 
-                  {/* Accent bottom line on hover */}
                   <div className="absolute bottom-0 left-0 h-[2px] bg-accent w-0 group-hover:w-full transition-all duration-500" />
 
-                  {/* Card footer */}
                   <div className="absolute bottom-0 left-0 w-full p-5 text-white">
                     <h3 className="text-base font-bold leading-snug mb-1 group-hover:text-accent transition-colors duration-300">
                       {service.title}
