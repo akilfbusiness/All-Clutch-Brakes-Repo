@@ -1,6 +1,9 @@
 import type { Metadata } from "next"
+import Link from "next/link"
+import { ChevronRight } from "lucide-react"
 import { getAllGalleryImages, getSiteSettings } from "@/sanity/queries"
 import { GalleryGrid } from "@/components/gallery-grid"
+import { PageHeroMedia } from "@/components/page-hero-media"
 
 export const metadata: Metadata = {
   title: "Gallery | All Clutch & Brake Service",
@@ -21,7 +24,12 @@ export default async function GalleryPage() {
     settings = {}
   }
 
-  const businessName = settings.businessName || "All Clutch & Brake Service"
+  const businessName    = settings.businessName         || "All Clutch & Brake Service"
+  const heroImage       = settings.galleryPageHeroImage  || null
+  const heroVideo       = settings.galleryPageHeroVideo  || null
+  const pageHeading     = settings.galleryPageHeading    || "Gallery"
+  const pageSubheading  = settings.galleryPageSubheading || "Take a look at our workshop, team, and the quality work we deliver for Adelaide drivers."
+  const eyebrow         = settings.galleryPageEyebrow    || "Our Work"
 
   // Group images by category
   const workshopImages = allImages.filter((img) => img.category === "workshop")
@@ -33,18 +41,26 @@ export default async function GalleryPage() {
   return (
     <main>
       {/* Hero */}
-      <section className="border-b bg-background py-16 md:py-24">
-        <div className="container px-4 md:px-6">
-          <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-4 inline-block rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary">
-              Our Work
-            </div>
-            <h1 className="mb-6 text-balance text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-              Gallery
+      <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">
+        <PageHeroMedia imageUrl={heroImage} videoUrl={heroVideo} alt={pageHeading} />
+        <span aria-hidden className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap z-[2]">
+          Gallery
+        </span>
+        <div className="container relative z-10">
+          <nav aria-label="Breadcrumb" className="mb-10">
+            <ol className={`flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] uppercase ${heroImage || heroVideo ? "text-white/60" : "text-muted-foreground/50"}`}>
+              <li><Link href="/" className="hover:text-accent transition-colors duration-200">Home</Link></li>
+              <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
+              <li className="text-accent">Gallery</li>
+            </ol>
+          </nav>
+          <div className="max-w-4xl">
+            <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">{eyebrow}</p>
+            <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] mb-8 ${heroImage || heroVideo ? "text-white" : "text-foreground"}`}>
+              {pageHeading}
             </h1>
-            <p className="text-pretty text-lg text-muted-foreground md:text-xl">
-              Take a look at our workshop, team, and the quality work we deliver for Adelaide
-              drivers.
+            <p className={`text-base md:text-lg leading-relaxed max-w-xl ${heroImage || heroVideo ? "text-white/75" : "text-muted-foreground"}`}>
+              {pageSubheading}
             </p>
           </div>
         </div>

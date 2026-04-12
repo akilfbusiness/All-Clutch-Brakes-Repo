@@ -17,6 +17,9 @@ export const siteSettingsSchema = defineType({
     { name: "articlespage", title: "Blog Page" },
     { name: "about", title: "About Page" },
     { name: "contact", title: "Contact Page" },
+    { name: "staffpage", title: "Meet Our Staff Page" },
+    { name: "gallerypage", title: "Gallery Page" },
+    { name: "whatwedo", title: "What We Do Page" },
     { name: "services", title: "Services" },
     { name: "locations", title: "Locations" },
     { name: "footer", title: "Footer" },
@@ -429,6 +432,22 @@ export const siteSettingsSchema = defineType({
 
     // ─── ABOUT PAGE ────────────────────────────────────────────────────────────
     defineField({
+      name: "aboutHeroImage",
+      title: "Hero Background Image",
+      type: "image",
+      group: "about",
+      description: "Full-viewport background image for the About page hero. Used as fallback when no video is set.",
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: "aboutHeroVideo",
+      title: "Hero Background Video",
+      type: "file",
+      group: "about",
+      description: "Optional looping background video for the About page hero. Upload an MP4 (H.264, 1080p, 5–15 MB, no audio). When set, this plays instead of the background image.",
+      options: { accept: "video/mp4,video/webm" },
+    }),
+    defineField({
       name: "aboutHeading",
       title: "Hero H1",
       type: "string",
@@ -579,6 +598,22 @@ export const siteSettingsSchema = defineType({
 
     // ─── CONTACT PAGE ──────────────────────────────────────────────────────────
     defineField({
+      name: "contactHeroImage",
+      title: "Hero Background Image",
+      type: "image",
+      group: "contact",
+      description: "Full-viewport background image for the Contact page hero. Used as fallback when no video is set.",
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: "contactHeroVideo",
+      title: "Hero Background Video",
+      type: "file",
+      group: "contact",
+      description: "Optional looping background video for the Contact page hero. Upload an MP4 (H.264, 1080p, 5–15 MB, no audio). When set, this plays instead of the background image.",
+      options: { accept: "video/mp4,video/webm" },
+    }),
+    defineField({
       name: "contactHeading",
       title: "Contact Page H1",
       type: "string",
@@ -661,6 +696,104 @@ export const siteSettingsSchema = defineType({
       group: "contact",
       rows: 2,
       description: "Meta description for search results (120-160 characters).",
+    }),
+
+    // ─── MEET OUR STAFF PAGE ───────────────────────────────────────────────────
+    defineField({
+      name: "staffPageHeroImage",
+      title: "Hero Background Image",
+      type: "image",
+      group: "staffpage",
+      description: "Full-viewport background image for the Meet Our Staff page hero. Used as fallback when no video is set.",
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: "staffPageHeroVideo",
+      title: "Hero Background Video",
+      type: "file",
+      group: "staffpage",
+      description: "Optional looping background video for the Meet Our Staff hero. Upload an MP4 (H.264, 1080p, 5–15 MB, no audio).",
+      options: { accept: "video/mp4,video/webm" },
+    }),
+    defineField({
+      name: "staffPageHeading",
+      title: "Page Heading (H1)",
+      type: "string",
+      group: "staffpage",
+      description: "Main heading for the Meet Our Staff page. e.g. 'Meet Our Staff'",
+    }),
+    defineField({
+      name: "staffPageSubheading",
+      title: "Page Subheading",
+      type: "text",
+      rows: 2,
+      group: "staffpage",
+      description: "Short description below the heading. e.g. 'The qualified mechanics behind All Clutch & Brake...'",
+    }),
+    defineField({
+      name: "staffPageEyebrow",
+      title: "Eyebrow Label",
+      type: "string",
+      group: "staffpage",
+      description: "Small uppercase label above the heading. e.g. 'The Team'",
+    }),
+
+    // ─── GALLERY PAGE ──────────────────────────────────────────────────────────
+    defineField({
+      name: "galleryPageHeroImage",
+      title: "Hero Background Image",
+      type: "image",
+      group: "gallerypage",
+      description: "Full-viewport background image for the Gallery page hero. Used as fallback when no video is set.",
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: "galleryPageHeroVideo",
+      title: "Hero Background Video",
+      type: "file",
+      group: "gallerypage",
+      description: "Optional looping background video for the Gallery page hero. Upload an MP4 (H.264, 1080p, 5–15 MB, no audio).",
+      options: { accept: "video/mp4,video/webm" },
+    }),
+    defineField({
+      name: "galleryPageHeading",
+      title: "Page Heading (H1)",
+      type: "string",
+      group: "gallerypage",
+      description: "Main heading for the Gallery page. e.g. 'Our Work & Gallery'",
+    }),
+    defineField({
+      name: "galleryPageSubheading",
+      title: "Page Subheading",
+      type: "text",
+      rows: 2,
+      group: "gallerypage",
+      description: "Short description below the heading.",
+    }),
+    defineField({
+      name: "galleryPageEyebrow",
+      title: "Eyebrow Label",
+      type: "string",
+      group: "gallerypage",
+      description: "Small uppercase label above the heading. e.g. 'Our Work'",
+    }),
+
+    // ─── WHAT WE DO PAGE ───────────────────────────────────────────────────────
+    defineField({
+      name: "whatWeDoPageHeroImage",
+      title: "Hero Background Image",
+      type: "image",
+      group: "whatwedo",
+      description: "Full-viewport background image for the What We Do page hero.",
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: "whatWeDoPageHeroVideo",
+      title: "Hero Background Video",
+      type: "file",
+      group: "whatwedo",
+      description: "Optional looping background video for the What We Do page hero. Upload an MP4 (H.264, 1080p, 5–15 MB, no audio).",
+      options: { accept: "video/mp4,video/webm" },
     }),
 
     // ─── SERVICES ──────────────────────────────────────────────────────────────

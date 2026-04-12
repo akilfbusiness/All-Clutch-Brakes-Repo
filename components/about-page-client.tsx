@@ -3,12 +3,15 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { Phone, ArrowRight, ChevronRight, Check, MapPin, Award, Shield } from "lucide-react"
+import { PageHeroMedia } from "@/components/page-hero-media"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
 export interface AboutPageClientProps {
   businessName: string
   phone: string
+  heroImage?: string | null
+  heroVideo?: string | null
   aboutHeading?: string
   aboutAnswerCapsule?: string
   aboutMissionHeading?: string
@@ -44,6 +47,7 @@ const stagger = {
 
 export function AboutPageClient({
   businessName, phone,
+  heroImage, heroVideo,
   aboutHeading, aboutAnswerCapsule,
   aboutMissionHeading, aboutMissionBody,
   whoWeAreHeading, whoWeAreBody,
@@ -65,9 +69,11 @@ export function AboutPageClient({
           HERO
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">
+        <PageHeroMedia imageUrl={heroImage} videoUrl={heroVideo} alt={`About ${businessName}`} />
+
         <span
           aria-hidden
-          className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap"
+          className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap z-[2]"
         >
           About Us
         </span>
@@ -79,7 +85,7 @@ export function AboutPageClient({
             transition={{ duration: 0.5, ease }}
             aria-label="Breadcrumb" className="mb-10"
           >
-            <ol className="flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] uppercase text-muted-foreground/50">
+            <ol className={`flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] uppercase ${heroImage || heroVideo ? "text-white/60" : "text-muted-foreground/50"}`}>
               <li><Link href="/" className="hover:text-accent transition-colors duration-200">Home</Link></li>
               <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
               <li className="text-accent">About</li>
@@ -92,12 +98,12 @@ export function AboutPageClient({
             </motion.p>
             <motion.h1
               variants={fadeUp}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] text-foreground mb-8"
+              className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] mb-8 ${heroImage || heroVideo ? "text-white" : "text-foreground"}`}
             >
               {aboutHeading ?? `About ${businessName}`}
             </motion.h1>
             {aboutAnswerCapsule && (
-              <motion.p variants={fadeUp} className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mb-10">
+              <motion.p variants={fadeUp} className={`text-base md:text-lg leading-relaxed max-w-xl mb-10 ${heroImage || heroVideo ? "text-white/75" : "text-muted-foreground"}`}>
                 {aboutAnswerCapsule}
               </motion.p>
             )}

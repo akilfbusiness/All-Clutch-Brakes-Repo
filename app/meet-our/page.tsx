@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 import { Phone, ChevronRight, ArrowRight } from "lucide-react"
 import { getSiteSettings, getAllStaff } from "@/sanity/queries"
 import { StaffGrid } from "@/components/staff-grid"
+import { PageHeroMedia } from "@/components/page-hero-media"
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
@@ -29,9 +30,14 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function MeetOurStaffPage() {
   const [settings, staff] = await Promise.all([getSiteSettings(), getAllStaff()])
 
-  const businessName = settings?.businessName ?? "All Clutch & Brake Service"
-  const phone        = settings?.phone?.[0]   ?? "(08) 8277 8122"
-  const siteUrl      = settings?.siteUrl      ?? "https://example.com"
+  const businessName  = settings?.businessName       ?? "All Clutch & Brake Service"
+  const phone         = settings?.phone?.[0]          ?? "(08) 8277 8122"
+  const siteUrl       = settings?.siteUrl             ?? "https://example.com"
+  const heroImage     = settings?.staffPageHeroImage  ?? null
+  const heroVideo     = settings?.staffPageHeroVideo  ?? null
+  const pageHeading   = settings?.staffPageHeading    ?? "Meet Our Staff"
+  const pageSubheading = settings?.staffPageSubheading ?? `The qualified mechanics behind ${businessName} — decades of combined experience, honest advice, and a genuine passion for getting it right.`
+  const eyebrow       = settings?.staffPageEyebrow    ?? "The Team"
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -62,9 +68,11 @@ export default async function MeetOurStaffPage() {
           HERO
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">
+        <PageHeroMedia imageUrl={heroImage} videoUrl={heroVideo} alt={pageHeading} />
+
         <span
           aria-hidden
-          className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap"
+          className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap z-[2]"
         >
           Our Team
         </span>
@@ -72,7 +80,7 @@ export default async function MeetOurStaffPage() {
         <div className="container relative z-10">
           {/* Breadcrumb */}
           <nav aria-label="Breadcrumb" className="mb-10">
-            <ol className="flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] uppercase text-muted-foreground/50">
+            <ol className={`flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] uppercase ${heroImage || heroVideo ? "text-white/60" : "text-muted-foreground/50"}`}>
               <li><Link href="/" className="hover:text-accent transition-colors duration-200">Home</Link></li>
               <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
               <li className="text-accent">Meet Our Staff</li>
@@ -81,13 +89,13 @@ export default async function MeetOurStaffPage() {
 
           <div className="max-w-4xl">
             <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">
-              The Team
+              {eyebrow}
             </p>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] text-foreground mb-8">
-              Meet Our Staff
+            <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] mb-8 ${heroImage || heroVideo ? "text-white" : "text-foreground"}`}>
+              {pageHeading}
             </h1>
-            <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mb-10">
-              The qualified mechanics behind {businessName} — decades of combined experience, honest advice, and a genuine passion for getting it right.
+            <p className={`text-base md:text-lg leading-relaxed max-w-xl mb-10 ${heroImage || heroVideo ? "text-white/75" : "text-muted-foreground"}`}>
+              {pageSubheading}
             </p>
             <div className="flex flex-wrap gap-4">
               <a
