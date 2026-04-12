@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { motion } from "framer-motion"
-import { Phone, ArrowRight, ChevronRight, Wrench } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Phone, ArrowRight, Plus, ChevronRight, Wrench } from "lucide-react"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
