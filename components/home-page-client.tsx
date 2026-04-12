@@ -416,10 +416,10 @@ export function HomePageClient({
           {statsItems.map((stat, i) => (
             <motion.div
               key={i} variants={fadeUp}
-              className="group flex flex-col justify-between p-8 md:p-12 lg:p-16 min-h-[280px] md:min-h-[340px] border-b lg:border-b-0 border-border hover:bg-foreground/[0.025] transition-colors duration-500 cursor-default"
+              className="group flex flex-col justify-between p-6 md:p-12 lg:p-16 min-h-[200px] md:min-h-[300px] lg:min-h-[340px] border-b lg:border-b-0 border-border hover:bg-foreground/[0.025] transition-colors duration-500 cursor-default"
             >
               <div>
-                <p className="text-6xl md:text-7xl lg:text-8xl xl:text-[100px] font-bold text-foreground group-hover:text-accent leading-none tracking-tight whitespace-pre-line transition-colors duration-500">
+                <p className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[100px] font-bold text-foreground group-hover:text-accent leading-none tracking-tight whitespace-pre-line transition-colors duration-500">
                   {stat.displayValue}
                 </p>
                 <div className="mt-6 mb-5 w-full h-px bg-border group-hover:bg-accent/30 transition-colors duration-500" />
@@ -473,27 +473,19 @@ export function HomePageClient({
 
         </div>
 
-        {/* Sticky scroll carousel — 300vh gives a satisfying full rotation */}
-        <div className="relative" style={{ height: "300vh" }}>
-          <div className="sticky top-0 h-screen flex flex-col overflow-hidden">
-            {/* Carousel */}
-            <div className="flex-1 relative">
-              <CircularGallery items={serviceItems.slice(0, 8)} radius={520} />
-            </div>
+        {/* Carousel — fixed height, auto-rotate + arrows + swipe */}
+        <div className="relative h-[500px] md:h-[580px] lg:h-[640px] overflow-hidden">
+          <CircularGallery items={serviceItems.slice(0, 8)} />
+        </div>
 
-            {/* Footer row */}
-            <div className="container relative z-10 pb-10 flex items-center justify-between">
-              <p className="text-white/30 text-[11px] font-bold tracking-[0.25em] uppercase">
-                Scroll to explore
-              </p>
-              <Link
-                href="/services"
-                className="inline-flex items-center gap-3 text-sm font-bold text-white/70 border border-white/20 hover:border-accent hover:text-accent px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
-              >
-                View All {serviceItems.length} Services <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </div>
+        {/* Footer row */}
+        <div className="container relative z-10 py-8 flex items-center justify-end">
+          <Link
+            href="/services"
+            className="inline-flex items-center gap-3 text-sm font-bold text-white/70 border border-white/20 hover:border-accent hover:text-accent px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+          >
+            View All {serviceItems.length} Services <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
 

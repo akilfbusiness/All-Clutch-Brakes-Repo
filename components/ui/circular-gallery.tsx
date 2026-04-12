@@ -18,9 +18,22 @@ interface CircularGalleryProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
-  ({ items, className, radius = 560, autoRotateSpeed = 0.015, ...props }, ref) => {
+  ({ items, className, radius, autoRotateSpeed = 0.015, ...props }, ref) => {
     const [rotation, setRotation] = useState(0)
     const [isInteracting, setIsInteracting] = useState(false)
+    const [effectiveRadius, setEffectiveRadius] = useState(radius ?? 520)
+
+    // Responsive radius — recalculates on resize
+    useEffect(() => {
+      const update = () => {
+        if (radius !== undefined) { setEffectiveRadius(radius); return }
+        const w = window.innerWidth
+        setEffectiveRadius(w < 480 ? 200 : w < 768 ? 300 : w < 1024 ? 420 : 520)
+      }
+      update()
+      window.addEventListener("resize", update, { passive: true })
+      return () => window.removeEventListener("resize", update)
+    }, [radius])
     const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const interactTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const animationFrameRef = useRef<number | null>(null)
@@ -142,13 +155,11 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                 key={i}
                 role="group"
                 aria-label={service.title}
-                className="absolute w-[260px] h-[360px] md:w-[280px] md:h-[380px]"
+                className="absolute w-[180px] h-[260px] sm:w-[220px] sm:h-[300px] md:w-[260px] md:h-[350px] lg:w-[280px] lg:h-[380px]"
                 style={{
-                  transform: `rotateY(${itemAngle}deg) translateZ(${radius}px)`,
+                  transform: `rotateY(${itemAngle}deg) translateZ(${effectiveRadius}px) translateX(-50%) translateY(-50%)`,
                   left: "50%",
                   top: "50%",
-                  marginLeft: "-130px",
-                  marginTop: "-180px",
                   opacity,
                   transition: "opacity 0.3s linear",
                 }}

@@ -230,7 +230,7 @@ export function AboutPageClient({
       {credentials.length > 0 && (
         <section className="bg-background border-b border-border">
           <div className="container">
-            <div className={`grid grid-cols-2 md:grid-cols-${Math.min(credentials.length, 4)} divide-x divide-border`}>
+            <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-border">
               {credentials.map(({ icon: Icon, label, value }, i) => (
                 <motion.div
                   key={i}

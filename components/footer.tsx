@@ -39,7 +39,7 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
 
       {/* Main grid */}
       <div className="relative z-10 container py-20 md:py-24">
-        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-10 sm:grid-cols-2 md:gap-12 lg:grid-cols-4">
 
           {/* Brand */}
           <div className="space-y-5">

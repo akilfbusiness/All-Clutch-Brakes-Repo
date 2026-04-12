@@ -62,28 +62,28 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
   const totalItems = links.reduce((acc, l) => acc + 1 + (l.children?.length ?? 0), 0)
 
   const parentSize =
-    totalItems <= 3  ? "text-5xl md:text-6xl lg:text-7xl" :
-    totalItems <= 6  ? "text-4xl md:text-5xl lg:text-6xl" :
-    totalItems <= 9  ? "text-3xl md:text-4xl lg:text-5xl" :
-                       "text-2xl md:text-3xl lg:text-4xl"
+    totalItems <= 3  ? "text-2xl sm:text-3xl md:text-4xl lg:text-5xl" :
+    totalItems <= 6  ? "text-xl  sm:text-2xl md:text-3xl lg:text-4xl" :
+    totalItems <= 9  ? "text-lg  sm:text-xl  md:text-2xl lg:text-3xl" :
+                       "text-base sm:text-lg  md:text-xl  lg:text-2xl"
 
   const parentPad =
-    totalItems <= 3  ? "py-7 md:py-8" :
-    totalItems <= 6  ? "py-5 md:py-6" :
-    totalItems <= 9  ? "py-3 md:py-4" :
+    totalItems <= 3  ? "py-4 md:py-6" :
+    totalItems <= 6  ? "py-3 md:py-5" :
+    totalItems <= 9  ? "py-2.5 md:py-4" :
                        "py-2 md:py-3"
 
   const childSize =
-    totalItems <= 3  ? "text-3xl md:text-4xl lg:text-4xl" :
-    totalItems <= 6  ? "text-2xl md:text-3xl lg:text-3xl" :
-    totalItems <= 9  ? "text-xl  md:text-2xl lg:text-2xl" :
-                       "text-lg  md:text-xl  lg:text-xl"
+    totalItems <= 3  ? "text-lg  sm:text-xl  md:text-2xl lg:text-3xl" :
+    totalItems <= 6  ? "text-base sm:text-lg  md:text-xl  lg:text-2xl" :
+    totalItems <= 9  ? "text-sm  sm:text-base md:text-lg  lg:text-xl"  :
+                       "text-sm  sm:text-sm   md:text-base lg:text-lg"
 
   const childPad =
-    totalItems <= 3  ? "py-4 md:py-5" :
-    totalItems <= 6  ? "py-3 md:py-4" :
-    totalItems <= 9  ? "py-2 md:py-3" :
-                       "py-1.5 md:py-2"
+    totalItems <= 3  ? "py-3 md:py-4" :
+    totalItems <= 6  ? "py-2 md:py-3" :
+    totalItems <= 9  ? "py-1.5 md:py-2.5" :
+                       "py-1 md:py-2"
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
