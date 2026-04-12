@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { MapPin, Phone, ChevronRight, Plus, Wrench, ArrowLeft } from "lucide-react"
 import { PortableText } from "@portabletext/react"
 import type { Location } from "@/sanity/queries"
+import { PageHeroMedia } from "@/components/page-hero-media"
 
 const SERVICES = [
   { title: "Clutch Repairs & Replacement", slug: "clutch-repairs" },
@@ -37,17 +38,18 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
 
       {/* ── Hero ──────────────────────────────────────────────── */}
       <section className="relative py-24 md:py-36 bg-background border-b border-border overflow-hidden">
+        <PageHeroMedia imageUrl={location.heroImage} videoUrl={location.heroVideo} alt={`Clutch & Brake Service in ${location.title}`} />
         <span
           aria-hidden
-          className="pointer-events-none select-none absolute -right-4 top-1/2 -translate-y-1/2 text-[clamp(4rem,14vw,12rem)] font-bold tracking-tighter text-foreground/[0.06] leading-none"
+          className="pointer-events-none select-none absolute -right-4 top-1/2 -translate-y-1/2 text-[clamp(4rem,14vw,12rem)] font-bold tracking-tighter text-foreground/[0.06] leading-none z-[2]"
         >
           {location.title}
         </span>
 
-        <div className="container mx-auto px-6 relative">
+        <div className="container mx-auto px-6 relative z-10">
           {/* Breadcrumb */}
           <nav aria-label="Breadcrumb" className="mb-8">
-            <ol className="flex items-center gap-2 text-[11px] text-foreground/40 flex-wrap uppercase tracking-widest">
+            <ol className={`flex items-center gap-2 text-[11px] flex-wrap uppercase tracking-widest ${location.heroImage || location.heroVideo ? "text-white/50" : "text-foreground/40"}`}>
               <li><Link href="/" className="hover:text-accent transition-colors">Home</Link></li>
               <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
               <li><Link href="/locations" className="hover:text-accent transition-colors">Locations</Link></li>
@@ -81,14 +83,14 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
 
             <motion.h1
               variants={fadeUp}
-              className="text-4xl md:text-6xl font-bold tracking-tight leading-none mb-6"
+              className={`text-4xl md:text-6xl font-bold tracking-tight leading-none mb-6 ${location.heroImage || location.heroVideo ? "text-white" : "text-foreground"}`}
             >
               Clutch &amp; Brake<br />
               <span className="text-accent">{location.title}</span>
             </motion.h1>
 
             {location.answerCapsule && (
-              <motion.p variants={fadeUp} className="text-lg text-foreground/60 max-w-2xl mb-8 leading-relaxed">
+              <motion.p variants={fadeUp} className={`text-lg max-w-2xl mb-8 leading-relaxed ${location.heroImage || location.heroVideo ? "text-white/70" : "text-foreground/60"}`}>
                 {location.answerCapsule}
               </motion.p>
             )}

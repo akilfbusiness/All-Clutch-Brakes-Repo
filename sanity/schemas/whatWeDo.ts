@@ -6,6 +6,20 @@ export const whatWeDoSchema = defineType({
   type: "document",
   fields: [
     defineField({
+      name: "heroImage",
+      title: "Hero Background Image",
+      type: "image",
+      options: { hotspot: true },
+      description: "Full-viewport background image for the What We Do page hero. Overrides the Site Settings hero image if set.",
+    }),
+    defineField({
+      name: "heroVideo",
+      title: "Hero Background Video",
+      type: "file",
+      description: "Optional looping background video for the What We Do page hero. Upload an MP4 (H.264, 1080p, 5–15 MB, no audio).",
+      options: { accept: "video/mp4,video/webm" },
+    }),
+    defineField({
       name: "pageHeading",
       title: "Page Heading",
       type: "string",

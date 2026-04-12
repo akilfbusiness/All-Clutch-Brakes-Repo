@@ -6,6 +6,20 @@ export const productPageSchema = defineType({
   type: "document",
   fields: [
     defineField({
+      name: "heroImage",
+      title: "Hero Background Image",
+      type: "image",
+      options: { hotspot: true },
+      description: "Full-viewport background image shown in the hero section of this product page. Leave empty for a plain background.",
+    }),
+    defineField({
+      name: "heroVideo",
+      title: "Hero Background Video",
+      type: "file",
+      description: "Optional looping background video for this product page hero. Upload an MP4 (H.264, 1080p, 5–15 MB, no audio).",
+      options: { accept: "video/mp4,video/webm" },
+    }),
+    defineField({
       name: "title",
       title: "Page Title",
       type: "string",

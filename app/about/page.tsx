@@ -72,6 +72,8 @@ export default async function AboutPage() {
       <AboutPageClient
         businessName={businessName}
         phone={phone}
+        heroImage={settings?.aboutHeroImage ?? null}
+        heroVideo={settings?.aboutHeroVideo ?? null}
         aboutHeading={settings?.aboutHeading}
         aboutAnswerCapsule={settings?.aboutAnswerCapsule}
         aboutMissionHeading={settings?.aboutMissionHeading}
