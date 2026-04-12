@@ -4,11 +4,14 @@ import { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, Mail, MapPin, Clock, ArrowRight, Plus, ChevronRight } from "lucide-react"
+import { PageHeroMedia } from "@/components/page-hero-media"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
 export interface ContactPageClientProps {
   businessName: string
+  heroImage?: string | null
+  heroVideo?: string | null
   phones: string[]
   email: string
   address?: { street: string; suburb: string; state: string; postcode: string } | null
@@ -39,7 +42,7 @@ const stagger = {
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
 export function ContactPageClient({
-  businessName, phones, email, address, businessHours,
+  businessName, heroImage, heroVideo, phones, email, address, businessHours,
   contactInfoHeading, formHeading, formSubheading, privacyNote,
   serviceOptions, googleMapsEmbedUrl, faqs,
 }: ContactPageClientProps) {
@@ -95,10 +98,12 @@ export function ContactPageClient({
           HERO
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">
+        <PageHeroMedia imageUrl={heroImage} videoUrl={heroVideo} alt={`Contact ${businessName}`} />
+
         {/* Giant watermark */}
         <span
           aria-hidden
-          className="absolute bottom-0 right-0 text-[120px] md:text-[200px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap"
+          className="absolute bottom-0 right-0 text-[120px] md:text-[200px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap z-[2]"
         >
           Contact
         </span>
@@ -110,7 +115,7 @@ export function ContactPageClient({
             transition={{ duration: 0.5, ease }}
             aria-label="Breadcrumb" className="mb-10"
           >
-            <ol className="flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] uppercase text-muted-foreground/50">
+            <ol className={`flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] uppercase ${heroImage || heroVideo ? "text-white/60" : "text-muted-foreground/50"}`}>
               <li><Link href="/" className="hover:text-accent transition-colors">Home</Link></li>
               <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
               <li className="text-accent">Contact</li>
@@ -123,11 +128,11 @@ export function ContactPageClient({
             </motion.p>
             <motion.h1
               variants={fadeUp}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] text-foreground mb-8"
+              className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] mb-8 ${heroImage || heroVideo ? "text-white" : "text-foreground"}`}
             >
               Contact {businessName}
             </motion.h1>
-            <motion.p variants={fadeUp} className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mb-10">
+            <motion.p variants={fadeUp} className={`text-base md:text-lg leading-relaxed max-w-xl mb-10 ${heroImage || heroVideo ? "text-white/75" : "text-muted-foreground"}`}>
               Expert clutch, brake and transmission repairs in Adelaide. Call us directly or send an enquiry below.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">

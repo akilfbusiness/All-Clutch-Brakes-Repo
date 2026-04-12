@@ -81,6 +81,8 @@ export default async function ContactPage() {
 
       <ContactPageClient
         businessName={businessName}
+        heroImage={settings?.contactHeroImage ?? null}
+        heroVideo={settings?.contactHeroVideo ?? null}
         phones={phones}
         email={email}
         address={address}

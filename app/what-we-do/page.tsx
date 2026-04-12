@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Phone, ChevronRight, ArrowRight, Quote } from "lucide-react"
 import { getSiteSettings, getWhatWeDo } from "@/sanity/queries"
+import { PageHeroMedia } from "@/components/page-hero-media"
 
 export async function generateMetadata(): Promise<Metadata> {
   const [settings, page] = await Promise.all([getSiteSettings(), getWhatWeDo()])
@@ -25,6 +26,9 @@ export default async function WhatWeDoPage() {
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
   const phone        = settings?.phone?.[0]   ?? "(08) 8277 8122"
   const siteUrl      = settings?.siteUrl      ?? "https://example.com"
+  // Hero media: prefer whatWeDo schema fields, fall back to siteSettings
+  const heroImage    = page?.heroImage        ?? settings?.whatWeDoPageHeroImage ?? null
+  const heroVideo    = page?.heroVideo        ?? settings?.whatWeDoPageHeroVideo ?? null
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -41,12 +45,13 @@ export default async function WhatWeDoPage() {
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
       <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">
-        <span aria-hidden className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap">
+        <PageHeroMedia imageUrl={heroImage} videoUrl={heroVideo} alt={page?.pageHeading ?? "What We Do"} />
+        <span aria-hidden className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap z-[2]">
           What We Do
         </span>
         <div className="container relative z-10">
           <nav aria-label="Breadcrumb" className="mb-10">
-            <ol className="flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] uppercase text-muted-foreground/50">
+            <ol className={`flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] uppercase ${heroImage || heroVideo ? "text-white/60" : "text-muted-foreground/50"}`}>
               <li><Link href="/" className="hover:text-accent transition-colors duration-200">Home</Link></li>
               <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
               <li className="text-accent">What We Do</li>
@@ -54,10 +59,10 @@ export default async function WhatWeDoPage() {
           </nav>
           <div className="max-w-4xl">
             <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">Our Expertise</p>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] text-foreground mb-8">
+            <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] mb-8 ${heroImage || heroVideo ? "text-white" : "text-foreground"}`}>
               {page?.pageHeading ?? "What We Do"}
             </h1>
-            <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mb-10">
+            <p className={`text-base md:text-lg leading-relaxed max-w-xl mb-10 ${heroImage || heroVideo ? "text-white/75" : "text-muted-foreground"}`}>
               Adelaide&apos;s specialist clutch and brake workshop — built on decades of honest, expert service.
             </p>
             <div className="flex flex-wrap gap-4">

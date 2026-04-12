@@ -19,6 +19,8 @@ export interface ServicePageClientProps {
     body?: unknown[]
     whoIsItFor?: string
     faqItems?: { question: string; answer: string }[]
+    heroImage?: string
+    heroVideo?: string
     featuredImage?: string
     gallery?: { url: string; caption?: string }[]
     serviceAreas?: { title: string; slug: string }[]
@@ -97,8 +99,19 @@ export function ServicePageClient({
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative min-h-[60vh] md:min-h-[70vh] flex flex-col justify-end overflow-hidden bg-background">
 
-        {/* Background image */}
-        {service.featuredImage ? (
+        {/* Background media — heroVideo > heroImage > featuredImage > dark fallback */}
+        {service.heroVideo ? (
+          <>
+            <video
+              key={service.heroVideo}
+              autoPlay muted loop playsInline aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            >
+              <source src={service.heroVideo} type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
+          </>
+        ) : (service.heroImage || service.featuredImage) ? (
           <>
             <motion.div
               initial={{ scale: 1.0 }}
@@ -107,7 +120,7 @@ export function ServicePageClient({
               className="absolute inset-0"
             >
               <Image
-                src={service.featuredImage}
+                src={service.heroImage ?? service.featuredImage!}
                 alt={service.title}
                 fill
                 className="object-cover object-center"
@@ -118,7 +131,7 @@ export function ServicePageClient({
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
           </>
         ) : (
-          /* No image — dark fallback so white text remains legible */
+          /* No media — dark fallback so white text remains legible */
           <>
             <div className="absolute inset-0 bg-zinc-900" />
             <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-transparent to-accent/10" />

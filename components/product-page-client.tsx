@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, ArrowRight, Check, Plus, ChevronRight, ArrowUpRight } from "lucide-react"
+import { PageHeroMedia } from "@/components/page-hero-media"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -25,6 +26,8 @@ export interface ProductPageClientProps {
     _id: string
     title: string
     slug?: string
+    heroImage?: string
+    heroVideo?: string
     heading?: string
     introText?: string
     galleryImages?: ProductPageGalleryImage[]
@@ -65,10 +68,11 @@ export function ProductPageClient({ businessName, phone, product }: ProductPageC
           HERO
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative pt-40 pb-0 md:pt-48 bg-background overflow-hidden border-b border-border">
+        <PageHeroMedia imageUrl={product.heroImage} videoUrl={product.heroVideo} alt={heading} />
         {/* Giant watermark */}
         <span
           aria-hidden
-          className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap"
+          className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none whitespace-nowrap z-[2]"
         >
           {product.title}
         </span>

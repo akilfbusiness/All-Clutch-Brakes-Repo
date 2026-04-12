@@ -10,6 +10,20 @@ export const serviceSchema = defineType({
   type: "document",
   fields: [
     defineField({
+      name: "heroImage",
+      title: "Hero Background Image",
+      type: "image",
+      options: { hotspot: true },
+      description: "Full-viewport background image shown in the hero section at the top of this service page. If set, this overlays the hero with a dark tint. Leave empty for a plain dark hero.",
+    }),
+    defineField({
+      name: "heroVideo",
+      title: "Hero Background Video",
+      type: "file",
+      description: "Optional looping background video for this service page hero. Upload an MP4 (H.264, 1080p, 5–15 MB, no audio). When set, this plays instead of the hero image.",
+      options: { accept: "video/mp4,video/webm" },
+    }),
+    defineField({
       name: "featuredImage",
       title: "Featured Image",
       type: "image",

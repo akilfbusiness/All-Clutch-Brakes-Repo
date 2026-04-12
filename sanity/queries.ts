@@ -63,6 +63,8 @@ export interface SiteSettings {
   homeCtaHeading?: string
   homeCtaBody?: string
   homeFaqs?: FaqItem[]
+  aboutHeroImage?: string
+  aboutHeroVideo?: string
   aboutHeading?: string
   aboutAnswerCapsule?: string
   aboutMissionHeading?: string
@@ -84,6 +86,8 @@ export interface SiteSettings {
   aboutCtaSecondaryLabel?: string
   aboutSeoTitle?: string
   aboutSeoDescription?: string
+  contactHeroImage?: string
+  contactHeroVideo?: string
   contactHeading?: string
   contactAnswerCapsule?: string
   contactInfoHeading?: string
@@ -94,6 +98,18 @@ export interface SiteSettings {
   contactFaqs?: FaqItem[]
   contactSeoTitle?: string
   contactSeoDescription?: string
+  staffPageHeroImage?: string
+  staffPageHeroVideo?: string
+  staffPageHeading?: string
+  staffPageSubheading?: string
+  staffPageEyebrow?: string
+  galleryPageHeroImage?: string
+  galleryPageHeroVideo?: string
+  galleryPageHeading?: string
+  galleryPageSubheading?: string
+  galleryPageEyebrow?: string
+  whatWeDoPageHeroImage?: string
+  whatWeDoPageHeroVideo?: string
   servicesPageHeroTitle?: string
   servicesPageHeroSubtitle?: string
   servicesPageHeroImage?: unknown
@@ -174,6 +190,8 @@ export interface Service {
   whoIsItFor?: string
   faqItems?: FaqItem[]
   icon?: string
+  heroImage?: string
+  heroVideo?: string
   featuredImage?: string
   gallery?: ServiceGalleryImage[]
   serviceAreas?: { title: string; slug: string }[]
@@ -192,6 +210,8 @@ export interface Location {
   faqItems?: FaqItem[]
   seoTitle?: string
   seoDescription?: string
+  heroImage?: string
+  heroVideo?: string
 }
 
 export interface NavItem {
@@ -227,6 +247,8 @@ export const SITE_SETTINGS_QUERY = `
     homeServicesHeading, homeServicesSubheading,
     homeWhyUsHeading, homeWhyUsBody, homeWhyUsPoints,
     homeCtaHeading, homeCtaBody, homeFaqs,
+    "aboutHeroImage": aboutHeroImage.asset->url,
+    "aboutHeroVideo": aboutHeroVideo.asset->url,
     aboutHeading, aboutAnswerCapsule, aboutMissionHeading, aboutMissionBody,
     aboutWhoWeAreHeading, aboutWhoWeAreBody, aboutValues,
     aboutTeamHeading, aboutTeamBody,
@@ -236,6 +258,16 @@ export const SITE_SETTINGS_QUERY = `
     },
     aboutCtaHeading, aboutCtaBody, aboutCtaPrimaryLabel, aboutCtaSecondaryLabel,
     aboutSeoTitle, aboutSeoDescription,
+    "contactHeroImage": contactHeroImage.asset->url,
+    "contactHeroVideo": contactHeroVideo.asset->url,
+    "staffPageHeroImage": staffPageHeroImage.asset->url,
+    "staffPageHeroVideo": staffPageHeroVideo.asset->url,
+    staffPageHeading, staffPageSubheading, staffPageEyebrow,
+    "galleryPageHeroImage": galleryPageHeroImage.asset->url,
+    "galleryPageHeroVideo": galleryPageHeroVideo.asset->url,
+    galleryPageHeading, galleryPageSubheading, galleryPageEyebrow,
+    "whatWeDoPageHeroImage": whatWeDoPageHeroImage.asset->url,
+    "whatWeDoPageHeroVideo": whatWeDoPageHeroVideo.asset->url,
     contactHeading, contactAnswerCapsule, contactInfoHeading,
     contactFormHeading, contactFormSubheading, contactPrivacyNote,
     contactServiceOptions, contactFaqs,
@@ -325,6 +357,8 @@ export const SERVICE_BY_SLUG_QUERY = `
   *[_type == "service" && slug.current == $slug][0] {
     title, "slug": slug.current, answerCapsule, body,
     whoIsItFor, faqItems, icon,
+    "heroImage": heroImage.asset->url,
+    "heroVideo": heroVideo.asset->url,
     "featuredImage": featuredImage.asset->url,
     "gallery": gallery[] {
       "url": asset->url,
@@ -362,7 +396,9 @@ export const ALL_LOCATIONS_QUERY = `
 export const LOCATION_BY_SLUG_QUERY = `
   *[_type == "location" && slug.current == $slug][0] {
     title, "slug": slug.current, locationType, region,
-    suburbsIncluded, answerCapsule, body, faqItems, seoTitle, seoDescription
+    suburbsIncluded, answerCapsule, body, faqItems, seoTitle, seoDescription,
+    "heroImage": heroImage.asset->url,
+    "heroVideo": heroVideo.asset->url
   }
 `
 
@@ -452,9 +488,11 @@ export async function getAllStaff(): Promise<StaffMember[]> {
   return result ?? []
 }
 
-// ─── WHAT WE DO ───────────────────────────────────────────────────────────────
+// ─── WHAT WE DO ───────��───────────────────────────────────────────────────────
 
 export interface WhatWeDoPage {
+  heroImage?: string
+  heroVideo?: string
   pageHeading?: string
   ourBeginningsHeading?: string
   ourBeginningsText?: string
@@ -468,6 +506,8 @@ export interface WhatWeDoPage {
 
 export const WHAT_WE_DO_QUERY = `
   *[_type == "whatWeDo"][0] {
+    "heroImage": heroImage.asset->url,
+    "heroVideo": heroVideo.asset->url,
     pageHeading, ourBeginningsHeading, ourBeginningsText,
     ourMissionHeading, ourMissionText, whyChooseUsHeading, whyChooseUsText,
     testimonialQuote, testimonialAuthor
@@ -628,6 +668,8 @@ export interface ProductPage {
   _id: string
   title: string
   slug?: string
+  heroImage?: string
+  heroVideo?: string
   heading?: string
   introText?: string
   galleryImages?: ProductPageGalleryImage[]
@@ -706,18 +748,29 @@ export interface Page {
   slug: string
   heroHeading?: string
   heroSubheading?: string
-  heroImage?: any
+  heroEyebrow?: string
+  heroImage?: string
+  heroVideo?: string
+  heroPrimaryCta?: { label?: string; href?: string }
+  heroSecondaryCta?: { label?: string; href?: string }
+  sections?: any[]
+  // Legacy body field — kept for backwards compatibility
   body?: any[]
   metaTitle?: string
   metaDescription?: string
   ogImage?: any
+  noIndex?: boolean
   category?: string
+  showInSitemap?: boolean
+  publishedAt?: string
 }
 
 export const PRODUCT_PAGE_BY_SLUG_QUERY = `
   *[_type == "productPage" && slug.current == $slug][0] {
     _id, title, "slug": slug.current, heading, introText, detailedDescription, sections, specifications,
     ctaHeading, ctaText, ctaButtonLabel, ctaButtonLink, seoTitle, seoDescription,
+    "heroImage": heroImage.asset->url,
+    "heroVideo": heroVideo.asset->url,
     "galleryImages": galleryImages[] { "asset": asset->url, caption }
   }
 `
@@ -864,12 +917,40 @@ export const PAGE_BY_SLUG_QUERY = `
     "slug": slug.current,
     heroHeading,
     heroSubheading,
-    heroImage,
+    heroEyebrow,
+    "heroImage": heroImage.asset->url,
+    "heroVideo": heroVideo.asset->url,
+    heroPrimaryCta,
+    heroSecondaryCta,
+    sections[] {
+      ...,
+      _type == "imageTextSection" => {
+        ...,
+        "imageUrl": image.asset->url,
+        "imageAlt": image.alt
+      },
+      _type == "fullWidthBannerSection" => {
+        ...,
+        "backgroundImageUrl": backgroundImage.asset->url,
+        "backgroundVideoUrl": backgroundVideo.asset->url
+      },
+      _type == "gallerySection" => {
+        ...,
+        "images": images[] {
+          "url": asset->url,
+          alt,
+          caption
+        }
+      }
+    },
     body,
     metaTitle,
     metaDescription,
     ogImage,
-    category
+    noIndex,
+    category,
+    showInSitemap,
+    publishedAt
   }
 `
 
