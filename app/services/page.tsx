@@ -41,8 +41,9 @@ export default async function ServicesPage() {
 
   const serviceItems = services.map((s) => ({
     title:       s.title,
-    slug:        s.slug        ?? null,
-    description: s.answerCapsule ?? null,
+    slug:        s.slug           ?? null,
+    description: s.answerCapsule  ?? null,
+    image:       s.featuredImage  ?? s.heroImage ?? null,
   }))
 
   // ── Breadcrumb schema ──────────────────────────────────────────────────────

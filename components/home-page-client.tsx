@@ -11,6 +11,7 @@ import { Phone, Plus, ArrowRight, MapPin, Clock, Wrench } from "lucide-react"
 import { useTheme } from "next-themes"
 import { TestimonialsCarousel } from "./testimonials-carousel"
 import { PromotionsBanner } from "./promotions-banner"
+import { CircularGallery } from "./ui/circular-gallery"
 import type { Testimonial, Promotion } from "@/sanity/queries"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -470,71 +471,29 @@ export function HomePageClient({
             </div>
           </motion.div>
 
-          {/* Image-top card grid */}
-          <motion.div
-            variants={stagger} initial="hidden"
-            whileInView="show" viewport={{ once: true, margin: "-40px" }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-white/[0.06]"
-          >
-            {serviceItems.slice(0, 8).map((service, i) => (
-              <motion.div key={i} variants={fadeUp} className="bg-[oklch(0.11_0.015_245)] group">
-                <Link
-                  href={service.slug ? `/services/${service.slug}` : "/services"}
-                  className="block h-full"
-                >
-                  {/* Image */}
-                  <div className="relative aspect-[4/3] overflow-hidden bg-zinc-900">
-                    {service.image ? (
-                      <img
-                        src={service.image}
-                        alt={service.title}
-                        className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-900 flex items-center justify-center">
-                        <Wrench className="w-8 h-8 text-accent/30" />
-                      </div>
-                    )}
-                    {/* Dark overlay + accent bottom line on hover */}
-                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-500" />
-                    <div className="absolute bottom-0 left-0 h-[2px] bg-accent w-0 group-hover:w-full transition-all duration-500" />
-                    {/* Number badge */}
-                    <span className="absolute top-3 left-3 text-[10px] font-bold tracking-[0.25em] text-white/60 bg-black/40 px-2 py-0.5">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                  </div>
+        </div>
 
-                  {/* Card body */}
-                  <div className="p-6 border-t border-white/[0.06] group-hover:border-accent/30 transition-colors duration-300">
-                    <h3 className="text-base font-bold text-white group-hover:text-accent transition-colors duration-300 leading-snug mb-2">
-                      {service.title}
-                    </h3>
-                    {service.description && (
-                      <p className="text-xs text-white/40 leading-relaxed line-clamp-2 mb-4">
-                        {service.description}
-                      </p>
-                    )}
-                    <span className="inline-flex items-center gap-1.5 text-accent text-[11px] font-bold tracking-wide group-hover:gap-3 transition-all duration-300">
-                      Learn More <ArrowRight className="h-3 w-3" />
-                    </span>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
+        {/* Sticky scroll carousel — 300vh gives a satisfying full rotation */}
+        <div className="relative" style={{ height: "300vh" }}>
+          <div className="sticky top-0 h-screen flex flex-col overflow-hidden">
+            {/* Carousel */}
+            <div className="flex-1 relative">
+              <CircularGallery items={serviceItems.slice(0, 8)} radius={520} />
+            </div>
 
-          <motion.div
-            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-            viewport={{ once: true }} transition={{ delay: 0.3 }}
-            className="mt-12"
-          >
-            <Link
-              href="/services"
-              className="inline-flex items-center gap-3 text-sm font-bold text-white/70 border border-white/20 hover:border-accent hover:text-accent px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
-            >
-              View All {serviceItems.length} Services <ArrowRight className="h-4 w-4" />
-            </Link>
-          </motion.div>
+            {/* Footer row */}
+            <div className="container relative z-10 pb-10 flex items-center justify-between">
+              <p className="text-white/30 text-[11px] font-bold tracking-[0.25em] uppercase">
+                Scroll to explore
+              </p>
+              <Link
+                href="/services"
+                className="inline-flex items-center gap-3 text-sm font-bold text-white/70 border border-white/20 hover:border-accent hover:text-accent px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+              >
+                View All {serviceItems.length} Services <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 

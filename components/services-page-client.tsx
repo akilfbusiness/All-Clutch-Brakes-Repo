@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
-import { Phone, ArrowRight, Plus, ChevronRight, Wrench } from "lucide-react"
+import { motion } from "framer-motion"
+import { Phone, ArrowRight, ChevronRight, Wrench } from "lucide-react"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -11,6 +11,7 @@ export interface ServiceCardItem {
   title: string
   slug: string | null
   description: string | null
+  image: string | null
 }
 
 export interface FaqItem {
@@ -49,8 +50,7 @@ export function ServicesPageClient({
   businessName, phone, pageTitle, pageSubtitle,
   ctaHeading, ctaBody, services, faqs,
 }: ServicesPageClientProps) {
-  const [openService, setOpenService] = useState<number | null>(null)
-  const [openFaq,     setOpenFaq]     = useState<number | null>(null)
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   return (
     <>
@@ -118,7 +118,7 @@ export function ServicesPageClient({
 
 
       {/* ══════════════════════════════════════════════════════════════════════
-          SERVICE CARD GRID
+          SERVICE CARD GRID — image-top, white bg
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="py-24 md:py-32 bg-background">
         <div className="container">
@@ -138,90 +138,51 @@ export function ServicesPageClient({
           <motion.div
             variants={stagger} initial="hidden"
             whileInView="show" viewport={{ once: true, margin: "-40px" }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 border-t border-l border-border"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-border"
           >
-            {services.map((service, i) => {
-              const isOpen = openService === i
-              return (
-                <motion.div
-                  key={i}
-                  variants={fadeUp}
-                  className="relative border-r border-b border-border"
+            {services.map((service, i) => (
+              <motion.div key={i} variants={fadeUp} className="bg-background group">
+                <Link
+                  href={service.slug ? `/services/${service.slug}` : "/services"}
+                  className="block h-full"
                 >
-                  <button
-                    onClick={() => setOpenService(isOpen ? null : i)}
-                    className="group w-full text-left cursor-pointer relative overflow-hidden"
-                  >
-                    {/* Hover wash */}
-                    <div className={`absolute inset-0 bg-accent/[0.03] transition-opacity duration-500 ${isOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`} />
-                    {/* Accent bottom line */}
-                    <div className={`absolute bottom-0 left-0 h-[2px] bg-accent transition-all duration-500 ${isOpen ? "w-full" : "w-0 group-hover:w-full"}`} />
-
-                    <div className="relative z-10 p-7 md:p-9">
-                      {/* Watermark number */}
-                      <span aria-hidden className="absolute top-4 right-5 text-[72px] font-bold leading-none text-foreground/[0.035] select-none pointer-events-none">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-
-                      {/* Top row */}
-                      <div className="flex items-start justify-between mb-8">
-                        <div className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300 ${isOpen ? "bg-accent border-accent" : "border-accent/30 bg-accent/8 group-hover:bg-accent group-hover:border-accent"}`}>
-                          <Wrench className={`w-4 h-4 transition-colors duration-300 ${isOpen ? "text-black" : "text-accent group-hover:text-black"}`} />
-                        </div>
-                        <motion.div
-                          animate={{ rotate: isOpen ? 45 : 0 }}
-                          transition={{ duration: 0.3, ease }}
-                          className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors duration-300 ${isOpen ? "border-accent" : "border-border group-hover:border-accent"}`}
-                        >
-                          <Plus className="h-3.5 w-3.5 text-accent" />
-                        </motion.div>
+                  {/* Image */}
+                  <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                    {service.image ? (
+                      <img
+                        src={service.image}
+                        alt={service.title}
+                        className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-muted flex items-center justify-center">
+                        <Wrench className="w-8 h-8 text-accent/20" />
                       </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors duration-500" />
+                    <div className="absolute bottom-0 left-0 h-[2px] bg-accent w-0 group-hover:w-full transition-all duration-500" />
+                    <span className="absolute top-3 left-3 text-[10px] font-bold tracking-[0.25em] text-white/80 bg-black/40 px-2 py-0.5">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
 
-                      {/* Title */}
-                      <h3 className={`text-lg md:text-xl font-bold leading-snug tracking-tight transition-colors duration-300 pr-6 ${isOpen ? "text-accent" : "text-foreground group-hover:text-accent"}`}>
-                        {service.title}
-                      </h3>
-
-                      {!isOpen && (
-                        <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-muted-foreground/40 mt-2">
-                          Tap to expand
-                        </p>
-                      )}
-
-                      {/* Expanded */}
-                      <AnimatePresence initial={false}>
-                        {isOpen && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.38, ease: "easeInOut" }}
-                            className="overflow-hidden"
-                          >
-                            <div className="pt-5 mt-4 border-t border-border/50">
-                              <p className="text-sm text-muted-foreground leading-relaxed mb-5">
-                                {service.description
-                                  ? service.description
-                                  : `Professional ${service.title.toLowerCase()} for all makes and models. Upfront fixed pricing — no hidden costs.`}
-                              </p>
-                              {service.slug && (
-                                <Link
-                                  href={`/services/${service.slug}`}
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="inline-flex items-center gap-1.5 text-accent text-xs font-bold hover:gap-3 transition-all duration-300"
-                                >
-                                  Full Service Details <ArrowRight className="h-3.5 w-3.5" />
-                                </Link>
-                              )}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </button>
-                </motion.div>
-              )
-            })}
+                  {/* Card body */}
+                  <div className="p-6 border-t border-border group-hover:border-accent/40 transition-colors duration-300">
+                    <h3 className="text-base font-bold text-foreground group-hover:text-accent transition-colors duration-300 leading-snug mb-2">
+                      {service.title}
+                    </h3>
+                    {service.description && (
+                      <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-4">
+                        {service.description}
+                      </p>
+                    )}
+                    <span className="inline-flex items-center gap-1.5 text-accent text-[11px] font-bold tracking-wide group-hover:gap-3 transition-all duration-300">
+                      Full Details <ArrowRight className="h-3 w-3" />
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
