@@ -349,7 +349,8 @@ export const getAllArticleSlugs = getAllPostSlugs
 
 export const ALL_SERVICES_QUERY = `
   *[_type == "service"] | order(order asc) {
-    title, "slug": slug.current, answerCapsule, icon, seoDescription
+    title, "slug": slug.current, answerCapsule, icon, seoDescription,
+    "image": coalesce(featuredImage.asset->url, heroImage.asset->url)
   }
 `
 

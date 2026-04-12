@@ -132,8 +132,8 @@ export default async function HomePage() {
   const faqs = settings.homeFaqs?.length ? settings.homeFaqs : DEFAULT_FAQS
 
   const serviceItems = services.length > 0
-    ? services.map((s) => ({ title: s.title, slug: s.slug, description: s.answerCapsule }))
-    : DEFAULT_SERVICES.map((name) => ({ title: name, slug: null, description: null }))
+    ? services.map((s) => ({ title: s.title, slug: s.slug, description: s.answerCapsule, image: (s as any).image ?? null }))
+    : DEFAULT_SERVICES.map((name) => ({ title: name, slug: null, description: null, image: null }))
 
   const faqSchema = {
     "@context": "https://schema.org",
