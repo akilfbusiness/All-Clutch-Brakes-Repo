@@ -274,8 +274,8 @@ export function HomePageClient({
             )}
         </motion.div>
 
-        {/* Static dark overlay */}
-        <div className="absolute inset-0 bg-black/70" />
+        {/* Directional overlay — light at top so image shows, dark at bottom for text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/15" />
 
         {/* Cursor-following glow */}
         <div
