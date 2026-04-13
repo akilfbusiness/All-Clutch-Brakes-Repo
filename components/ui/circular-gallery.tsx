@@ -122,21 +122,23 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
         onTouchEnd={handleTouchEnd}
         {...props}
       >
-        {/* Prev / Next arrows */}
-        <button
-          onClick={goPrev}
-          aria-label="Previous service"
-          className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 w-11 h-11 flex items-center justify-center border border-white/20 hover:border-accent text-white/60 hover:text-accent transition-all duration-300 hover:-translate-x-0.5 bg-black/30 backdrop-blur-sm"
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </button>
-        <button
-          onClick={goNext}
-          aria-label="Next service"
-          className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 w-11 h-11 flex items-center justify-center border border-white/20 hover:border-accent text-white/60 hover:text-accent transition-all duration-300 hover:translate-x-0.5 bg-black/30 backdrop-blur-sm"
-        >
-          <ChevronRight className="h-5 w-5" />
-        </button>
+        {/* Prev / Next arrows — centered below the carousel */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-4">
+          <button
+            onClick={goPrev}
+            aria-label="Previous service"
+            className="w-11 h-11 flex items-center justify-center border border-white/20 hover:border-accent text-white/60 hover:text-accent transition-all duration-300 bg-black/30 backdrop-blur-sm"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            onClick={goNext}
+            aria-label="Next service"
+            className="w-11 h-11 flex items-center justify-center border border-white/20 hover:border-accent text-white/60 hover:text-accent transition-all duration-300 bg-black/30 backdrop-blur-sm"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
 
         {/*
           Zero-size pivot — the rotation axis is a single point at the exact
