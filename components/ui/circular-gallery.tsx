@@ -20,8 +20,12 @@ interface CircularGalleryProps extends HTMLAttributes<HTMLDivElement> {
 const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
   ({ items, className, radius, autoRotateSpeed = 0.015, ...props }, ref) => {
     const [rotation, setRotation] = useState(0)
-    const [isInteracting, setIsInteracting] = useState(false)
+    const [isSnapping, setIsSnapping] = useState(false)
     const [effectiveRadius, setEffectiveRadius] = useState(radius ?? 520)
+
+    // Once the user presses an arrow, auto-rotate and scroll driving are
+    // permanently disabled — this ref never resets to false.
+    const hasInteracted = useRef(false)
 
     // Responsive radius — recalculates on resize
     useEffect(() => {
@@ -34,67 +38,62 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
       window.addEventListener("resize", update, { passive: true })
       return () => window.removeEventListener("resize", update)
     }, [radius])
-    const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-    const interactTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
     const animationFrameRef = useRef<number | null>(null)
     const lastScrollRef = useRef(0)
     const touchStartXRef = useRef<number | null>(null)
     const lastTouchXRef = useRef<number | null>(null)
+    const snapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     const anglePerItem = 360 / items.length
 
-    // Pause auto-rotate temporarily after any interaction
-    const pauseAutoRotate = () => {
-      setIsInteracting(true)
-      if (interactTimeoutRef.current) clearTimeout(interactTimeoutRef.current)
-      interactTimeoutRef.current = setTimeout(() => setIsInteracting(false), 2000)
-    }
-
-    // Arrow navigation — snap by one card angle
+    // Arrow navigation — permanently locks out auto-rotate and scroll driving
     const goNext = () => {
-      pauseAutoRotate()
+      hasInteracted.current = true
+      setIsSnapping(true)
+      if (snapTimeoutRef.current) clearTimeout(snapTimeoutRef.current)
+      snapTimeoutRef.current = setTimeout(() => setIsSnapping(false), 600)
       setRotation(prev => prev - anglePerItem)
     }
     const goPrev = () => {
-      pauseAutoRotate()
+      hasInteracted.current = true
+      setIsSnapping(true)
+      if (snapTimeoutRef.current) clearTimeout(snapTimeoutRef.current)
+      snapTimeoutRef.current = setTimeout(() => setIsSnapping(false), 600)
       setRotation(prev => prev + anglePerItem)
     }
 
-    // Scroll-driven rotation
+    // Scroll-driven rotation — disabled after first arrow press
     useEffect(() => {
       const handleScroll = () => {
-        if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current)
+        if (hasInteracted.current) return
         const delta = window.scrollY - lastScrollRef.current
         lastScrollRef.current = window.scrollY
         setRotation(prev => prev + delta * 0.08)
-        pauseAutoRotate()
-        scrollTimeoutRef.current = setTimeout(() => {}, 150)
       }
 
       window.addEventListener("scroll", handleScroll, { passive: true })
-      return () => {
-        window.removeEventListener("scroll", handleScroll)
-        if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current)
-      }
+      return () => window.removeEventListener("scroll", handleScroll)
     }, [])
 
-    // Auto-rotate when not interacting
+    // Auto-rotate — disabled after first arrow press
     useEffect(() => {
       const autoRotate = () => {
-        if (!isInteracting) setRotation(prev => prev + autoRotateSpeed)
+        if (!hasInteracted.current) {
+          setRotation(prev => prev + autoRotateSpeed)
+        }
         animationFrameRef.current = requestAnimationFrame(autoRotate)
       }
       animationFrameRef.current = requestAnimationFrame(autoRotate)
       return () => {
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current)
       }
-    }, [isInteracting, autoRotateSpeed])
+    }, [autoRotateSpeed])
 
     // Touch swipe handlers
     const handleTouchStart = (e: React.TouchEvent) => {
       touchStartXRef.current = e.touches[0].clientX
       lastTouchXRef.current = e.touches[0].clientX
-      pauseAutoRotate()
     }
 
     const handleTouchMove = (e: React.TouchEvent) => {
@@ -137,10 +136,14 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
           <ChevronRight className="h-5 w-5" />
         </button>
 
-        {/* 3D ring */}
+        {/* 3D ring — smooth CSS transition only during an arrow snap */}
         <div
           className="relative w-full h-full"
-          style={{ transform: `rotateY(${rotation}deg)`, transformStyle: "preserve-3d" }}
+          style={{
+            transform: `rotateY(${rotation}deg)`,
+            transformStyle: "preserve-3d",
+            transition: isSnapping ? "transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)" : "none",
+          }}
         >
           {items.map((service, i) => {
             const itemAngle = i * anglePerItem

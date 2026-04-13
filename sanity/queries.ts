@@ -190,6 +190,7 @@ export interface Service {
   whoIsItFor?: string
   faqItems?: FaqItem[]
   icon?: string
+  image?: string
   heroImage?: string
   heroVideo?: string
   featuredImage?: string

@@ -43,7 +43,7 @@ export default async function ServicesPage() {
     title:       s.title,
     slug:        s.slug           ?? null,
     description: s.answerCapsule  ?? null,
-    image:       s.featuredImage  ?? s.heroImage ?? null,
+    image:       s.image ?? null,
   }))
 
   // ── Breadcrumb schema ──────────────────────────────────────────────────────
