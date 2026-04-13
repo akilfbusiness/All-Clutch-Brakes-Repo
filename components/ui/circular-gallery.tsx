@@ -23,11 +23,11 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
     const [isSnapping, setIsSnapping] = useState(false)
     const [effectiveRadius, setEffectiveRadius] = useState(radius ?? 520)
 
-    // Once the user presses an arrow, auto-rotate and scroll driving are
-    // permanently disabled — this ref never resets to false.
+    // Once the user interacts (arrow or touch), auto-rotate and scroll driving
+    // are permanently disabled — this ref never resets to false.
     const hasInteracted = useRef(false)
 
-    // Responsive radius — recalculates on resize
+    // Responsive radius
     useEffect(() => {
       const update = () => {
         if (radius !== undefined) { setEffectiveRadius(radius); return }
@@ -47,23 +47,24 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
 
     const anglePerItem = 360 / items.length
 
-    // Arrow navigation — permanently locks out auto-rotate and scroll driving
-    const goNext = () => {
-      hasInteracted.current = true
+    const triggerSnap = () => {
       setIsSnapping(true)
       if (snapTimeoutRef.current) clearTimeout(snapTimeoutRef.current)
       snapTimeoutRef.current = setTimeout(() => setIsSnapping(false), 600)
+    }
+
+    const goNext = () => {
+      hasInteracted.current = true
+      triggerSnap()
       setRotation(prev => prev - anglePerItem)
     }
     const goPrev = () => {
       hasInteracted.current = true
-      setIsSnapping(true)
-      if (snapTimeoutRef.current) clearTimeout(snapTimeoutRef.current)
-      snapTimeoutRef.current = setTimeout(() => setIsSnapping(false), 600)
+      triggerSnap()
       setRotation(prev => prev + anglePerItem)
     }
 
-    // Scroll-driven rotation — disabled after first arrow press
+    // Scroll-driven rotation — disabled after first interaction
     useEffect(() => {
       const handleScroll = () => {
         if (hasInteracted.current) return
@@ -71,12 +72,11 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
         lastScrollRef.current = window.scrollY
         setRotation(prev => prev + delta * 0.08)
       }
-
       window.addEventListener("scroll", handleScroll, { passive: true })
       return () => window.removeEventListener("scroll", handleScroll)
     }, [])
 
-    // Auto-rotate — disabled after first arrow press
+    // Auto-rotate — disabled after first interaction
     useEffect(() => {
       const autoRotate = () => {
         if (!hasInteracted.current) {
@@ -90,8 +90,9 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
       }
     }, [autoRotateSpeed])
 
-    // Touch swipe handlers
+    // Touch swipe — also locks out auto-rotate/scroll on first touch
     const handleTouchStart = (e: React.TouchEvent) => {
+      hasInteracted.current = true
       touchStartXRef.current = e.touches[0].clientX
       lastTouchXRef.current = e.touches[0].clientX
     }
@@ -113,8 +114,9 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
         ref={ref}
         role="region"
         aria-label="Services carousel"
-        className={`relative w-full h-full flex items-center justify-center ${className ?? ""}`}
-        style={{ perspective: "2000px" }}
+        className={`relative w-full h-full ${className ?? ""}`}
+        // Higher perspective value = less pronounced zoom as cards approach
+        style={{ perspective: "3000px" }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -124,24 +126,32 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
         <button
           onClick={goPrev}
           aria-label="Previous service"
-          className="absolute left-4 md:left-8 z-20 w-11 h-11 flex items-center justify-center border border-white/20 hover:border-accent text-white/60 hover:text-accent transition-all duration-300 hover:-translate-x-0.5 bg-black/30 backdrop-blur-sm"
+          className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 w-11 h-11 flex items-center justify-center border border-white/20 hover:border-accent text-white/60 hover:text-accent transition-all duration-300 hover:-translate-x-0.5 bg-black/30 backdrop-blur-sm"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
         <button
           onClick={goNext}
           aria-label="Next service"
-          className="absolute right-4 md:right-8 z-20 w-11 h-11 flex items-center justify-center border border-white/20 hover:border-accent text-white/60 hover:text-accent transition-all duration-300 hover:translate-x-0.5 bg-black/30 backdrop-blur-sm"
+          className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 w-11 h-11 flex items-center justify-center border border-white/20 hover:border-accent text-white/60 hover:text-accent transition-all duration-300 hover:translate-x-0.5 bg-black/30 backdrop-blur-sm"
         >
           <ChevronRight className="h-5 w-5" />
         </button>
 
-        {/* 3D ring — smooth CSS transition only during an arrow snap */}
+        {/*
+          Zero-size pivot — the rotation axis is a single point at the exact
+          centre of the container. Cards extend outward from this point via
+          translateZ, so there is nothing to drift or shift when rotating.
+        */}
         <div
-          className="relative w-full h-full"
           style={{
-            transform: `rotateY(${rotation}deg)`,
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            width: 0,
+            height: 0,
             transformStyle: "preserve-3d",
+            transform: `rotateY(${rotation}deg)`,
             transition: isSnapping ? "transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)" : "none",
           }}
         >
@@ -160,9 +170,11 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                 aria-label={service.title}
                 className="absolute w-[180px] h-[260px] sm:w-[220px] sm:h-[300px] md:w-[260px] md:h-[350px] lg:w-[280px] lg:h-[380px]"
                 style={{
+                  // Rotate each card to its position on the ring, push out by
+                  // radius, then centre it on the pivot point.
                   transform: `rotateY(${itemAngle}deg) translateZ(${effectiveRadius}px) translateX(-50%) translateY(-50%)`,
-                  left: "50%",
-                  top: "50%",
+                  left: 0,
+                  top: 0,
                   opacity,
                   transition: "opacity 0.3s linear",
                 }}
