@@ -158,3 +158,8 @@
 .ticker-track:hover {
   animation-play-state: paused;
 }
+
+/* Light mode: suppress blue text-on-hover — keep foreground color */
+:root:not(.dark) .hover\:text-accent:hover {
+  color: var(--foreground);
+}

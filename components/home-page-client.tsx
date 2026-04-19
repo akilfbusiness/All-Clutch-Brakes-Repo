@@ -406,28 +406,28 @@ export function HomePageClient({
           02 · STATS
           Giant full-bleed columns · animated counters · cinematic scale
       ═════════════════════════════════════════════════════════════════════�� */}
-      <section className="relative bg-background border-b border-border overflow-hidden">
+      <section className="relative border-b border-border overflow-hidden" style={{ backgroundColor: 'var(--accent)' }}>
         <SectionNum n="02" />
         <motion.div
           variants={stagger} initial="hidden"
           whileInView="show" viewport={{ once: true, margin: "-60px" }}
-          className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-border"
+          className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/20"
         >
           {statsItems.map((stat, i) => (
             <motion.div
               key={i} variants={fadeUp}
-              className="group flex flex-col justify-between p-6 md:p-12 lg:p-16 min-h-[200px] md:min-h-[300px] lg:min-h-[340px] border-b lg:border-b-0 border-border hover:bg-foreground/[0.025] transition-colors duration-500 cursor-default"
+              className="group flex flex-col justify-between p-6 md:p-12 lg:p-16 min-h-[200px] md:min-h-[300px] lg:min-h-[340px] border-b lg:border-b-0 border-white/20 cursor-default"
             >
               <div>
-                <p className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[100px] font-bold text-foreground group-hover:text-accent leading-none tracking-tight whitespace-pre-line transition-colors duration-500">
+                <p className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[100px] font-bold text-white leading-none tracking-tight whitespace-pre-line">
                   {stat.displayValue}
                 </p>
-                <div className="mt-6 mb-5 w-full h-px bg-border group-hover:bg-accent/30 transition-colors duration-500" />
-                <p className="text-[11px] font-bold text-foreground/80 uppercase tracking-[0.2em]">
+                <div className="mt-6 mb-5 w-full h-px bg-white/30" />
+                <p className="text-[11px] font-bold text-white/80 uppercase tracking-[0.2em]">
                   {stat.label}
                 </p>
               </div>
-              <p className="text-xs text-muted-foreground leading-relaxed mt-6">
+              <p className="text-xs text-white/60 leading-relaxed mt-6">
                 {stat.subtitle}
               </p>
             </motion.div>
@@ -440,7 +440,7 @@ export function HomePageClient({
           03 · SERVICES
           Dark navy section · image-top cards · stagger entrance
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="relative py-24 md:py-32 bg-[oklch(0.11_0.015_245)] overflow-hidden">
+      <section className="relative py-24 md:py-32 bg-background dark:bg-[oklch(0.11_0.015_245)] overflow-hidden">
         {/* Subtle grid texture */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(oklch(0.94 0 0) 1px, transparent 1px), linear-gradient(90deg, oklch(0.94 0 0) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
 
@@ -457,12 +457,12 @@ export function HomePageClient({
               <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-4">
                 What We Do
               </p>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-none text-white">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-none text-foreground dark:text-white">
                 {servicesHeading}
               </h2>
             </div>
             <div className="flex flex-col items-start md:items-end gap-3">
-              <p className="text-white/50 text-sm leading-relaxed max-w-xs md:text-right">
+              <p className="text-foreground/50 dark:text-white/50 text-sm leading-relaxed max-w-xs md:text-right">
                 {servicesSubheading}
               </p>
               <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent/80 border border-accent/20 px-3 py-1">
@@ -482,7 +482,7 @@ export function HomePageClient({
         <div className="container relative z-10 py-8 flex items-center justify-end">
           <Link
             href="/services"
-            className="inline-flex items-center gap-3 text-sm font-bold text-white/70 border border-white/20 hover:border-accent hover:text-accent px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+            className="inline-flex items-center gap-3 text-sm font-bold text-foreground/70 dark:text-white/70 border border-foreground/20 dark:border-white/20 hover:border-accent hover:text-accent px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
           >
             View All {serviceItems.length} Services <ArrowRight className="h-4 w-4" />
           </Link>

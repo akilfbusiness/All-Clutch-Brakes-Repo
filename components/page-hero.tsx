@@ -53,7 +53,7 @@ export function PageHero({
               />
             ) : null}
           </div>
-          <div className="absolute inset-0 bg-black/60 z-[1]" aria-hidden="true" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/15 z-[1]" aria-hidden="true" />
         </>
       )}
 
