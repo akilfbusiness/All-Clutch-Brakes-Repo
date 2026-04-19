@@ -51,8 +51,19 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
     const p = window.location.pathname
     const darkHero =
       p === "/" ||
+      p === "/blog" ||
+      p === "/gallery" ||
+      p === "/locations" ||
+      p === "/meet-our" ||
+      p === "/services" ||
+      p === "/what-we-do" ||
+      p === "/about" ||
+      p === "/contact" ||
       /^\/services\/.+/.test(p) ||
-      /^\/blog\/.+/.test(p)
+      /^\/blog\/.+/.test(p) ||
+      /^\/locations\/.+/.test(p) ||
+      /^\/products\/.+/.test(p) ||
+      /^\/.+/.test(p)
     setIsDarkHeroPage(darkHero)
   }, [pathname])
 

@@ -116,7 +116,7 @@ export function AboutPageClient({
               </a>
               <Link
                 href="/services"
-                className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+                className={`inline-flex items-center gap-2.5 font-bold text-sm px-8 py-4 border transition-all duration-300 hover:-translate-y-0.5 ${heroImage || heroVideo ? "border-white/40 text-white hover:bg-white hover:text-foreground" : "border-border text-foreground hover:border-accent hover:text-accent"}`}
               >
                 View Our Services <ArrowRight className="h-4 w-4" />
               </Link>
