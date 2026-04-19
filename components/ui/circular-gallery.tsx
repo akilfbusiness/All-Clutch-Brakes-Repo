@@ -127,14 +127,14 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
           <button
             onClick={goPrev}
             aria-label="Previous service"
-            className="w-11 h-11 flex items-center justify-center border border-white/20 hover:border-accent text-white/60 hover:text-accent transition-all duration-300 bg-black/30 backdrop-blur-sm"
+            className="w-11 h-11 flex items-center justify-center border border-white/20 dark:hover:border-accent text-white/60 dark:hover:text-accent transition-all duration-300 bg-black/30 backdrop-blur-sm"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
           <button
             onClick={goNext}
             aria-label="Next service"
-            className="w-11 h-11 flex items-center justify-center border border-white/20 hover:border-accent text-white/60 hover:text-accent transition-all duration-300 bg-black/30 backdrop-blur-sm"
+            className="w-11 h-11 flex items-center justify-center border border-white/20 dark:hover:border-accent text-white/60 dark:hover:text-accent transition-all duration-300 bg-black/30 backdrop-blur-sm"
           >
             <ChevronRight className="h-5 w-5" />
           </button>
@@ -204,10 +204,10 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                     {String(i + 1).padStart(2, "0")}
                   </span>
 
-                  <div className="absolute bottom-0 left-0 h-[2px] bg-accent w-0 group-hover:w-full transition-all duration-500" />
+                  <div className="absolute bottom-0 left-0 h-[2px] dark:bg-accent w-0 group-hover:w-full transition-all duration-500" />
 
                   <div className="absolute bottom-0 left-0 w-full p-5 text-white">
-                    <h3 className="text-base font-bold leading-snug mb-1 group-hover:text-accent transition-colors duration-300">
+                    <h3 className="text-base font-bold leading-snug mb-1 dark:group-hover:text-accent transition-colors duration-300">
                       {service.title}
                     </h3>
                     {service.description && (

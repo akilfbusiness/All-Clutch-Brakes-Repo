@@ -109,7 +109,7 @@ export function ServicePageClient({
             >
               <source src={service.heroVideo} type="video/mp4" />
             </video>
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/15" />
           </>
         ) : (service.heroImage || service.featuredImage) ? (
           <>
@@ -128,7 +128,7 @@ export function ServicePageClient({
                 crossOrigin="anonymous"
               />
             </motion.div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/15" />
           </>
         ) : (
           /* No media — dark fallback so white text remains legible */

@@ -190,13 +190,13 @@ function StatsSection({ section }: { section: any }) {
   const stats: any[] = section.stats ?? []
 
   return (
-    <section className="py-16 md:py-24 bg-muted/30 border-y border-border/50">
+    <section className="py-16 md:py-24" style={{ backgroundColor: 'var(--accent)', color: 'white' }}>
       <div className="container">
         {(section.eyebrow || section.heading) && (
           <div className="text-center mb-14">
             <Eyebrow text={section.eyebrow} />
             {section.heading && (
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground text-balance">
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white text-balance">
                 {section.heading}
               </h2>
             )}
@@ -205,14 +205,14 @@ function StatsSection({ section }: { section: any }) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
           {stats.map((stat: any, i: number) => (
             <div key={i} className="text-center">
-              <div className="text-4xl md:text-5xl font-black text-accent mb-2 leading-none">
+              <div className="text-4xl md:text-5xl font-black text-white mb-2 leading-none">
                 {stat.value}
               </div>
-              <div className="text-sm font-bold text-foreground uppercase tracking-wider mb-1">
+              <div className="text-sm font-bold text-white uppercase tracking-wider mb-1">
                 {stat.label}
               </div>
               {stat.subtitle && (
-                <div className="text-xs text-muted-foreground">{stat.subtitle}</div>
+                <div className="text-xs text-white/70">{stat.subtitle}</div>
               )}
             </div>
           ))}

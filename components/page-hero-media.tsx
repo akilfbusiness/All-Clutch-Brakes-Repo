@@ -51,7 +51,7 @@ export function PageHeroMedia({ imageUrl, videoUrl, alt = "" }: PageHeroMediaPro
       </div>
 
       {/* Dark overlay — ensures text readability over any media */}
-      <div className="absolute inset-0 bg-black/55 z-[1]" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/15 z-[1]" aria-hidden="true" />
     </>
   )
 }
