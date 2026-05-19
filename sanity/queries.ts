@@ -32,6 +32,7 @@ export interface SiteSettings {
     postcode: string
     country: string
   }
+  heroTradingHours?: string
   businessHours?: { days: string; hours: string }[]
   abn?: string
   registrationId?: string
@@ -236,7 +237,7 @@ export const SITE_SETTINGS_QUERY = `
   *[_type == "siteSettings"][0] {
     businessName, tagline,
     "logo": logo.asset->url,
-    phone, email, address, businessHours, abn, registrationId,
+    phone, email, address, heroTradingHours, businessHours, abn, registrationId,
     googleMapsEmbedUrl, socialLinks,
     heroHeading, heroAnswerCapsule, heroPrimaryCtaLabel, heroSecondaryCtaLabel,
     heroTagline,

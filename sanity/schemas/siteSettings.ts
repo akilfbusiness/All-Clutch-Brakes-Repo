@@ -80,6 +80,13 @@ export const siteSettingsSchema = defineType({
       ],
     }),
     defineField({
+      name: "heroTradingHours",
+      title: "Hero Section Trading Hours",
+      type: "string",
+      group: "business",
+      description: "Free-form trading hours shown in the hero bar at the bottom of the homepage. e.g. 'Mon–Fri: 8:00 AM – 5:00 PM · Sat–Sun: Closed'. Leave empty to fall back to the first entry in Business Hours below.",
+    }),
+    defineField({
       name: "businessHours",
       title: "Business Hours",
       type: "array",

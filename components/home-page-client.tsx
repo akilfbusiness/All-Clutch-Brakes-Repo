@@ -35,6 +35,7 @@ export interface HomePageClientProps {
   phone: string
   address?: { street?: string; suburb?: string; state?: string; postcode?: string } | null
   hours: HourItem[]
+  heroTradingHours?: string | null
   heroHeading: string
   heroAnswer: string
   heroTagline: string
@@ -186,7 +187,7 @@ function FaqRow({
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
 export function HomePageClient({
-  businessName, phone, address, hours,
+  businessName, phone, address, hours, heroTradingHours,
   heroHeading, heroAnswer, heroTagline, heroImage, heroVideo, mechanicImage, workshopImage,
   primaryCta, secondaryCta,
   trustSignals, tickerItems, statsItems,
@@ -383,12 +384,12 @@ export function HomePageClient({
               <Phone className="h-3.5 w-3.5 text-accent flex-shrink-0" />
               {phone}
             </a>
-            {hours[0] && (
-              <span className="flex items-center gap-2">
-                <Clock className="h-3.5 w-3.5 text-accent flex-shrink-0" />
-                {hours[0].days}: {hours[0].hours}
-              </span>
-            )}
+        {(heroTradingHours || hours[0]) && (
+          <span className="flex items-center gap-2">
+            <Clock className="h-3.5 w-3.5 text-accent flex-shrink-0" />
+            {heroTradingHours ?? `${hours[0].days}: ${hours[0].hours}`}
+          </span>
+        )}
           </div>
         </motion.div>
       </section>

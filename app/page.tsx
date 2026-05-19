@@ -101,6 +101,9 @@ export default async function HomePage() {
     ? settings.businessHours
     : [{ days: "Monday – Friday", hours: "8:00 AM – 5:00 PM" }, { days: "Saturday – Sunday", hours: "Closed" }]
 
+  // Hero bar trading hours: prefer the free-form field, fall back to first business hours entry
+  const heroTradingHours = settings.heroTradingHours?.trim() || null
+
   const heroHeading    = settings.heroHeading    || "Adelaide's Clutch & Brake Specialists"
   const heroAnswer     = settings.heroAnswerCapsule || "Expert clutch replacement, brake repairs, and transmission service for all makes and models. Based in St Marys, serving all of Adelaide."
   const heroTagline    = settings.heroTagline    || "Clutch · Brake · Transmission · Adelaide"
@@ -153,6 +156,7 @@ export default async function HomePage() {
         phone={phone}
         address={address}
         hours={hours}
+        heroTradingHours={heroTradingHours}
         heroHeading={heroHeading}
         heroAnswer={heroAnswer}
         heroTagline={heroTagline}
