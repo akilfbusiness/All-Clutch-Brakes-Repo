@@ -702,9 +702,9 @@ export function HomePageClient({
             className="flex flex-col justify-center py-24 md:py-32 px-6 md:px-10 lg:px-16 xl:px-20 border-b lg:border-b-0 lg:border-r border-white/10"
           >
             {[
-              { isNum: true,  num: 30,   suffix: "+", label: "Years in Business"   },
-              { isNum: true,  num: 1000, suffix: "s", label: "Vehicles Serviced"   },
-              { isNum: true,  num: 100,  suffix: "%", label: "Honest Fixed Pricing" },
+              { isNum: true,  num: 40,   suffix: "+", label: "Years in Business"   },
+              { isNum: true,  num: 2500, suffix: "+", label: "Vehicles Serviced"   },
+              { isNum: true,  num: 100,  suffix: "%", label: "Transparent Pricing" },
             ].map((stat, i) => (
               <div key={i} className="py-10 border-b border-white/10 last:border-0">
                 <p className="text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-none">
