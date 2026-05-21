@@ -16,12 +16,13 @@ export const sanityClient = createClient({
 // - When you publish content in Sanity, a webhook fires to /api/revalidate.
 // - That webhook calls revalidateTag() which clears only the affected pages.
 // - The next visitor to those pages gets a fresh rebuild — all others stay cached.
-// - The 60-second fallback ensures pages never stay stale longer than 1 minute,
-//   even if the webhook fails to fire.
+// - The 86400-second (24 hour) fallback ensures pages are refreshed daily as a
+//   safety net if the webhook fails to fire. The webhook handles instant
+//   revalidation on every Sanity publish, so the fallback rarely triggers.
 export async function sanityFetch<T>({
   query,
   params = {},
-  revalidate = 60,
+  revalidate = 86400,
   tags = [],
 }: {
   query: string
