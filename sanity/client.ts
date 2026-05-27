@@ -22,7 +22,7 @@ export const sanityClient = createClient({
 export async function sanityFetch<T>({
   query,
   params = {},
-  revalidate = 86400,
+  revalidate = 60,
   tags = [],
 }: {
   query: string
