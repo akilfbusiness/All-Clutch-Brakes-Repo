@@ -196,6 +196,16 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
         />
+        {/* Google Analytics 4 — Measurement ID: G-BB91T32K88
+            Loads the gtag.js library asynchronously then initialises the data layer.
+            Do not change the measurement ID without updating GA4 dashboard. */}
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-BB91T32K88" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BB91T32K88');`,
+          }}
+        />
         {/* Microsoft Clarity — session recordings and heatmaps
             Project ID: x0y17oqy9m — do not change this without updating Clarity dashboard */}
         <script
