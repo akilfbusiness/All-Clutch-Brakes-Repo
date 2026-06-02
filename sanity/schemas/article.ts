@@ -89,10 +89,10 @@ export const articleSchema = defineType({
       type: "string",
       options: {
         list: [
-          { title: "NDIS Guides", value: "ndis-guides" },
+          { title: "How-To Guides", value: "how-to-guides" },
           { title: "Services", value: "services" },
           { title: "Locations", value: "locations" },
-          { title: "Tips & Support", value: "tips-support" },
+          { title: "Tips & Advice", value: "tips-advice" },
           { title: "News", value: "news" },
         ],
       },

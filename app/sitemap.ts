@@ -13,7 +13,7 @@ import {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://ashardisabilitycare.com.au"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://allclutchandbrake.com.au"
 
   const now = new Date()
 

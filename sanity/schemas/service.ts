@@ -1,4 +1,4 @@
-// Service schema — for the 6 NDIS service pages
+// Service schema — for all service pages (e.g. Clutch Repairs, Brake Service, Transmission Repairs)
 // Content is managed in Sanity so the business owner can update
 // service descriptions without touching code
 
@@ -77,7 +77,7 @@ export const serviceSchema = defineType({
       type: "text",
       rows: 2,
       description:
-        "A direct 20-30 word answer to 'what is [service] under NDIS?' — this is what AI engines will cite.",
+        "A direct 20-30 word answer to 'what is [service] at All Clutch & Brake?' — this is what AI engines will cite.",
       validation: (Rule) => Rule.required().max(200),
     }),
     defineField({

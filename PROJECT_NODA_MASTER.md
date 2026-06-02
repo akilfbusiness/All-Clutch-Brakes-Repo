@@ -112,9 +112,9 @@ All business details are managed entirely in Sanity Studio. No code changes requ
 
 | Tool | Purpose | URL | Notes |
 |---|---|---|---|
-| Sanity CMS | Content management — articles, services, locations, site settings | sanity.io | Project: "Ashar Disability Care CMS - Project Noda". Studio embedded at /studio |
-| Vercel | Hosting and deployment | vercel.com | Connect domain ashardisabilitycare.com.au to Vercel project |
-| Google Search Console | Submit sitemap, monitor indexing, track search performance | search.google.com/search-console | Submit sitemap after launch: ashardisabilitycare.com.au/sitemap.xml |
+| Sanity CMS | Content management — articles, services, locations, site settings | sanity.io | Project: "All Clutch & Brake CMS - Project Noda". Studio embedded at /studio |
+| Vercel | Hosting and deployment | vercel.com | Connect domain allclutchandbrake.com.au to Vercel project |
+| Google Search Console | Submit sitemap, monitor indexing, track search performance | search.google.com/search-console | Submit sitemap after launch: allclutchandbrake.com.au/sitemap.xml |
 | Bing Webmaster Tools | Submit sitemap for Bing/Copilot indexing | bing.com/webmasters | Submit same sitemap after launch |
 | Google Rich Results Test | Validate structured data (JSON-LD) on every page type | search.google.com/test/rich-results | Run after each content type is published |
 | Google PageSpeed Insights | Monitor Core Web Vitals | pagespeed.web.dev | Run after each major change |
@@ -131,16 +131,16 @@ All four variables must be added to v0 Settings → Vars AND to Vercel project e
 | `NEXT_PUBLIC_SANITY_PROJECT_ID` | `ihlh7pw2` | sanity.io/manage → project → Overview |
 | `NEXT_PUBLIC_SANITY_DATASET` | `production` | sanity.io/manage → project → Datasets |
 | `SANITY_API_READ_TOKEN` | `skb0yzpv...` (Viewer token) | sanity.io/manage → project → API → Tokens |
-| `SANITY_WEBHOOK_SECRET` | `ashardisabilitycare` | Self-defined — must match Sanity webhook secret field |
-| `NEXT_PUBLIC_SITE_URL` | `https://ashardisabilitycare.com.au` | Set manually |
+| `SANITY_WEBHOOK_SECRET` | `allclutchandbrake` | Self-defined — must match Sanity webhook secret field |
+| `NEXT_PUBLIC_SITE_URL` | `https://allclutchandbrake.com.au` | Set manually |
 
 ### Sanity Webhook Configuration
-- **Webhook URL:** `https://ashardisabilitycare.com.au/api/revalidate`
+- **Webhook URL:** `https://allclutchandbrake.com.au/api/revalidate`
 - **Trigger on:** Create, Update, Delete
 - **Drafts:** Disabled (unchecked)
 - **Versions:** Disabled (unchecked)
 - **HTTP Method:** POST
-- **Secret:** `ashardisabilitycare`
+- **Secret:** `allclutchandbrake`
 - **Purpose:** When content is published or updated in Sanity, this webhook fires and tells Next.js to rebuild only the affected page. New content goes live in seconds without a full site rebuild.
 
 ---
@@ -149,48 +149,43 @@ All four variables must be added to v0 Settings → Vars AND to Vercel project e
 
 ### URL Structure
 ```
-ashardisabilitycare.com.au/
+allclutchandbrake.com.au/
 ├── /                              (Home)
 ├── /about
 ├── /contact
 ├── /privacy-policy
 ├── /services                      (Services index)
-│   └── /services/[slug]           (Dynamic — 6 service pages)
-│       ├── personal-care
-│       ├── home-care
-│       ├── community-participation
-│       ├── transport
-│       ├── accommodation-support
-│       └── ndis-planning-and-coordination
+│   └── /services/[slug]           (Dynamic — service pages)
+│       ├── clutch-repairs
+│       ├── brake-service
+│       ├── transmission-repairs
+│       ├── flywheel-machining
+│       ├── clutch-kits
+│       └── roadworthy-certificates
 ├── /locations                     (Locations index)
 │   └── /locations/[slug]          (Dynamic — regions + suburbs)
-│       ├── REGIONS (10)
-│       │   ├── northern-adelaide
-│       │   ├── southern-adelaide
-│       │   ├── eastern-adelaide
-│       │   ├── western-adelaide
-│       │   ├── cbd-and-inner-suburbs
-│       │   ├── barossa-and-surrounds
-│       │   ├── fleurieu-peninsula
-│       │   ├── eyre-peninsula
-│       │   ├── limestone-coast
-│       │   └── yorke-and-mid-north
-│       └── TIER 1 SUBURBS (15)
-│           ├── elizabeth
-│           ├── salisbury
+│       ├── REGIONS
+│       │   ├── adelaide-cbd
+│       │   ├── northern-suburbs
+│       │   ├── southern-suburbs
+│       │   ├── eastern-suburbs
+│       │   └── western-suburbs
+│       └── KEY SUBURBS
+│           ├── unley
+│           ├── keswick
+│           ├── mile-end
+│           ├── norwood
+│           ├── glenelg
+│           ├── henley-beach
 │           ├── modbury
-│           ├── para-hills
-│           ├── davoren-park
+│           ├── tea-tree-gully
+│           ├── salisbury
+│           ├── elizabeth
 │           ├── morphett-vale
 │           ├── noarlunga
-│           ├── mount-gambier
-│           ├── whyalla
-│           ├── port-augusta
-│           ├── gawler
-│           ├── victor-harbor
-│           ├── murray-bridge
-│           ├── port-pirie
-│           └── tea-tree-gully
+│           ├── happy-valley
+│           ├── blackwood
+│           └── mitcham
 ├── /articles                      (Articles index)
 │   └── /articles/[slug]           (Dynamic — unlimited, from Sanity)
 ├── /studio/[[...tool]]            (Embedded Sanity Studio — CMS access)
@@ -378,7 +373,7 @@ Enter real content into Sanity Studio and verify all dynamic systems work correc
 | Step | Task | Status |
 |---|---|---|
 | 1 | Add all environment variables to Vercel production project | ✗ |
-| 2 | Connect domain ashardisabilitycare.com.au to Vercel | ✗ |
+| 2 | Connect domain allclutchandbrake.com.au to Vercel | ✗ |
 | 3 | Verify HTTPS is active on production domain | ✗ |
 | 4 | Update NEXT_PUBLIC_SITE_URL to production domain in Vercel env vars | ✗ |
 | 5 | Submit sitemap to Google Search Console | ✗ |
@@ -393,11 +388,11 @@ Enter real content into Sanity Studio and verify all dynamic systems work correc
 This is a standalone project, built separately and embedded into this website via a single script tag or iframe.
 
 **What the agent does:**
-- Answers customer queries about NDIS services using AI
+- Answers customer queries about clutch, brake, and transmission services using AI
 - Captures lead information (name, location, email, service interest)
 - Stores all conversations in a Supabase database
 - Provides a CRM dashboard for the business owner to monitor customer behaviour, track lead intent, and view analytics
-- Converts leads by guiding participants toward booking or calling
+- Converts leads by guiding customers toward booking or calling
 
 **Tech stack for the agent:**
 - Next.js 15 (App Router)
@@ -407,7 +402,7 @@ This is a standalone project, built separately and embedded into this website vi
 - Custom dashboard (protected by authentication) for the business owner
 
 **Deployment:**
-- Deploy on Vercel at subdomain: `chat.ashardisabilitycare.com.au` or `agent.ashardisabilitycare.com.au`
+- Deploy on Vercel at subdomain: `chat.allclutchandbrake.com.au` or `agent.allclutchandbrake.com.au`
 - Embed into this website via one script tag in the root layout
 
 | Step | Task | Status |
@@ -427,7 +422,7 @@ This is a standalone project, built separately and embedded into this website vi
 ## 8. AEO/GEO/SEO Strategy
 
 ### What AEO/GEO Means for This Build
-- **AEO (Answer Engine Optimisation):** Structuring content so AI engines (ChatGPT, Perplexity, Claude, Gemini) extract and cite your pages when answering NDIS-related questions.
+- **AEO (Answer Engine Optimisation):** Structuring content so AI engines (ChatGPT, Perplexity, Claude, Gemini) extract and cite your pages when answering clutch, brake, and transmission-related questions.
 - **GEO (Generative Engine Optimisation):** Ensuring the website is recognised as a trusted, authoritative source by generative AI systems so it appears in AI-generated responses.
 - **SEO:** Traditional search engine optimisation for Google and Bing.
 
@@ -443,7 +438,7 @@ Every page type (services, locations, articles, home) includes FAQPage JSON-LD s
 Every article includes Article JSON-LD with datePublished, dateModified, author, and publisher. This establishes recency and authorship — two trust signals AI engines weight heavily.
 
 **LocalBusiness Schema**
-Root layout contains LocalBusiness JSON-LD with full business details, NDIS registration, ABN, service area, and business hours. This establishes the business as a real, verified local entity.
+Root layout contains LocalBusiness JSON-LD with full business details, ABN, service area, and business hours. This establishes the business as a real, verified local entity.
 
 **BreadcrumbList Schema**
 Every page includes BreadcrumbList JSON-LD so AI engines understand the site hierarchy and depth.
@@ -455,11 +450,11 @@ Root layout includes WebSite schema declaring the site as a coherent entity with
 The robots.ts explicitly allows all major AI crawlers: GPTBot (ChatGPT), ClaudeBot (Claude), PerplexityBot (Perplexity), Google-Extended (Google AI), FacebookBot, Applebot, and Amazonbot. Unnecessary scrapers are blocked.
 
 ### Content Strategy for Geographic Coverage
-Rather than 450 individual suburb pages (which Google would penalise as doorway pages):
-- 10 region pages covering all of SA with suburbs listed explicitly within each
-- 15 Tier 1 suburb pages for highest NDIS participant density suburbs
+Rather than hundreds of individual suburb pages (which Google would penalise as doorway pages):
+- Region pages covering greater Adelaide with suburbs listed explicitly within each
+- Key suburb pages targeting the highest-volume search areas
 - Articles naturally mentioning suburbs and regions for long-tail geographic coverage
-- LocalBusiness areaServed declaring South Australia and key regions
+- LocalBusiness areaServed declaring Adelaide and surrounding areas
 
 ---
 
@@ -498,7 +493,7 @@ The agent is the second major deliverable of Project Noda. It is a customer inte
 ## Notes for Future Reference
 
 - **Logo:** Add to `/public/assets/logo.png` — replace all `logo-here` placeholders
-- **Sanity Studio:** Accessible at `ashardisabilitycare.com.au/studio` — requires Sanity account login
+- **Sanity Studio:** Accessible at `allclutchandbrake.com.au/studio` — requires Sanity account login
 - **Content updates:** All content changes go through Sanity Studio. The website updates automatically via the ISR webhook within seconds of publishing.
 - **Adding new articles:** Create in Sanity Studio → Articles → New Article. Fill in all fields including Answer Capsule, FAQ items, SEO Title, and SEO Description. Publish. Website updates automatically.
 - **Adding new services or locations:** Same process via Sanity Studio → Services or Locations.

@@ -6,7 +6,7 @@
 import { ImageResponse } from "next/og"
 
 export const runtime = "edge"
-export const alt = "Ashar Disability Care — Registered NDIS Provider, South Australia"
+export const alt = "All Clutch & Brake Service — Expert Clutch, Brake & Transmission Repairs, Adelaide"
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
 
@@ -51,7 +51,7 @@ export default function OgImage() {
             }}
           >
             {/* logo-here */}
-            Ashar Disability Care
+            All Clutch & Brake Service
           </span>
         </div>
 
@@ -67,9 +67,9 @@ export default function OgImage() {
             letterSpacing: "-0.03em",
           }}
         >
-          Registered NDIS Provider
+          Expert Clutch, Brake &
           <br />
-          South Australia
+          Transmission Repairs
         </h1>
 
         {/* Subtext */}
@@ -81,9 +81,9 @@ export default function OgImage() {
             lineHeight: 1.4,
           }}
         >
-          Personal Care · Home Care · Community Participation
+          Clutch Repairs · Brake Services · Transmission Repairs
           <br />
-          Transport · Accommodation Support · NDIS Planning
+          Flywheel Machining · Adelaide & Surrounding Areas
         </p>
 
         {/* Domain */}
@@ -97,7 +97,7 @@ export default function OgImage() {
           }}
         >
           <span style={{ fontSize: "20px", color: "#60a5fa" }}>
-            ashardisabilitycare.com.au
+            allclutchandbrake.com.au
           </span>
         </div>
       </div>

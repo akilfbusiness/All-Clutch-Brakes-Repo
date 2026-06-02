@@ -114,7 +114,7 @@ export const siteSettingsSchema = defineType({
       title: "Business Registration ID",
       type: "string",
       group: "business",
-      description: "Industry registration or licence number (e.g. NDIS Registration ID). Optional.",
+      description: "Industry registration or licence number (e.g. Motor Vehicle Repairer Licence). Optional.",
     }),
     defineField({
       name: "googleMapsEmbedUrl",
@@ -986,7 +986,21 @@ export const siteSettingsSchema = defineType({
       title: "Google Search Console Verification Token",
       type: "string",
       group: "seo",
-      description: "Paste the content value from Google Search Console verification meta tag here.",
+      description: "Paste the content value from the Google Search Console verification meta tag here (the long string after content=).",
+    }),
+    defineField({
+      name: "bingVerificationToken",
+      title: "Bing Webmaster Verification Token",
+      type: "string",
+      group: "seo",
+      description: "Paste the content value from the Bing Webmaster Tools msvalidate.01 meta tag here.",
+    }),
+    defineField({
+      name: "googleBusinessProfileUrl",
+      title: "Google Business Profile URL",
+      type: "url",
+      group: "seo",
+      description: "Full URL to the Google Business Profile listing. Used in LocalBusiness sameAs schema for entity disambiguation.",
     }),
     defineField({
       name: "areaServed",

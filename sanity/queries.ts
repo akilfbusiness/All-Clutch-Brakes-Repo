@@ -148,6 +148,8 @@ export interface SiteSettings {
   defaultSeoTitle?: string
   defaultSeoDescription?: string
   googleSearchConsoleToken?: string
+  bingVerificationToken?: string
+  googleBusinessProfileUrl?: string
   areaServed?: string[]
 }
 
@@ -288,7 +290,8 @@ export const SITE_SETTINGS_QUERY = `
     locationsPageHeading, locationsPageAnswerCapsule, locationsFaqs,
     footerTagline, footerCopyrightText, footerLinks, footerBrandLabel,
     siteUrl, defaultSeoTitle, defaultSeoDescription,
-    googleSearchConsoleToken, areaServed
+    googleSearchConsoleToken, bingVerificationToken,
+    googleBusinessProfileUrl, areaServed
   }
 `
 
