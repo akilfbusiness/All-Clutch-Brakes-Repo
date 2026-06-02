@@ -71,7 +71,11 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     verification: {
-      google: settings?.googleSearchConsoleToken ?? "",
+      google: settings?.googleSearchConsoleToken ?? "B0H89QwbrWBFKLm7JdU5N3fRTxIUPYpPyorMZlm0R9g",
+      other: {
+        // Bing Webmaster Tools — add msvalidate token here once confirmed in Bing Webmaster
+        "msvalidate.01": settings?.bingVerificationToken ?? "",
+      },
     },
     icons: {
       icon: "/icon-light-32x32.png",
@@ -168,6 +172,14 @@ export default async function RootLayout({
       "@type": "OfferCatalog",
       name: "Services",
     },
+    // sameAs — links entity to known external profiles for Google entity disambiguation.
+    // Add/remove URLs as the business creates new profiles. Leave empty array if not set.
+    sameAs: [
+      ...(settings?.socialLinks?.facebook ? [settings.socialLinks.facebook] : []),
+      ...(settings?.socialLinks?.instagram ? [settings.socialLinks.instagram] : []),
+      ...(settings?.socialLinks?.linkedin ? [settings.socialLinks.linkedin] : []),
+      ...(settings?.googleBusinessProfileUrl ? [settings.googleBusinessProfileUrl] : []),
+    ].filter(Boolean),
   }
 
   return (
@@ -183,6 +195,13 @@ export default async function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+        />
+        {/* Microsoft Clarity — session recordings and heatmaps
+            Project ID: x0y17oqy9m — do not change this without updating Clarity dashboard */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","x0y17oqy9m");`,
+          }}
         />
       </head>
       <body className={`${_plusJakarta.variable} ${_geistMono.variable} font-sans antialiased`}>
