@@ -114,7 +114,7 @@ export const siteSettingsSchema = defineType({
       title: "Business Registration ID",
       type: "string",
       group: "business",
-      description: "Industry registration or licence number (e.g. NDIS Registration ID). Optional.",
+      description: "Industry registration or licence number (e.g. Motor Vehicle Repairer Licence). Optional.",
     }),
     defineField({
       name: "googleMapsEmbedUrl",

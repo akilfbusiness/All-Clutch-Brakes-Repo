@@ -84,7 +84,7 @@ export const locationSchema = defineType({
       title: "Answer Capsule",
       type: "text",
       rows: 2,
-      description: "Direct answer to 'Does Ashar Disability Care service [location]?' — 20-30 words.",
+      description: "Direct answer to 'Does All Clutch & Brake service [location]?' — 20-30 words.",
       validation: (Rule) => Rule.required().max(200),
     }),
     defineField({

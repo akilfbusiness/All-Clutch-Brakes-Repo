@@ -19,7 +19,7 @@ export const authorSchema = defineType({
       name: "role",
       title: "Role / Title",
       type: "string",
-      description: "E.g. 'NDIS Support Coordinator', 'Disability Care Specialist'",
+      description: "E.g. 'Head Mechanic', 'Brake & Clutch Specialist', 'Workshop Manager'",
     }),
     defineField({
       name: "bio",
