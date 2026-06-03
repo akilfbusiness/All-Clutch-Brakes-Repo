@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { PortableText } from "@portabletext/react"
+import { PortableText, type PortableTextComponents } from "@portabletext/react"
 import { getAllPostSlugs, getPostBySlug, getSiteSettings } from "@/sanity/queries"
 import type { Post } from "@/sanity/queries"
 import { urlFor } from "@/sanity/image"
@@ -15,6 +15,11 @@ import {
   ArrowLeft,
   MapPin,
   ExternalLink,
+  Info,
+  Lightbulb,
+  AlertTriangle,
+  XCircle,
+  Youtube,
 } from "lucide-react"
 
 export async function generateStaticParams() {
@@ -60,6 +65,262 @@ export async function generateMetadata({
   }
 }
 
+// ── Callout styling map ────────────────────────────────────────────────────────
+const calloutConfig = {
+  info: {
+    icon: Info,
+    border: "border-blue-500/40",
+    bg: "bg-blue-500/[0.06]",
+    label: "Info",
+    labelColor: "text-blue-400",
+  },
+  tip: {
+    icon: Lightbulb,
+    border: "border-green-500/40",
+    bg: "bg-green-500/[0.06]",
+    label: "Tip",
+    labelColor: "text-green-400",
+  },
+  warning: {
+    icon: AlertTriangle,
+    border: "border-yellow-500/40",
+    bg: "bg-yellow-500/[0.06]",
+    label: "Warning",
+    labelColor: "text-yellow-400",
+  },
+  danger: {
+    icon: XCircle,
+    border: "border-red-500/40",
+    bg: "bg-red-500/[0.06]",
+    label: "Danger",
+    labelColor: "text-red-400",
+  },
+} as const
+
+// ── YouTube URL → embed ID ─────────────────────────────────────────────────────
+function getYoutubeId(url: string): string | null {
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/
+  )
+  return match?.[1] ?? null
+}
+
+// ── Portable Text custom components ───────────────────────────────────────────
+const portableTextComponents: PortableTextComponents = {
+  types: {
+    // ── Image ────────────────────────────────────────────────────────────────
+    image: ({ value }: any) => {
+      if (!value?.asset) return null
+      return (
+        <figure className="my-8">
+          <div className="relative w-full overflow-hidden border border-border">
+            <Image
+              src={urlFor(value).width(900).url()}
+              alt={value.alt ?? ""}
+              width={900}
+              height={500}
+              className="w-full h-auto object-cover"
+            />
+          </div>
+          {value.caption && (
+            <figcaption className="mt-2 text-center text-xs text-foreground/40 italic">
+              {value.caption}
+            </figcaption>
+          )}
+        </figure>
+      )
+    },
+
+    // ── Table ────────────────────────────────────────────────────────────────
+    table: ({ value }: any) => {
+      if (!value?.rows?.length) return null
+      const [headerRow, ...bodyRows] = value.rows
+      return (
+        <div className="my-8 overflow-x-auto border border-border">
+          <table className="w-full text-sm">
+            {headerRow && (
+              <thead className="bg-foreground/[0.05]">
+                <tr>
+                  {headerRow.cells.map((cell: string, i: number) => (
+                    <th
+                      key={i}
+                      className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground/70 border-r border-border last:border-r-0"
+                    >
+                      {cell}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+            )}
+            <tbody>
+              {bodyRows.map((row: any, ri: number) => (
+                <tr key={ri} className="border-t border-border even:bg-foreground/[0.02]">
+                  {row.cells.map((cell: string, ci: number) => (
+                    <td
+                      key={ci}
+                      className="px-4 py-3 text-foreground/70 border-r border-border last:border-r-0"
+                    >
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )
+    },
+
+    // ── Callout ──────────────────────────────────────────────────────────────
+    callout: ({ value }: any) => {
+      const config = calloutConfig[value.type as keyof typeof calloutConfig] ?? calloutConfig.info
+      const Icon = config.icon
+      return (
+        <div className={`my-6 border-l-4 p-5 ${config.border} ${config.bg}`}>
+          <div className="flex items-center gap-2 mb-2">
+            <Icon className="h-4 w-4 flex-shrink-0" />
+            <span className={`text-[10px] font-bold uppercase tracking-[0.15em] ${config.labelColor}`}>
+              {value.heading ?? config.label}
+            </span>
+          </div>
+          <p className="text-foreground/70 leading-relaxed text-sm">{value.body}</p>
+        </div>
+      )
+    },
+
+    // ── Comparison Block ─────────────────────────────────────────────────────
+    comparisonBlock: ({ value }: any) => (
+      <div className="my-8 border border-border">
+        {value.heading && (
+          <div className="border-b border-border px-5 py-3">
+            <p className="text-sm font-bold text-foreground/80">{value.heading}</p>
+          </div>
+        )}
+        <div className="grid grid-cols-2 divide-x divide-border">
+          <div className="p-5">
+            <p className="text-[10px] font-bold text-green-400 uppercase tracking-[0.15em] mb-3">
+              {value.leftLabel ?? "Pros"}
+            </p>
+            <ul className="space-y-2">
+              {(value.leftPoints ?? []).map((point: string, i: number) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-foreground/70">
+                  <span className="text-green-400 mt-0.5 flex-shrink-0">+</span>
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="p-5">
+            <p className="text-[10px] font-bold text-red-400 uppercase tracking-[0.15em] mb-3">
+              {value.rightLabel ?? "Cons"}
+            </p>
+            <ul className="space-y-2">
+              {(value.rightPoints ?? []).map((point: string, i: number) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-foreground/70">
+                  <span className="text-red-400 mt-0.5 flex-shrink-0">−</span>
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    ),
+
+    // ── YouTube Embed ─────────────────────────────────────────────────────────
+    youtubeEmbed: ({ value }: any) => {
+      const id = getYoutubeId(value.url ?? "")
+      if (!id) return null
+      return (
+        <figure className="my-8">
+          <div className="relative w-full aspect-video border border-border overflow-hidden">
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${id}`}
+              title={value.caption ?? "Embedded video"}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full"
+            />
+          </div>
+          {value.caption && (
+            <figcaption className="mt-2 flex items-center gap-1.5 text-xs text-foreground/40 italic">
+              <Youtube className="h-3 w-3" />
+              {value.caption}
+            </figcaption>
+          )}
+        </figure>
+      )
+    },
+
+    // ── Pull Quote ────────────────────────────────────────────────────────────
+    pullQuote: ({ value }: any) => (
+      <blockquote className="my-8 border-l-4 border-accent pl-6 py-2">
+        <p className="text-xl font-medium leading-relaxed text-foreground/80 italic">
+          &ldquo;{value.quote}&rdquo;
+        </p>
+        {value.attribution && (
+          <cite className="mt-3 block text-xs text-foreground/40 not-italic uppercase tracking-widest">
+            — {value.attribution}
+          </cite>
+        )}
+      </blockquote>
+    ),
+
+    // ── Divider ───────────────────────────────────────────────────────────────
+    divider: ({ value }: any) => (
+      <hr
+        className={`border-border ${value?.style === "spaced" ? "my-16" : "my-8"}`}
+      />
+    ),
+  },
+
+  marks: {
+    // External / internal link
+    link: ({ children, value }: any) => (
+      <a
+        href={value?.href}
+        target={value?.blank ? "_blank" : undefined}
+        rel={value?.blank ? "noopener noreferrer" : undefined}
+        className="text-accent underline underline-offset-2 hover:text-accent/80 transition-colors"
+      >
+        {children}
+      </a>
+    ),
+    code: ({ children }: any) => (
+      <code className="bg-foreground/[0.08] text-accent px-1.5 py-0.5 rounded text-[0.85em] font-mono">
+        {children}
+      </code>
+    ),
+  },
+
+  block: {
+    h2: ({ children }: any) => (
+      <h2 className="text-2xl font-bold tracking-tight mt-10 mb-4 text-foreground">
+        {children}
+      </h2>
+    ),
+    h3: ({ children }: any) => (
+      <h3 className="text-xl font-bold tracking-tight mt-8 mb-3 text-foreground">
+        {children}
+      </h3>
+    ),
+    h4: ({ children }: any) => (
+      <h4 className="text-lg font-bold tracking-tight mt-6 mb-2 text-foreground">
+        {children}
+      </h4>
+    ),
+    blockquote: ({ children }: any) => (
+      <blockquote className="border-l-4 border-border pl-5 py-1 my-6 text-foreground/60 italic">
+        {children}
+      </blockquote>
+    ),
+    normal: ({ children }: any) => (
+      <p className="leading-relaxed text-foreground/70 mb-4">{children}</p>
+    ),
+  },
+}
+
+// ── Fallback post ──────────────────────────────────────────────────────────────
 const FALLBACK_POST: Post = {
   title: "How Often Should You Replace Your Clutch?",
   slug: "how-often-replace-clutch",
@@ -68,7 +329,7 @@ const FALLBACK_POST: Post = {
   category: "Clutch Care",
   publishedAt: "2024-01-15",
   readTimeMinutes: 6,
-  author: { name: "All Clutch & Brake Team", role: "Service Team", bio: "", photo: null },
+  author: { name: "All Clutch & Brake Team", role: "Service Team", bio: "", credentials: "", photo: null },
   quickAnswers: [
     {
       question: "How long does a clutch last?",
@@ -120,6 +381,7 @@ export default async function BlogPostPage({
     year: "numeric",
   })
 
+  // ── Structured data ────────────────────────────────────────────────────────
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -128,9 +390,18 @@ export default async function BlogPostPage({
     url: `${siteUrl}/blog/${slug}`,
     datePublished: displayPost.publishedAt,
     dateModified: displayPost.updatedAt ?? displayPost.publishedAt,
-    author: { "@type": "Person", name: displayPost.author?.name ?? businessName },
+    author: {
+      "@type": "Person",
+      name: displayPost.author?.name ?? businessName,
+      ...(displayPost.author?.credentials && { description: displayPost.author.credentials }),
+    },
     publisher: { "@type": "LocalBusiness", name: businessName, url: siteUrl },
     ...(displayPost.readTimeMinutes && { timeRequired: `PT${displayPost.readTimeMinutes}M` }),
+    // Speakable — points AI assistants at the two highest-value sections
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["#answer-capsule", "#faq-section"],
+    },
   }
 
   const breadcrumbSchema = {
@@ -165,7 +436,7 @@ export default async function BlogPostPage({
 
       <main className="min-h-screen bg-background">
 
-        {/* ── Hero ──────────────────────────────────────────────── */}
+        {/* ── Hero — AEO-ordered: Breadcrumb → Category → H1 → Answer Capsule → FAQ ── */}
         <section className="relative py-16 md:py-24 bg-background border-b border-border overflow-hidden">
           <span
             aria-hidden
@@ -174,7 +445,8 @@ export default async function BlogPostPage({
             Article
           </span>
           <div className="container mx-auto px-6 relative">
-            {/* Breadcrumb */}
+
+            {/* 1. Breadcrumb */}
             <nav aria-label="Breadcrumb" className="mb-8">
               <ol className="flex items-center gap-2 text-[11px] text-foreground/40 flex-wrap uppercase tracking-widest">
                 <li><Link href="/" className="hover:text-accent transition-colors">Home</Link></li>
@@ -185,24 +457,60 @@ export default async function BlogPostPage({
               </ol>
             </nav>
 
-            {/* Category */}
+            {/* 2. Category */}
             {displayPost.category && (
               <span className="inline-block text-[10px] font-bold tracking-[0.15em] uppercase border border-accent/30 text-accent px-2.5 py-1 mb-5">
                 {displayPost.category}
               </span>
             )}
 
-            <h1 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight mb-6 max-w-4xl">
+            {/* 3. H1 — first meaningful content for AI screener */}
+            <h1 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight mb-8 max-w-4xl">
               {displayPost.title}
             </h1>
 
-            {/* Meta row */}
-            <div className="flex flex-wrap items-center gap-5 text-[11px] text-foreground/50 uppercase tracking-widest">
+            {/* 4. Answer Capsule — immediately after H1, no images or meta rows between */}
+            <div
+              id="answer-capsule"
+              className="border-l-4 border-accent bg-foreground/[0.03] p-5 mb-8 max-w-3xl"
+            >
+              <p className="text-[10px] font-bold text-accent uppercase tracking-[0.2em] mb-2">
+                TL;DR — Quick Answer
+              </p>
+              <p className="text-foreground/80 font-medium leading-relaxed">
+                {displayPost.answerCapsule}
+              </p>
+            </div>
+
+            {/* 5. FAQ — right after answer capsule to target semantic fan-out queries */}
+            {displayPost.faqItems && displayPost.faqItems.length > 0 && (
+              <section id="faq-section" className="max-w-3xl mb-8" aria-labelledby="faq-heading-hero">
+                <h2
+                  id="faq-heading-hero"
+                  className="text-xl font-bold tracking-tight mb-6 pb-3 border-b border-border"
+                >
+                  Frequently Asked Questions
+                </h2>
+                <div className="space-y-3">
+                  {displayPost.faqItems.map((item, index) => (
+                    <div key={index} className="border border-border p-5">
+                      <h3 className="text-sm font-bold text-foreground mb-3">{item.question}</h3>
+                      <p className="text-foreground/60 leading-relaxed text-sm">{item.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* 6. Meta row — after the three screener signals */}
+            <div className="flex flex-wrap items-center gap-5 text-[11px] text-foreground/50 uppercase tracking-widest max-w-3xl">
               {displayPost.author?.name && (
                 <span className="flex items-center gap-1.5">
                   <User className="h-3.5 w-3.5" />
                   {displayPost.author.name}
-                  {displayPost.author.role && <span className="text-foreground/30">· {displayPost.author.role}</span>}
+                  {displayPost.author.role && (
+                    <span className="text-foreground/30">· {displayPost.author.role}</span>
+                  )}
                 </span>
               )}
               <span className="flex items-center gap-1.5">
@@ -217,9 +525,9 @@ export default async function BlogPostPage({
               )}
             </div>
 
-            {/* Geo tags */}
+            {/* 7. Geo tags */}
             {displayPost.geoTags && displayPost.geoTags.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2 mt-4">
+              <div className="flex flex-wrap items-center gap-2 mt-4 max-w-3xl">
                 <MapPin className="h-3.5 w-3.5 text-foreground/30 flex-shrink-0" />
                 {displayPost.geoTags.map((tag) => (
                   <span key={tag} className="text-[10px] text-foreground/40 border border-border px-2 py-0.5">
@@ -231,7 +539,7 @@ export default async function BlogPostPage({
           </div>
         </section>
 
-        {/* ── Hero Image ────────────────────────────────────────── */}
+        {/* ── Hero Image — below the three screener signals ─────────────────── */}
         {displayPost.heroImage && (
           <div className="relative w-full h-64 md:h-[480px] bg-foreground/5 overflow-hidden border-b border-border">
             <Image
@@ -245,19 +553,9 @@ export default async function BlogPostPage({
           </div>
         )}
 
-        {/* ── Content ───────────────────────────────────────────── */}
+        {/* ── Content ───────────────────────────────────────────────────────── */}
         <div className="container mx-auto px-6 py-12 md:py-16">
           <div className="max-w-3xl mx-auto">
-
-            {/* TL;DR box */}
-            <div className="border-l-4 border-accent bg-foreground/[0.03] p-5 mb-10">
-              <p className="text-[10px] font-bold text-accent uppercase tracking-[0.2em] mb-2">
-                TL;DR — Quick Answer
-              </p>
-              <p className="text-foreground/80 font-medium leading-relaxed">
-                {displayPost.answerCapsule}
-              </p>
-            </div>
 
             {/* Quick Answers */}
             {displayPost.quickAnswers && displayPost.quickAnswers.length > 0 && (
@@ -279,10 +577,10 @@ export default async function BlogPostPage({
               </section>
             )}
 
-            {/* Main body */}
+            {/* Article Body */}
             {displayPost.body && Array.isArray(displayPost.body) && displayPost.body.length > 0 ? (
-              <div className="prose prose-invert prose-sm md:prose-base max-w-none prose-headings:font-bold prose-headings:uppercase prose-headings:tracking-tight prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground mb-12">
-                <PortableText value={displayPost.body} />
+              <div className="mb-12">
+                <PortableText value={displayPost.body} components={portableTextComponents} />
               </div>
             ) : (
               <div className="border border-border p-8 text-center mb-12">
@@ -291,26 +589,6 @@ export default async function BlogPostPage({
                   {businessName} and we will answer your question directly.
                 </p>
               </div>
-            )}
-
-            {/* FAQ */}
-            {displayPost.faqItems && displayPost.faqItems.length > 0 && (
-              <section className="mb-12" aria-labelledby="faq-heading">
-                <h2
-                  id="faq-heading"
-                  className="text-xl font-bold tracking-tight mb-6 pb-3 border-b border-border"
-                >
-                  Frequently Asked Questions
-                </h2>
-                <div className="space-y-3">
-                  {displayPost.faqItems.map((item, index) => (
-                    <div key={index} className="border border-border p-5">
-                      <h3 className="text-sm font-bold text-foreground mb-3">{item.question}</h3>
-                      <p className="text-foreground/60 leading-relaxed text-sm">{item.answer}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
             )}
 
             {/* Data Sources */}
@@ -340,13 +618,38 @@ export default async function BlogPostPage({
               </section>
             )}
 
-            {/* Author Bio */}
+            {/* Author Bio — with photo and credentials */}
             {displayPost.author?.bio && (
               <section className="mb-12 border border-border p-6" aria-label="About the author">
-                <h2 className="text-[11px] font-bold text-foreground/50 uppercase tracking-[0.2em] mb-3">
+                <h2 className="text-[11px] font-bold text-foreground/50 uppercase tracking-[0.2em] mb-4">
                   About the Author
                 </h2>
-                <p className="text-foreground/60 leading-relaxed text-sm">{displayPost.author.bio}</p>
+                <div className="flex items-start gap-4">
+                  {displayPost.author.photo && (
+                    <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden border border-border">
+                      <Image
+                        src={urlFor(displayPost.author.photo).width(112).height(112).url()}
+                        alt={`${displayPost.author.name} — ${displayPost.author.role ?? "Author"}`}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-foreground mb-0.5">{displayPost.author.name}</p>
+                    {displayPost.author.role && (
+                      <p className="text-[11px] text-accent uppercase tracking-[0.12em] mb-2">
+                        {displayPost.author.role}
+                      </p>
+                    )}
+                    <p className="text-foreground/60 leading-relaxed text-sm">{displayPost.author.bio}</p>
+                    {displayPost.author.credentials && (
+                      <p className="mt-2 text-[11px] text-foreground/40 leading-relaxed">
+                        {displayPost.author.credentials}
+                      </p>
+                    )}
+                  </div>
+                </div>
               </section>
             )}
 
@@ -400,7 +703,7 @@ export default async function BlogPostPage({
           </div>
         </div>
 
-        {/* ── CTA Strip ──────────────────────────────────────────── */}
+        {/* ── CTA Strip ─────────────────────────────────────────────────────── */}
         <section className="bg-accent py-16">
           <div className="container mx-auto px-6 text-center">
             <h2 className="text-3xl font-bold tracking-tight text-accent-foreground mb-4">

@@ -163,9 +163,57 @@ export const postSchema = defineType({
       title: "Article Body",
       type: "array",
       description:
-        "The full post content. Use H2/H3 headings, bullet lists, bold for key facts. Tables can be added as custom blocks.",
+        "The full post content. Full creative freedom — headings, tables, callouts, comparisons, embeds, pull quotes, dividers, and more.",
       of: [
-        { type: "block" },
+        // ── Standard rich text block ──────────────────────────────────────────
+        {
+          type: "block",
+          styles: [
+            { title: "Normal", value: "normal" },
+            { title: "Heading 2", value: "h2" },
+            { title: "Heading 3", value: "h3" },
+            { title: "Heading 4", value: "h4" },
+            { title: "Block Quote", value: "blockquote" },
+          ],
+          lists: [
+            { title: "Bullet List", value: "bullet" },
+            { title: "Numbered List", value: "number" },
+          ],
+          marks: {
+            decorators: [
+              { title: "Bold", value: "strong" },
+              { title: "Italic", value: "em" },
+              { title: "Underline", value: "underline" },
+              { title: "Strikethrough", value: "strike-through" },
+              { title: "Code", value: "code" },
+            ],
+            annotations: [
+              {
+                name: "link",
+                type: "object",
+                title: "Link",
+                fields: [
+                  {
+                    name: "href",
+                    type: "url",
+                    title: "URL",
+                    description: "Paste an external URL or internal path (e.g. /services/clutch-replacement)",
+                    validation: (Rule: any) =>
+                      Rule.uri({ allowRelative: true, scheme: ["http", "https", "mailto", "tel"] }),
+                  },
+                  {
+                    name: "blank",
+                    type: "boolean",
+                    title: "Open in new tab",
+                    initialValue: false,
+                  },
+                ],
+              },
+            ],
+          },
+        },
+
+        // ── Image with caption + alt ──────────────────────────────────────────
         {
           type: "image",
           options: { hotspot: true },
@@ -174,7 +222,8 @@ export const postSchema = defineType({
               name: "alt",
               type: "string",
               title: "Alt Text",
-              validation: (Rule) => Rule.required(),
+              description: "Required for accessibility and SEO.",
+              validation: (Rule: any) => Rule.required(),
             },
             {
               name: "caption",
@@ -182,6 +231,184 @@ export const postSchema = defineType({
               title: "Caption (optional)",
             },
           ],
+        },
+
+        // ── Table ─────────────────────────────────────────────────────────────
+        { type: "table" },
+
+        // ── Callout Block ────────────────────────────────────────────────────
+        {
+          type: "object",
+          name: "callout",
+          title: "Callout Block",
+          fields: [
+            {
+              name: "type",
+              title: "Type",
+              type: "string",
+              options: {
+                list: [
+                  { title: "Info", value: "info" },
+                  { title: "Tip", value: "tip" },
+                  { title: "Warning", value: "warning" },
+                  { title: "Danger", value: "danger" },
+                ],
+                layout: "radio",
+              },
+              initialValue: "info",
+              validation: (Rule: any) => Rule.required(),
+            },
+            {
+              name: "heading",
+              title: "Heading (optional)",
+              type: "string",
+            },
+            {
+              name: "body",
+              title: "Body Text",
+              type: "text",
+              rows: 3,
+              validation: (Rule: any) => Rule.required(),
+            },
+          ],
+          preview: {
+            select: { title: "heading", subtitle: "body", type: "type" },
+            prepare({ title, subtitle, type }: any) {
+              const icons: Record<string, string> = { info: "ℹ️", tip: "✅", warning: "⚠️", danger: "🚨" }
+              return { title: `${icons[type] ?? "📌"} ${title ?? "Callout"}`, subtitle }
+            },
+          },
+        },
+
+        // ── Comparison Block (Pros / Cons) ───────────────────────────────────
+        {
+          type: "object",
+          name: "comparisonBlock",
+          title: "Comparison Block",
+          fields: [
+            {
+              name: "heading",
+              title: "Heading (optional)",
+              type: "string",
+              description: "e.g. 'OEM vs Aftermarket Clutch Kits'",
+            },
+            {
+              name: "leftLabel",
+              title: "Left Column Label",
+              type: "string",
+              initialValue: "Pros",
+              validation: (Rule: any) => Rule.required(),
+            },
+            {
+              name: "rightLabel",
+              title: "Right Column Label",
+              type: "string",
+              initialValue: "Cons",
+              validation: (Rule: any) => Rule.required(),
+            },
+            {
+              name: "leftPoints",
+              title: "Left Column Points",
+              type: "array",
+              of: [{ type: "string" }],
+              validation: (Rule: any) => Rule.min(1),
+            },
+            {
+              name: "rightPoints",
+              title: "Right Column Points",
+              type: "array",
+              of: [{ type: "string" }],
+              validation: (Rule: any) => Rule.min(1),
+            },
+          ],
+          preview: {
+            select: { title: "heading", left: "leftLabel", right: "rightLabel" },
+            prepare({ title, left, right }: any) {
+              return { title: title ?? "Comparison", subtitle: `${left ?? "Left"} vs ${right ?? "Right"}` }
+            },
+          },
+        },
+
+        // ── YouTube Embed ─────────────────────────────────────────────────────
+        {
+          type: "object",
+          name: "youtubeEmbed",
+          title: "YouTube Video",
+          fields: [
+            {
+              name: "url",
+              title: "YouTube URL",
+              type: "url",
+              description: "Paste the full YouTube URL (e.g. https://www.youtube.com/watch?v=xxxxx)",
+              validation: (Rule: any) => Rule.required(),
+            },
+            {
+              name: "caption",
+              title: "Caption (optional)",
+              type: "string",
+            },
+          ],
+          preview: {
+            select: { title: "url", subtitle: "caption" },
+            prepare({ title, subtitle }: any) {
+              return { title: "YouTube Video", subtitle: subtitle ?? title }
+            },
+          },
+        },
+
+        // ── Pull Quote ────────────────────────────────────────────────────────
+        {
+          type: "object",
+          name: "pullQuote",
+          title: "Pull Quote",
+          fields: [
+            {
+              name: "quote",
+              title: "Quote",
+              type: "text",
+              rows: 2,
+              validation: (Rule: any) => Rule.required(),
+            },
+            {
+              name: "attribution",
+              title: "Attribution (optional)",
+              type: "string",
+              description: "e.g. 'John Smith, Head Mechanic'",
+            },
+          ],
+          preview: {
+            select: { title: "quote", subtitle: "attribution" },
+            prepare({ title, subtitle }: any) {
+              return { title: `"${title}"`, subtitle }
+            },
+          },
+        },
+
+        // ── Horizontal Divider ────────────────────────────────────────────────
+        {
+          type: "object",
+          name: "divider",
+          title: "Horizontal Divider",
+          fields: [
+            {
+              name: "style",
+              title: "Style",
+              type: "string",
+              options: {
+                list: [
+                  { title: "Line", value: "line" },
+                  { title: "Spaced", value: "spaced" },
+                ],
+                layout: "radio",
+              },
+              initialValue: "line",
+            },
+          ],
+          preview: {
+            prepare() {
+              return { title: "— Divider —" }
+            },
+          },
         },
       ],
     }),
