@@ -233,8 +233,64 @@ export const postSchema = defineType({
           ],
         },
 
-        // ── Table ─────────────────────────────────────────────────────────────
-        { type: "table" },
+        // ── Table (native custom block) ───────────────────────────────────────
+        {
+          type: "object",
+          name: "tableBlock",
+          title: "Table",
+          fields: [
+            {
+              name: "caption",
+              title: "Table Caption (optional)",
+              type: "string",
+            },
+            {
+              name: "headers",
+              title: "Column Headers",
+              type: "array",
+              of: [{ type: "string" }],
+              description: "One entry per column header. e.g. 'Vehicle Type', 'Cost Range', 'Labour Time'",
+              validation: (Rule: any) => Rule.min(1),
+            },
+            {
+              name: "rows",
+              title: "Rows",
+              type: "array",
+              of: [
+                {
+                  type: "object",
+                  name: "tableRow",
+                  title: "Row",
+                  fields: [
+                    {
+                      name: "cells",
+                      title: "Cells",
+                      type: "array",
+                      of: [{ type: "string" }],
+                      description: "One entry per cell, matching column order.",
+                    },
+                  ],
+                  preview: {
+                    select: { cells: "cells" },
+                    prepare({ cells }: any) {
+                      return { title: Array.isArray(cells) ? cells.join(" | ") : "Row" }
+                    },
+                  },
+                },
+              ],
+              validation: (Rule: any) => Rule.min(1),
+            },
+          ],
+          preview: {
+            select: { title: "caption", headers: "headers" },
+            prepare({ title, headers }: any) {
+              return {
+                title: title ?? "Table",
+                subtitle: Array.isArray(headers) ? `Columns: ${headers.join(", ")}` : "",
+              }
+            },
+          },
+        },
 
         // ── Callout Block ────────────────────────────────────────────────────
         {
