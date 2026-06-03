@@ -165,7 +165,7 @@ export interface Post {
   category: string
   tags?: string[]
   geoTags?: string[]
-  author?: { name: string; role: string; bio: string; photo: unknown }
+  author?: { name: string; role: string; bio: string; credentials?: string; photo: unknown }
   publishedAt: string
   updatedAt?: string
   readTimeMinutes?: number
@@ -318,7 +318,7 @@ export const POST_BY_SLUG_QUERY = `
   *[_type == "post" && slug.current == $slug][0] {
     title, "slug": slug.current, answerCapsule, quickAnswers,
     body, faqItems, category, tags, geoTags,
-    author->{ name, role, bio, photo },
+    author->{ name, role, bio, credentials, photo },
     publishedAt, updatedAt, readTimeMinutes, heroImage,
     ctaHeading, ctaBody,
     dataSources,

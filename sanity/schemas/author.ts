@@ -29,10 +29,26 @@ export const authorSchema = defineType({
       description: "Appears below articles. Establishes credibility and E-E-A-T.",
     }),
     defineField({
+      name: "credentials",
+      title: "Credentials & Qualifications",
+      type: "text",
+      rows: 2,
+      description:
+        "E-E-A-T trust signal. List qualifications, years of experience, and certifications. e.g. '20+ years in automotive, Licensed Brake & Clutch Specialist, Master Technician certified.'",
+    }),
+    defineField({
       name: "photo",
       title: "Photo",
       type: "image",
       options: { hotspot: true },
+      fields: [
+        {
+          name: "alt",
+          type: "string",
+          title: "Alt Text",
+          description: "e.g. 'John Smith, Head Mechanic at All Clutch & Brake'",
+        },
+      ],
     }),
     defineField({
       name: "slug",

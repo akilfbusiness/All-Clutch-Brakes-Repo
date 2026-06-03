@@ -3,6 +3,7 @@ import { structureTool } from "sanity/structure"
 import { visionTool } from "@sanity/vision"
 import { colorInput } from "@sanity/color-input"
 import { media } from "sanity-plugin-media"
+import { table } from "sanity-plugin-table"
 import { schemaTypes } from "./schemas/index"
 import { sanityConfig } from "./config"
 import { CustomDashboard } from "./plugins/custom-dashboard"
@@ -240,6 +241,8 @@ export default defineConfig({
     colorInput(),
     // Enhanced media library browser
     media(),
+    // Table support for article body
+    table(),
   ],
 
   // Document actions — custom actions for content types
