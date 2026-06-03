@@ -6,6 +6,7 @@ import { media } from "sanity-plugin-media"
 import { schemaTypes } from "./schemas/index"
 import { sanityConfig } from "./config"
 import { CustomDashboard } from "./plugins/custom-dashboard"
+import { importExportTool } from "./plugins/import-export-tool"
 
 // Import action plugins
 import { jsonExportAction, jsonImportAction } from "./plugins/json-import-export"
@@ -240,6 +241,8 @@ export default defineConfig({
     colorInput(),
     // Enhanced media library browser
     media(),
+    // Import / Export tool — download templates, fill with AI, import JSON
+    importExportTool(),
   ],
 
   // Document actions — custom actions for content types
