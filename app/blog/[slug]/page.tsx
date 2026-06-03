@@ -132,30 +132,34 @@ const portableTextComponents: PortableTextComponents = {
     },
 
     // ── Table ────────────────────────────────────────────────────────────────
-    table: ({ value }: any) => {
+    tableBlock: ({ value }: any) => {
       if (!value?.rows?.length) return null
-      const [headerRow, ...bodyRows] = value.rows
       return (
         <div className="my-8 overflow-x-auto border border-border">
+          {value.caption && (
+            <p className="px-4 py-2 text-xs text-foreground/40 italic border-b border-border">
+              {value.caption}
+            </p>
+          )}
           <table className="w-full text-sm">
-            {headerRow && (
+            {value.headers?.length > 0 && (
               <thead className="bg-foreground/[0.05]">
                 <tr>
-                  {headerRow.cells.map((cell: string, i: number) => (
+                  {value.headers.map((header: string, i: number) => (
                     <th
                       key={i}
                       className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground/70 border-r border-border last:border-r-0"
                     >
-                      {cell}
+                      {header}
                     </th>
                   ))}
                 </tr>
               </thead>
             )}
             <tbody>
-              {bodyRows.map((row: any, ri: number) => (
+              {value.rows.map((row: any, ri: number) => (
                 <tr key={ri} className="border-t border-border even:bg-foreground/[0.02]">
-                  {row.cells.map((cell: string, ci: number) => (
+                  {(row.cells ?? []).map((cell: string, ci: number) => (
                     <td
                       key={ci}
                       className="px-4 py-3 text-foreground/70 border-r border-border last:border-r-0"
