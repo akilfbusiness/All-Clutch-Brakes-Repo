@@ -789,6 +789,17 @@ export async function getProductPageBySlug(slug: string): Promise<ProductPage | 
   })
 }
 
+export const ALL_PRODUCT_SLUGS_QUERY = `
+  *[_type == "productPage" && defined(slug.current)] { "slug": slug.current }
+`
+
+export async function getAllProductSlugs(): Promise<{ slug: string }[]> {
+  return await sanityFetch<{ slug: string }[]>({
+    query: ALL_PRODUCT_SLUGS_QUERY,
+    tags: ["productPages"],
+  })
+}
+
 // ─── TESTIMONIALS ─────────────────────────────────────────────────────────────
 
 export const ALL_TESTIMONIALS_QUERY = `
