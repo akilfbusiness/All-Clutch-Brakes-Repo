@@ -10,7 +10,7 @@
  */
 
 import React, { useState } from "react"
-import { definePlugin } from "sanity"
+import { definePlugin, useClient } from "sanity"
 
 // ─── Document type registry ────────────────────────────────────────────────────
 
@@ -904,97 +904,10 @@ function downloadMarkdown(content: string, filename: string) {
   URL.revokeObjectURL(url)
 }
 
-// ─── Sanity client accessor ────────────────────────────────────────────────────
-
-function useSanityClient() {
-  // Access the Sanity client injected by the Studio runtime
-  if (typeof window !== "undefined") {
-    return (window as any).__sanity_client__ ?? null
-  }
-  return null
-}
-
-// ─── Validation helpers ────────────────────────────────────────────────────────
-
-interface ValidationResult {
-  valid: boolean
-  warnings: string[]
-  errors: string[]
-  docType: string | null
-  cleanDoc: Record<string, unknown> | null
-}
-
-function validateImport(raw: string, expectedType: DocType): ValidationResult {
-  const warnings: string[] = []
-  const errors: string[] = []
-
-  let parsed: Record<string, unknown>
-  try {
-    parsed = JSON.parse(raw)
-  } catch {
-    return { valid: false, warnings, errors: ["Invalid JSON — could not parse. Check for missing commas or brackets."], docType: null, cleanDoc: null }
-  }
-
-  // Check _type
-  const docType = parsed._type as string | undefined
-  if (!docType) {
-    errors.push("Missing required field: _type")
-  } else if (docType !== expectedType) {
-    warnings.push(`_type is "${docType}" but selected document type is "${expectedType}". Proceeding with import.`)
-  }
-
-  // Remove all _instructions_* and _instructions fields
-  const clean: Record<string, unknown> = {}
-  for (const [key, value] of Object.entries(parsed)) {
-    if (key.startsWith("_instructions")) continue
-    if (key === "_id" || key === "_rev" || key === "_createdAt" || key === "_updatedAt") continue
-    clean[key] = value
-  }
-
-  // Strip _instructions from nested arrays recursively
-  function stripInstructions(obj: unknown): unknown {
-    if (Array.isArray(obj)) return obj.map(stripInstructions)
-    if (obj && typeof obj === "object") {
-      const out: Record<string, unknown> = {}
-      for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
-        if (k.startsWith("_instructions")) continue
-        out[k] = stripInstructions(v)
-      }
-      return out
-    }
-    return obj
-  }
-
-  const cleanDoc = stripInstructions(clean) as Record<string, unknown>
-
-  // Check required fields per type
-  if (expectedType === "post") {
-    if (!cleanDoc.title) errors.push("Missing required field: title")
-    if (!cleanDoc.answerCapsule) errors.push("Missing required field: answerCapsule")
-    if (!(cleanDoc.slug as any)?.current) errors.push("Missing required field: slug.current")
-  }
-  if (expectedType === "service") {
-    if (!cleanDoc.title) errors.push("Missing required field: title")
-    if (!cleanDoc.answerCapsule) errors.push("Missing required field: answerCapsule")
-  }
-  if (expectedType === "testimonial") {
-    if (!cleanDoc.customerName) errors.push("Missing required field: customerName")
-    if (!cleanDoc.testimonial) errors.push("Missing required field: testimonial")
-    if (!cleanDoc.rating) errors.push("Missing required field: rating")
-  }
-
-  return {
-    valid: errors.length === 0,
-    warnings,
-    errors,
-    docType: docType ?? null,
-    cleanDoc,
-  }
-}
-
 // ─── Main Tool Component ───────────────────────────────────────────────────────
 
 function ImportExportTool() {
+  const client = useClient({ apiVersion: "2024-01-01" })
   const [selectedType, setSelectedType] = useState<DocType>("post")
   const [jsonInput, setJsonInput] = useState("")
   const [promptCopied, setPromptCopied] = useState(false)
@@ -1026,9 +939,6 @@ function ImportExportTool() {
     setImportError("")
 
     try {
-      const client = useSanityClient()
-      if (!client) throw new Error("Could not access Sanity client. Please refresh the Studio and try again.")
-
       const doc = {
         ...validation.cleanDoc,
         _type: selectedType,
