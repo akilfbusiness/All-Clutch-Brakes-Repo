@@ -65,11 +65,13 @@ export async function generateMetadata(): Promise<Metadata> {
   const description =
     settings.defaultSeoDescription ??
     "Expert clutch replacement and brake repairs in Adelaide. All makes and models. Free quotes. Call (08) 8277 8122."
+  const pageTitle = settings.defaultSeoTitle ?? businessName
+
   return {
-    title: settings.defaultSeoTitle ?? businessName,
+    title: { absolute: pageTitle },
     description,
     alternates: { canonical: "/" },
-    openGraph: { title: settings.defaultSeoTitle ?? businessName, description, type: "website" },
+    openGraph: { title: pageTitle, description, type: "website" },
   }
 }
 

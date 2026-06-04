@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: "Brands We Stock",
     description: `The trusted brands stocked and used by ${businessName} — quality parts for clutch, brake, and transmission repairs.`,
     alternates: { canonical: "/brands" },
-    openGraph: { title: "Brands We Stock", url: `${siteUrl}/brands`, type: "website" },
+    openGraph: { title: "Brands We Stock", description: `The trusted brands stocked and used by ${businessName} — quality parts for clutch, brake, and transmission repairs.`, url: `${siteUrl}/brands`, type: "website" },
   }
 }
 

@@ -41,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: "FAQ - Frequently Asked Questions",
     description: `Frequently asked questions about clutch, brake, and transmission repairs at ${businessName}.`,
     alternates: { canonical: "/faq" },
-    openGraph: { title: "FAQ - Frequently Asked Questions", url: `${siteUrl}/faq`, type: "website" },
+    openGraph: { title: "FAQ - Frequently Asked Questions", description: `Frequently asked questions about clutch, brake, and transmission repairs at ${businessName}.`, url: `${siteUrl}/faq`, type: "website" },
   }
 }
 

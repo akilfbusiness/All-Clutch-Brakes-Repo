@@ -8,6 +8,13 @@ import { PageHeroMedia } from "@/components/page-hero-media"
 export const metadata: Metadata = {
   title: "Gallery",
   description: "View our workshop, team, and completed work. Professional clutch and brake repairs in Adelaide.",
+  alternates: { canonical: "/gallery" },
+  openGraph: {
+    title: "Gallery",
+    description: "View our workshop, team, and completed work. Professional clutch and brake repairs in Adelaide.",
+    url: "https://www.allclutchandbrake.com.au/gallery",
+    type: "website",
+  },
 }
 
 export default async function GalleryPage() {
