@@ -6,6 +6,13 @@ import type { Testimonial } from "@/sanity/queries"
 export const metadata: Metadata = {
   title: "Customer Testimonials",
   description: "Read reviews from our satisfied customers across Adelaide. Expert clutch and brake repairs with over 30 years of experience.",
+  alternates: { canonical: "/testimonials" },
+  openGraph: {
+    title: "Customer Testimonials",
+    description: "Read reviews from our satisfied customers across Adelaide. Expert clutch and brake repairs with over 30 years of experience.",
+    url: "https://www.allclutchandbrake.com.au/testimonials",
+    type: "website",
+  },
 }
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
@@ -67,6 +74,7 @@ export default async function TestimonialsPage() {
 
   const businessName = settings.businessName || "All Clutch & Brake Service"
   const phone = settings.phone?.[0] || "(08) 8277 8122"
+  const siteUrl = settings.siteUrl || "https://www.allclutchandbrake.com.au"
 
   // Calculate average rating
   const avgRating =
@@ -76,8 +84,54 @@ export default async function TestimonialsPage() {
         ).toFixed(1)
       : "5.0"
 
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Customer Testimonials",
+    description: `Read genuine reviews from Adelaide drivers who trust ${businessName} for clutch and brake repairs.`,
+    url: `${siteUrl}/testimonials`,
+    isPartOf: { "@type": "WebSite", name: businessName, url: siteUrl },
+  }
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home",                  item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Customer Testimonials", item: `${siteUrl}/testimonials` },
+    ],
+  }
+
+  const aggregateRatingSchema = testimonials.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        name: businessName,
+        url: siteUrl,
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: avgRating,
+          reviewCount: testimonials.length,
+          bestRating: "5",
+          worstRating: "1",
+        },
+        review: testimonials.slice(0, 10).map((t) => ({
+          "@type": "Review",
+          author: { "@type": "Person", name: t.customerName },
+          reviewRating: { "@type": "Rating", ratingValue: t.rating, bestRating: "5" },
+          reviewBody: t.testimonialText,
+          ...(t.serviceDate && { datePublished: t.serviceDate }),
+        })),
+      }
+    : null
+
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      {aggregateRatingSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aggregateRatingSchema) }} />
+      )}
       {/* Hero */}
       <section className="border-b bg-background py-16 md:py-24">
         <div className="container px-4 md:px-6">

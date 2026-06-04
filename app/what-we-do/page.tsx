@@ -39,9 +39,25 @@ export default async function WhatWeDoPage() {
     ],
   }
 
+  const aboutPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: page?.pageHeading ?? "What We Do",
+    description: page?.ourBeginningsText?.slice(0, 160) ?? `Learn what ${businessName} does — our history, mission, and values.`,
+    url: `${siteUrl}/what-we-do`,
+    isPartOf: { "@type": "WebSite", name: businessName, url: siteUrl },
+    about: {
+      "@type": "LocalBusiness",
+      name: businessName,
+      url: siteUrl,
+      ...(page?.ourMissionText && { description: page.ourMissionText }),
+    },
+  }
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageSchema) }} />
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
       <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">

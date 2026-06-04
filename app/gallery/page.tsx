@@ -18,8 +18,8 @@ export const metadata: Metadata = {
 }
 
 export default async function GalleryPage() {
-  let allImages
-  let settings
+  let allImages: Awaited<ReturnType<typeof getAllGalleryImages>> = []
+  let settings: Awaited<ReturnType<typeof getSiteSettings>> | Record<string, never> = {}
 
   try {
     ;[allImages, settings] = await Promise.all([
@@ -37,6 +37,7 @@ export default async function GalleryPage() {
   const pageHeading     = settings.galleryPageHeading    || "Gallery"
   const pageSubheading  = settings.galleryPageSubheading || "Take a look at our workshop, team, and the quality work we deliver for Adelaide drivers."
   const eyebrow         = settings.galleryPageEyebrow    || "Our Work"
+  const siteUrl         = settings.siteUrl               || "https://www.allclutchandbrake.com.au"
 
   // Group images by category
   const workshopImages = allImages.filter((img) => img.category === "workshop")
@@ -45,8 +46,29 @@ export default async function GalleryPage() {
   const servicesImages = allImages.filter((img) => img.category === "services")
   const vehiclesImages = allImages.filter((img) => img.category === "vehicles")
 
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "ImageGallery",
+    name: pageHeading,
+    description: pageSubheading,
+    url: `${siteUrl}/gallery`,
+    isPartOf: { "@type": "WebSite", name: businessName, url: siteUrl },
+    ...(allImages.length > 0 && { numberOfItems: allImages.length }),
+  }
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home",    item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Gallery", item: `${siteUrl}/gallery` },
+    ],
+  }
+
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {/* Hero */}
       <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">
         <PageHeroMedia imageUrl={heroImage} videoUrl={heroVideo} alt={pageHeading} />

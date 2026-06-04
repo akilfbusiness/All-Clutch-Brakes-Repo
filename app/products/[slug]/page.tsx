@@ -49,9 +49,31 @@ export default async function ProductDetailPage({ params }: Props) {
     ],
   }
 
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.heading ?? product.title,
+    description: product.detailedDescription ?? product.introText ?? "",
+    url: `${siteUrl}/products/${slug}`,
+    brand: { "@type": "Brand", name: businessName },
+    ...(product.specifications?.length && {
+      additionalProperty: product.specifications.map((spec: string) => ({
+        "@type": "PropertyValue",
+        value: spec,
+      })),
+    }),
+    offers: {
+      "@type": "Offer",
+      availability: "https://schema.org/InStock",
+      priceCurrency: "AUD",
+      seller: { "@type": "LocalBusiness", name: businessName, url: siteUrl },
+    },
+  }
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
 
       <ProductPageClient
         businessName={businessName}

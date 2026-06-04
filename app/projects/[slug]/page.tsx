@@ -56,9 +56,20 @@ export default async function ProjectDetailPage({ params }: Props) {
     ],
   }
 
+  const creativeWorkSchema = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: project.title,
+    description: project.description ?? "",
+    url: `${siteUrl}/projects/${slug}`,
+    creator: { "@type": "LocalBusiness", name: businessName, url: siteUrl },
+    ...(project.tags?.length && { keywords: project.tags.join(", ") }),
+  }
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(creativeWorkSchema) }} />
 
       <main className="min-h-screen bg-background">
 

@@ -47,8 +47,27 @@ export default async function DynamicPage({ params }: Props) {
 
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
   const phone        = settings?.phone?.[0]   ?? "(08) 8277 8122"
+  const siteUrl      = settings?.siteUrl      ?? "https://www.allclutchandbrake.com.au"
 
   const sections = page.sections ?? []
+
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: page.title,
+    description: page.metaDescription || "",
+    url: `${siteUrl}/${slug}`,
+    isPartOf: { "@type": "WebSite", name: businessName, url: siteUrl },
+  }
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home",       item: siteUrl },
+      { "@type": "ListItem", position: 2, name: page.title,   item: `${siteUrl}/${slug}` },
+    ],
+  }
 
   // Determine which dynamic data we actually need
   const needsTestimonials = sections.some((s: any) => s._type === "testimonialsSection")
@@ -86,6 +105,8 @@ export default async function DynamicPage({ params }: Props) {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <PageHero
         title={page.title}
         heading={page.heroHeading}
