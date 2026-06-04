@@ -399,67 +399,190 @@ Do not invent field names or structures. Do not deviate from the shapes describe
 | \`slug.current\` | string | YES | Lowercase, hyphens only |
 | \`category\` | string | YES | One of: Clutch Care / Brake Safety / Transmission / How-To Guides / Pricing & Costs / Maintenance Tips / Industry News |
 | \`publishedAt\` | string | YES | ISO 8601. E.g. \`"2026-06-01T00:00:00.000Z"\` |
-| \`answerCapsule\` | string | YES | 20-40 word direct answer. Most important GEO field. |
+| \`answerCapsule\` | string | YES | 20-40 word direct answer. Most important GEO/AEO field — AI engines cite this verbatim. |
 | \`readTimeMinutes\` | number | — | Minutes. ~1 min per 200 words. |
-| \`tags\` | string[] | — | Keyword tags |
-| \`geoTags\` | string[] | — | Location tags for local SEO |
-| \`ctaHeading\` | string | — | Override end CTA. Leave empty for site default. |
-| \`ctaBody\` | string | — | Override end CTA body. Leave empty for site default. |
-| \`seoTitle\` | string | — | Max 60 chars. Leave empty to use title. |
-| \`seoDescription\` | string | — | Max 155 chars. |
+| \`tags\` | string[] | — | Keyword tags. E.g. \`["clutch replacement", "adelaide", "manual transmission"]\` |
+| \`geoTags\` | string[] | — | Location tags for local SEO. E.g. \`["Adelaide", "South Australia", "Edwardstown"]\` |
+| \`ctaHeading\` | string | — | Override end-of-article CTA heading. Leave empty to use site default. |
+| \`ctaBody\` | string | — | Override end-of-article CTA body text. Leave empty to use site default. |
+| \`seoTitle\` | string | — | Max 60 chars. Leave empty to use the post title. |
+| \`seoDescription\` | string | — | Max 155 chars. Leave empty for auto-generation. |
+
+### Example — Top-Level Fields
+
+\`\`\`json
+{
+  "_type": "post",
+  "title": "Clutch Replacement Cost Adelaide 2026: Full Price Guide",
+  "slug": { "current": "clutch-replacement-cost-adelaide-2026" },
+  "category": "Pricing & Costs",
+  "publishedAt": "2026-06-01T00:00:00.000Z",
+  "readTimeMinutes": 7,
+  "tags": ["clutch replacement", "adelaide", "cost", "price guide", "manual transmission"],
+  "geoTags": ["Adelaide", "South Australia", "Edwardstown", "Keswick", "Mile End"],
+  "answerCapsule": "Clutch replacement in Adelaide costs $800-$2,500 at All Clutch & Brake depending on vehicle type, whether the flywheel needs machining, and OEM vs aftermarket parts.",
+  "ctaHeading": "Need a Clutch Quote?",
+  "ctaBody": "Call us or drop in for a free assessment. We service all makes and models.",
+  "seoTitle": "Clutch Replacement Cost Adelaide 2026 | All Clutch & Brake",
+  "seoDescription": "Full price guide for clutch replacement in Adelaide. Small cars from $800, 4WDs from $1,200. Free quotes available. All Clutch & Brake, Edwardstown SA."
+}
+\`\`\`
 
 ---
 
 ## quickAnswers — AI Citation Signals
+
+These are extracted by AI engines (ChatGPT, Perplexity, Google AI Overviews) to answer user questions. Make each answer a complete standalone sentence with specific data — do not use vague language.
+
+Add 2-5 pairs. Each \`_key\` must be unique (qa-1, qa-2, qa-3 etc.)
 
 \`\`\`json
 "quickAnswers": [
   {
     "_key": "qa-1",
     "question": "How long does a clutch replacement take?",
-    "quickAnswer": "A standard clutch replacement at All Clutch & Brake takes 3-5 hours. Dual-mass flywheel conversions may take up to 8 hours."
+    "quickAnswer": "A standard clutch replacement at All Clutch & Brake takes 3-5 hours. Dual-mass flywheel conversions may take up to 8 hours depending on the vehicle."
+  },
+  {
+    "_key": "qa-2",
+    "question": "How much does clutch replacement cost in Adelaide?",
+    "quickAnswer": "Clutch replacement in Adelaide costs $800-$1,100 for small cars, $1,200-$1,800 for 4WDs and utes, and up to $2,500 for vehicles requiring flywheel machining."
+  },
+  {
+    "_key": "qa-3",
+    "question": "Does All Clutch & Brake use OEM or aftermarket parts?",
+    "quickAnswer": "All Clutch & Brake stocks both OEM and premium aftermarket clutch kits. Our mechanics recommend the best option for each vehicle based on use and budget."
   }
 ]
 \`\`\`
-
-Add 2-5 pairs. Each \`_key\` must be unique.
 
 ---
 
 ## body — Portable Text Array
 
-Every item MUST have a unique \`_key\`.
+Every item in the body array MUST have a unique \`_key\`. Add as many blocks as needed — there is no limit.
 
-### Standard Paragraph / Heading Block
+IMPORTANT — \`images\`, \`callout\`, \`tableBlock\`, \`comparisonBlock\`, \`youtubeEmbed\`, \`pullQuote\`, and \`divider\` are supported in the blog body only. Do NOT use these custom block types in service or location body fields.
+
+---
+
+### Standard Paragraph
 
 \`\`\`json
 {
   "_key": "block-1",
   "_type": "block",
   "style": "normal",
-  "children": [{ "_type": "span", "text": "Your text here.", "marks": [] }],
+  "children": [{ "_type": "span", "text": "A clutch replacement involves removing the gearbox, replacing the clutch disc, pressure plate, and release bearing, then resurfacing or replacing the flywheel if required.", "marks": [] }],
+  "markDefs": []
+}
+\`\`\`
+
+---
+
+### Headings (H2, H3, H4)
+
+\`\`\`json
+{
+  "_key": "block-h2-1",
+  "_type": "block",
+  "style": "h2",
+  "children": [{ "_type": "span", "text": "What Does a Clutch Replacement Include?", "marks": [] }],
   "markDefs": []
 }
 \`\`\`
 
 **style options:** \`normal\` \`h2\` \`h3\` \`h4\` \`blockquote\`
 
-**Inline marks (in children[].marks array):** \`strong\` \`em\` \`underline\` \`code\`
+---
 
-**Links** require a markDef:
+### Inline Text Formatting
+
+Bold, italic, underline, and code are applied via the \`marks\` array on each span:
+
 \`\`\`json
 {
-  "_key": "block-2",
+  "_key": "block-3",
   "_type": "block",
   "style": "normal",
-  "children": [{ "_type": "span", "text": "Clutch Replacement", "marks": ["link-1"] }],
-  "markDefs": [{ "_key": "link-1", "_type": "link", "href": "/services/clutch-replacement", "blank": false }]
+  "children": [
+    { "_type": "span", "text": "The flywheel ", "marks": [] },
+    { "_type": "span", "text": "must be inspected", "marks": ["strong"] },
+    { "_type": "span", "text": " on every clutch job — a worn flywheel ", "marks": [] },
+    { "_type": "span", "text": "doubles the repair cost", "marks": ["strong", "em"] },
+    { "_type": "span", "text": " if missed.", "marks": [] }
+  ],
+  "markDefs": []
+}
+\`\`\`
+
+**Inline mark options:** \`strong\` (bold) \`em\` (italic) \`underline\` \`code\`
+
+---
+
+### Links
+
+Links require a markDef entry. The span's \`marks\` array references the markDef's \`_key\`.
+
+\`\`\`json
+{
+  "_key": "block-4",
+  "_type": "block",
+  "style": "normal",
+  "children": [
+    { "_type": "span", "text": "Book a free inspection via our ", "marks": [] },
+    { "_type": "span", "text": "contact page", "marks": ["link-1"] },
+    { "_type": "span", "text": " or call us directly.", "marks": [] }
+  ],
+  "markDefs": [
+    { "_key": "link-1", "_type": "link", "href": "/contact", "blank": false }
+  ]
+}
+\`\`\`
+
+For external links, set \`"blank": true\` to open in a new tab:
+
+\`\`\`json
+"markDefs": [
+  { "_key": "link-ext-1", "_type": "link", "href": "https://www.accc.gov.au", "blank": true }
+]
+\`\`\`
+
+---
+
+### Blockquote
+
+\`\`\`json
+{
+  "_key": "block-bq-1",
+  "_type": "block",
+  "style": "blockquote",
+  "children": [{ "_type": "span", "text": "A worn clutch disc left too long will score the flywheel — turning a straightforward replacement into a much larger job.", "marks": [] }],
+  "markDefs": []
 }
 \`\`\`
 
 ---
 
-### callout
+### Inline Image (blog body only)
+
+Images in the body must be uploaded to Sanity first, then referenced by asset ID. You cannot embed a raw image URL here — the asset must exist in the Sanity media library.
+
+\`\`\`json
+{
+  "_key": "img-1",
+  "_type": "image",
+  "asset": { "_type": "reference", "_ref": "image-abc123def456-1200x800-jpg" },
+  "alt": "Worn clutch disc removed from a Toyota Hilux",
+  "caption": "A badly worn clutch disc — note the scored surface and missing friction material."
+}
+\`\`\`
+
+NOTE: If you do not have the asset \`_ref\` from Sanity, leave the image block out of the JSON and add the image manually in Studio after import.
+
+---
+
+### callout (blog body only)
 
 \`\`\`json
 {
@@ -467,15 +590,21 @@ Every item MUST have a unique \`_key\`.
   "_type": "callout",
   "type": "tip",
   "heading": "Pro Tip",
-  "body": "If your clutch pedal feels spongy or requires more travel than usual, book an inspection before the problem worsens."
+  "body": "If your clutch pedal feels spongy or requires more travel than usual, book an inspection before it fails completely. A slipping clutch that is left too long will damage the flywheel."
 }
 \`\`\`
 
-**type options:** \`info\` \`tip\` \`warning\` \`danger\`
+**type options and when to use them:**
+- \`info\` — neutral information or background context
+- \`tip\` — practical advice or a recommendation
+- \`warning\` — something the reader should be cautious about
+- \`danger\` — a serious risk or safety issue
 
 ---
 
-### tableBlock
+### tableBlock (blog body only)
+
+The number of strings in \`cells\` MUST exactly match the number of strings in \`headers\`. Each row needs a unique \`_key\`.
 
 \`\`\`json
 {
@@ -485,16 +614,18 @@ Every item MUST have a unique \`_key\`.
   "headers": ["Vehicle Type", "Parts Cost", "Labour", "Total Range"],
   "rows": [
     { "_key": "row-1", "cells": ["Small car (Corolla, Jazz)", "$400-600", "$350-500", "$800-1,100"] },
-    { "_key": "row-2", "cells": ["4WD / Ute (Hilux, Ranger)", "$600-1,000", "$500-700", "$1,200-1,800"] }
+    { "_key": "row-2", "cells": ["Mid-size (Camry, Mazda 6)", "$500-800", "$400-600", "$1,000-1,400"] },
+    { "_key": "row-3", "cells": ["4WD / Ute (Hilux, Ranger)", "$600-1,000", "$500-700", "$1,200-1,800"] },
+    { "_key": "row-4", "cells": ["Performance / European", "$800-1,500", "$600-900", "$1,500-2,500"] }
   ]
 }
 \`\`\`
 
-The number of strings in \`cells\` MUST match the number of strings in \`headers\`.
-
 ---
 
-### comparisonBlock
+### comparisonBlock (blog body only)
+
+Use for side-by-side comparisons — OEM vs aftermarket, repair vs replace, etc.
 
 \`\`\`json
 {
@@ -503,27 +634,41 @@ The number of strings in \`cells\` MUST match the number of strings in \`headers
   "heading": "OEM vs Aftermarket Clutch Kits",
   "leftLabel": "OEM",
   "rightLabel": "Aftermarket",
-  "leftPoints": ["Exact fit guaranteed", "Full manufacturer warranty", "Higher cost"],
-  "rightPoints": ["Lower upfront cost", "Wide brand choice", "Fit may vary by brand"]
+  "leftPoints": [
+    "Exact fit guaranteed for your make and model",
+    "Full manufacturer warranty",
+    "Engineered to original performance specification",
+    "Higher upfront cost"
+  ],
+  "rightPoints": [
+    "Lower upfront cost",
+    "Wide range of brands and performance ratings",
+    "Good option for older or high-kilometre vehicles",
+    "Fitment quality varies by brand"
+  ]
 }
 \`\`\`
 
 ---
 
-### youtubeEmbed
+### youtubeEmbed (blog body only)
 
 \`\`\`json
 {
   "_key": "yt-1",
   "_type": "youtubeEmbed",
   "url": "https://www.youtube.com/watch?v=VIDEOID",
-  "caption": "Watch our head mechanic explain clutch wear signs"
+  "caption": "Watch our head mechanic explain the signs of a worn clutch"
 }
 \`\`\`
 
+Replace \`VIDEOID\` with the actual YouTube video ID from the URL.
+
 ---
 
-### pullQuote
+### pullQuote (blog body only)
+
+Use to highlight a key insight or expert statement. Attribution is optional.
 
 \`\`\`json
 {
@@ -536,40 +681,126 @@ The number of strings in \`cells\` MUST match the number of strings in \`headers
 
 ---
 
-### divider
+### divider (blog body only)
+
+Use to visually separate major sections.
 
 \`\`\`json
 { "_key": "div-1", "_type": "divider", "style": "line" }
 \`\`\`
 
-**style options:** \`line\` \`spaced\`
+**style options:** \`line\` (thin horizontal rule) \`spaced\` (extra vertical whitespace only)
+
+---
+
+### Full body Example — Multiple Block Types Together
+
+\`\`\`json
+"body": [
+  {
+    "_key": "block-intro",
+    "_type": "block",
+    "style": "normal",
+    "children": [{ "_type": "span", "text": "Clutch replacement is one of the most common repairs we perform at All Clutch & Brake. This guide covers exactly what is involved, how long it takes, and what you should expect to pay in Adelaide in 2026.", "marks": [] }],
+    "markDefs": []
+  },
+  {
+    "_key": "block-h2-1",
+    "_type": "block",
+    "style": "h2",
+    "children": [{ "_type": "span", "text": "What Does a Clutch Replacement Include?", "marks": [] }],
+    "markDefs": []
+  },
+  {
+    "_key": "callout-1",
+    "_type": "callout",
+    "type": "info",
+    "heading": "Standard Clutch Kit",
+    "body": "A full clutch kit replacement includes the clutch disc, pressure plate, and release bearing. The flywheel is inspected and resurfaced or replaced as required."
+  },
+  {
+    "_key": "table-1",
+    "_type": "tableBlock",
+    "caption": "Clutch replacement cost by vehicle type — Adelaide 2026",
+    "headers": ["Vehicle Type", "Parts", "Labour", "Total"],
+    "rows": [
+      { "_key": "row-1", "cells": ["Small car", "$400-600", "$350-500", "$800-1,100"] },
+      { "_key": "row-2", "cells": ["4WD / Ute", "$600-1,000", "$500-700", "$1,200-1,800"] }
+    ]
+  },
+  {
+    "_key": "div-1",
+    "_type": "divider",
+    "style": "line"
+  },
+  {
+    "_key": "block-h2-2",
+    "_type": "block",
+    "style": "h2",
+    "children": [{ "_type": "span", "text": "OEM vs Aftermarket: Which Is Right for Your Car?", "marks": [] }],
+    "markDefs": []
+  },
+  {
+    "_key": "comp-1",
+    "_type": "comparisonBlock",
+    "heading": "OEM vs Aftermarket Clutch Kits",
+    "leftLabel": "OEM",
+    "rightLabel": "Aftermarket",
+    "leftPoints": ["Exact fit for your make/model", "Manufacturer warranty", "Higher cost"],
+    "rightPoints": ["Lower upfront cost", "Wide brand range", "Fit varies by brand"]
+  },
+  {
+    "_key": "pq-1",
+    "_type": "pullQuote",
+    "quote": "For daily drivers, a premium aftermarket kit is often the smarter investment. For performance cars, OEM or better.",
+    "attribution": "Michael Farzan, Head Mechanic"
+  }
+]
+\`\`\`
 
 ---
 
 ## faqItems
+
+Add 3-8 pairs. Each \`_key\` must be unique. Questions should be natural language queries a customer would type. Answers should be 2-5 sentences with specific data, prices, or steps.
 
 \`\`\`json
 "faqItems": [
   {
     "_key": "faq-1",
     "question": "How much does clutch replacement cost in Adelaide?",
-    "answer": "Clutch replacement in Adelaide costs $800-$2,500 at All Clutch & Brake depending on vehicle type and whether the flywheel needs machining. Small cars (Corolla, Jazz) cost $800-$1,100. 4WDs and utes (Hilux, Ranger) cost $1,200-$1,800."
+    "answer": "Clutch replacement in Adelaide costs $800-$2,500 at All Clutch & Brake depending on vehicle type and whether the flywheel needs machining. Small cars like a Corolla or Jazz cost $800-$1,100. 4WDs and utes like a Hilux or Ranger cost $1,200-$1,800. We provide a fixed-price quote before any work begins."
+  },
+  {
+    "_key": "faq-2",
+    "question": "How do I know if my clutch needs replacing?",
+    "answer": "Common signs include clutch slip (engine revs rise but the car does not accelerate), a spongy or high-riding pedal, a burning smell when pulling away, or difficulty engaging gears. If you notice any of these, book a free inspection — early diagnosis prevents flywheel damage."
+  },
+  {
+    "_key": "faq-3",
+    "question": "How long does a clutch replacement take?",
+    "answer": "Most clutch replacements are completed in 3-5 hours at All Clutch & Brake. Dual-mass flywheel conversions or vehicles with difficult gearbox access may take up to 8 hours. We will give you an accurate time estimate when you book."
   }
 ]
 \`\`\`
-
-Add 3-8 pairs. Each \`_key\` must be unique.
 
 ---
 
 ## dataSources
 
+List any external sources or citations used in the article. These are displayed at the bottom of the post and also signal credibility to AI engines.
+
 \`\`\`json
 "dataSources": [
   {
     "_key": "src-1",
-    "label": "Australian Competition and Consumer Commission — Car Servicing",
+    "label": "Australian Competition and Consumer Commission — Car Servicing Rights",
     "url": "https://www.accc.gov.au/consumers/buying-products-and-services/car-servicing"
+  },
+  {
+    "_key": "src-2",
+    "label": "Motor Trade Association of South Australia",
+    "url": "https://www.mtasa.com.au"
   }
 ]
 \`\`\`
@@ -584,53 +815,176 @@ Add 3-8 pairs. Each \`_key\` must be unique.
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | \`_type\` | string | YES | Always \`"service"\` |
-| \`title\` | string | YES | Service name |
-| \`slug.current\` | string | YES | URL slug |
-| \`answerCapsule\` | string | YES | 20-30 word AI citation answer, max 200 chars |
-| \`body\` | array | YES | Portable Text content |
-| \`whoIsItFor\` | string | — | Who this service is for |
-| \`icon\` | string | — | Lucide icon name |
-| \`order\` | number | — | Display order |
-| \`seoTitle\` | string | — | Max 60 chars |
-| \`seoDescription\` | string | — | Max 155 chars |
+| \`title\` | string | YES | Service name. E.g. \`"Clutch Replacement"\` |
+| \`slug.current\` | string | YES | URL slug. E.g. \`"clutch-replacement"\` → /services/clutch-replacement |
+| \`answerCapsule\` | string | YES | 20-30 word AI citation answer. Must be a complete standalone sentence with specific detail. |
+| \`body\` | array | YES | Portable Text content — standard blocks only (see below) |
+| \`whoIsItFor\` | string | — | Plain text description of which customers this service suits |
+| \`icon\` | string | — | Lucide icon name. E.g. \`"wrench"\`, \`"settings"\`, \`"shield-check"\` |
+| \`order\` | number | — | Display order on Services page. Lower = first. |
+| \`seoTitle\` | string | — | Max 60 chars. Leave empty to use the service title. |
+| \`seoDescription\` | string | — | Max 155 chars. |
+
+### Example — Top-Level Fields
+
+\`\`\`json
+{
+  "_type": "service",
+  "title": "Clutch Replacement",
+  "slug": { "current": "clutch-replacement" },
+  "answerCapsule": "All Clutch & Brake provides complete clutch replacement in Adelaide covering all vehicle makes including 4WDs, using OEM and premium aftermarket parts with a labour warranty.",
+  "whoIsItFor": "Ideal for manual transmission vehicles of any age or make showing signs of clutch slip, heavy pedal, or difficulty engaging gears. We service passenger cars, 4WDs, utes, and performance vehicles.",
+  "icon": "wrench",
+  "order": 1,
+  "seoTitle": "Clutch Replacement Adelaide | All Clutch & Brake",
+  "seoDescription": "Expert clutch replacement in Adelaide for all makes and models. Free inspection, fixed-price quotes, OEM and aftermarket parts. Call All Clutch & Brake today."
+}
+\`\`\`
 
 ---
 
-## body — Portable Text (basic)
+## body — Portable Text (standard blocks only)
 
-The service body supports standard Portable Text blocks only (no custom block types).
+IMPORTANT: The service body supports standard Portable Text blocks only.
+DO NOT use: \`callout\`, \`tableBlock\`, \`comparisonBlock\`, \`youtubeEmbed\`, \`pullQuote\`, \`divider\`, or \`image\` blocks here — they are not supported and will be ignored.
+
+Supported block types: \`normal\` paragraph, \`h2\`, \`h3\`, \`h4\`, \`blockquote\`, inline marks (\`strong\`, \`em\`, \`underline\`), and links via markDefs.
+
+### Paragraph
 
 \`\`\`json
 {
   "_key": "block-1",
   "_type": "block",
   "style": "normal",
-  "children": [{ "_type": "span", "text": "Service description paragraph.", "marks": [] }],
+  "children": [{ "_type": "span", "text": "All Clutch & Brake has been replacing clutches across Adelaide for over 30 years. We work on all makes and models — from daily drivers to 4WDs, utes, and performance vehicles.", "marks": [] }],
   "markDefs": []
 }
 \`\`\`
 
-**style options:** \`normal\` \`h2\` \`h3\` \`h4\` \`blockquote\`
+### Heading (H2)
 
-**Inline marks:** \`strong\` \`em\` \`underline\`
+\`\`\`json
+{
+  "_key": "block-h2-1",
+  "_type": "block",
+  "style": "h2",
+  "children": [{ "_type": "span", "text": "What Is Included in a Clutch Replacement?", "marks": [] }],
+  "markDefs": []
+}
+\`\`\`
 
-**Links** use markDefs exactly as described in the Blog Article Schema Guide.
+### Bold / Italic
+
+\`\`\`json
+{
+  "_key": "block-2",
+  "_type": "block",
+  "style": "normal",
+  "children": [
+    { "_type": "span", "text": "Every clutch replacement includes a ", "marks": [] },
+    { "_type": "span", "text": "free flywheel inspection", "marks": ["strong"] },
+    { "_type": "span", "text": " — we will advise you before machining or replacing it.", "marks": [] }
+  ],
+  "markDefs": []
+}
+\`\`\`
+
+### Link
+
+\`\`\`json
+{
+  "_key": "block-3",
+  "_type": "block",
+  "style": "normal",
+  "children": [
+    { "_type": "span", "text": "Get a free quote via our ", "marks": [] },
+    { "_type": "span", "text": "contact page", "marks": ["link-1"] },
+    { "_type": "span", "text": " or call us on (08) 8277 8122.", "marks": [] }
+  ],
+  "markDefs": [
+    { "_key": "link-1", "_type": "link", "href": "/contact", "blank": false }
+  ]
+}
+\`\`\`
+
+### Full body Example
+
+\`\`\`json
+"body": [
+  {
+    "_key": "block-intro",
+    "_type": "block",
+    "style": "normal",
+    "children": [{ "_type": "span", "text": "All Clutch & Brake has been replacing clutches across Adelaide for over 30 years. We work on all makes and models — from daily drivers to 4WDs, utes, and high-performance vehicles.", "marks": [] }],
+    "markDefs": []
+  },
+  {
+    "_key": "block-h2-1",
+    "_type": "block",
+    "style": "h2",
+    "children": [{ "_type": "span", "text": "What Is Included?", "marks": [] }],
+    "markDefs": []
+  },
+  {
+    "_key": "block-2",
+    "_type": "block",
+    "style": "normal",
+    "children": [
+      { "_type": "span", "text": "A standard clutch replacement includes the ", "marks": [] },
+      { "_type": "span", "text": "clutch disc, pressure plate, and release bearing", "marks": ["strong"] },
+      { "_type": "span", "text": ". The flywheel is inspected and resurfaced or replaced if worn.", "marks": [] }
+    ],
+    "markDefs": []
+  },
+  {
+    "_key": "block-h2-2",
+    "_type": "block",
+    "style": "h2",
+    "children": [{ "_type": "span", "text": "Get a Free Quote", "marks": [] }],
+    "markDefs": []
+  },
+  {
+    "_key": "block-3",
+    "_type": "block",
+    "style": "normal",
+    "children": [
+      { "_type": "span", "text": "Call us on (08) 8277 8122 or submit a request via our ", "marks": [] },
+      { "_type": "span", "text": "contact page", "marks": ["link-1"] },
+      { "_type": "span", "text": ". We provide fixed-price quotes before any work begins.", "marks": [] }
+    ],
+    "markDefs": [
+      { "_key": "link-1", "_type": "link", "href": "/contact", "blank": false }
+    ]
+  }
+]
+\`\`\`
 
 ---
 
 ## faqItems
+
+Add 5-7 service-specific FAQs. Each \`_key\` must be unique.
 
 \`\`\`json
 "faqItems": [
   {
     "_key": "faq-1",
     "question": "How do I know if my clutch needs replacing?",
-    "answer": "Signs include clutch slip (engine revs rise but speed doesn't), a spongy pedal, burning smell under load, or difficulty engaging gears. Book a free inspection at All Clutch & Brake and we'll diagnose the issue within 30 minutes."
+    "answer": "Signs include clutch slip (engine revs rise but speed does not increase), a spongy or high-riding pedal, a burning smell when pulling away, or grinding when engaging gears. If you notice any of these, book a free inspection — catching it early prevents flywheel damage."
+  },
+  {
+    "_key": "faq-2",
+    "question": "How long does a clutch replacement take?",
+    "answer": "A standard clutch replacement takes 3-5 hours at All Clutch & Brake. Vehicles with difficult gearbox access or dual-mass flywheel conversions may take up to 8 hours. We will give you an accurate time estimate when you book."
+  },
+  {
+    "_key": "faq-3",
+    "question": "Do you offer a warranty on clutch replacements?",
+    "answer": "Yes. All clutch replacements at All Clutch & Brake come with a labour warranty. Parts carry the manufacturer's warranty. Ask our team for full warranty details when you book."
   }
 ]
 \`\`\`
-
-Add 5-7 service-specific FAQs.
 `,
 
   location: `# All Clutch & Brake — Location Page Schema Guide
@@ -642,19 +996,20 @@ Add 5-7 service-specific FAQs.
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | \`_type\` | string | YES | Always \`"location"\` |
-| \`title\` | string | YES | Location name |
-| \`slug.current\` | string | YES | URL slug |
-| \`locationType\` | string | YES | One of: \`"region"\` / \`"suburb"\` |
-| \`region\` | string | — | For suburb pages only — parent region slug |
-| \`suburbsIncluded\` | string[] | — | For region pages only — array of suburb names |
-| \`answerCapsule\` | string | YES | 20-30 word answer, max 200 chars |
-| \`body\` | array | YES | Portable Text content |
-| \`seoTitle\` | string | — | Max 60 chars |
-| \`seoDescription\` | string | — | Max 155 chars |
+| \`title\` | string | YES | Location name. E.g. \`"Northern Adelaide"\` or \`"Elizabeth"\` |
+| \`slug.current\` | string | YES | URL slug. E.g. \`"northern-adelaide"\` → /locations/northern-adelaide |
+| \`locationType\` | string | YES | \`"region"\` (covers multiple suburbs) or \`"suburb"\` (single suburb page) |
+| \`region\` | string | — | For suburb pages only — the parent region slug this suburb belongs to |
+| \`suburbsIncluded\` | string[] | — | For region pages only — array of suburb name strings in this region |
+| \`answerCapsule\` | string | YES | 20-30 word answer to "Does All Clutch & Brake service [location]?" — complete standalone sentence |
+| \`body\` | array | YES | Portable Text content — standard blocks only (see below) |
+| \`faqItems\` | array | — | 3-5 location-specific FAQs |
+| \`seoTitle\` | string | — | Max 60 chars. E.g. \`"Clutch & Brake Repairs Northern Adelaide | All Clutch & Brake"\` |
+| \`seoDescription\` | string | — | Max 155 chars. |
 
 ---
 
-## region options
+## region options (for suburb pages — pick the correct parent region)
 
 \`northern-adelaide\` \`southern-adelaide\` \`eastern-adelaide\` \`western-adelaide\`
 \`cbd-and-inner-suburbs\` \`barossa-and-surrounds\` \`fleurieu-peninsula\`
@@ -662,15 +1017,124 @@ Add 5-7 service-specific FAQs.
 
 ---
 
-## body — Portable Text (basic)
+### Example — Region Page
 
-Same structure as the Service Page — standard blocks only.
+\`\`\`json
+{
+  "_type": "location",
+  "title": "Northern Adelaide",
+  "slug": { "current": "northern-adelaide" },
+  "locationType": "region",
+  "suburbsIncluded": ["Elizabeth", "Salisbury", "Para Hills", "Mawson Lakes", "Modbury", "Golden Grove", "Tea Tree Gully"],
+  "answerCapsule": "Yes, All Clutch & Brake services the northern Adelaide region including Elizabeth, Salisbury, and Mawson Lakes for clutch repairs, brake service, and transmission work.",
+  "seoTitle": "Clutch & Brake Repairs Northern Adelaide | All Clutch & Brake",
+  "seoDescription": "Expert clutch and brake repairs for northern Adelaide including Elizabeth, Salisbury, and Mawson Lakes. Free quotes. All Clutch & Brake, Edwardstown SA."
+}
+\`\`\`
+
+### Example — Suburb Page
+
+\`\`\`json
+{
+  "_type": "location",
+  "title": "Elizabeth",
+  "slug": { "current": "elizabeth" },
+  "locationType": "suburb",
+  "region": "northern-adelaide",
+  "answerCapsule": "Yes, All Clutch & Brake services Elizabeth for clutch replacement, brake repairs, and transmission work. Free pickup and drop-off available for Elizabeth customers.",
+  "seoTitle": "Clutch & Brake Repairs Elizabeth SA | All Clutch & Brake",
+  "seoDescription": "Clutch replacement and brake repairs for Elizabeth SA. Free quotes, all makes and models. All Clutch & Brake, Edwardstown — servicing Elizabeth for 30+ years."
+}
+\`\`\`
+
+---
+
+## body — Portable Text (standard blocks only)
+
+IMPORTANT: The location body supports standard Portable Text blocks only.
+DO NOT use: \`callout\`, \`tableBlock\`, \`comparisonBlock\`, \`youtubeEmbed\`, \`pullQuote\`, \`divider\`, or \`image\` blocks here — they are not supported.
+
+Supported: \`normal\`, \`h2\`, \`h3\`, \`h4\`, \`blockquote\`, inline marks (\`strong\`, \`em\`, \`underline\`), and links via markDefs. See the Service Page guide for exact block shapes — the structure is identical.
+
+### Full body Example — Location Page
+
+\`\`\`json
+"body": [
+  {
+    "_key": "block-intro",
+    "_type": "block",
+    "style": "normal",
+    "children": [{ "_type": "span", "text": "All Clutch & Brake has been servicing vehicles from Elizabeth and the northern Adelaide region for over 30 years. Whether you are dealing with a slipping clutch, worn brake pads, or a transmission issue, our team at Edwardstown provides fast, honest service with fixed-price quotes.", "marks": [] }],
+    "markDefs": []
+  },
+  {
+    "_key": "block-h2-1",
+    "_type": "block",
+    "style": "h2",
+    "children": [{ "_type": "span", "text": "Services We Provide to Elizabeth Customers", "marks": [] }],
+    "markDefs": []
+  },
+  {
+    "_key": "block-2",
+    "_type": "block",
+    "style": "normal",
+    "children": [
+      { "_type": "span", "text": "We provide ", "marks": [] },
+      { "_type": "span", "text": "clutch replacement", "marks": ["strong"] },
+      { "_type": "span", "text": ", ", "marks": [] },
+      { "_type": "span", "text": "brake pad and rotor service", "marks": ["strong"] },
+      { "_type": "span", "text": ", flywheel machining, and transmission repairs for all makes and models.", "marks": [] }
+    ],
+    "markDefs": []
+  },
+  {
+    "_key": "block-h2-2",
+    "_type": "block",
+    "style": "h2",
+    "children": [{ "_type": "span", "text": "Free Pickup Available", "marks": [] }],
+    "markDefs": []
+  },
+  {
+    "_key": "block-3",
+    "_type": "block",
+    "style": "normal",
+    "children": [
+      { "_type": "span", "text": "We offer free local pickup and drop-off for Elizabeth and surrounding suburbs. ", "marks": [] },
+      { "_type": "span", "text": "Book via our contact page", "marks": ["link-1"] },
+      { "_type": "span", "text": " or call (08) 8277 8122.", "marks": [] }
+    ],
+    "markDefs": [
+      { "_key": "link-1", "_type": "link", "href": "/contact", "blank": false }
+    ]
+  }
+]
+\`\`\`
 
 ---
 
 ## faqItems
 
-3-5 location-specific FAQs following the same structure as the Blog Article guide.
+Add 3-5 location-specific FAQs. Questions should reference the specific suburb or region by name.
+
+\`\`\`json
+"faqItems": [
+  {
+    "_key": "faq-1",
+    "question": "Do you service vehicles from Elizabeth?",
+    "answer": "Yes, All Clutch & Brake regularly services customers from Elizabeth and the northern Adelaide region. We offer free pickup and drop-off for customers who cannot drive their vehicle to our Edwardstown workshop."
+  },
+  {
+    "_key": "faq-2",
+    "question": "How far is All Clutch & Brake from Elizabeth?",
+    "answer": "Our Edwardstown workshop is approximately 25 km south of Elizabeth — about 25 minutes by car. We also offer free local pickup so you do not need to arrange your own transport."
+  },
+  {
+    "_key": "faq-3",
+    "question": "What clutch and brake services do you provide to northern Adelaide customers?",
+    "answer": "We provide clutch replacement, brake pad and rotor replacement, flywheel machining, transmission repairs, and brake fluid replacement for all vehicle makes. We service all northern Adelaide suburbs including Elizabeth, Salisbury, Mawson Lakes, and Tea Tree Gully."
+  }
+]
+\`\`\`
 `,
 
   testimonial: `# All Clutch & Brake — Testimonial Schema Guide
@@ -682,15 +1146,15 @@ Same structure as the Service Page — standard blocks only.
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | \`_type\` | string | YES | Always \`"testimonial"\` |
-| \`customerName\` | string | YES | Full name or first name + last initial |
-| \`rating\` | number | YES | Integer 1-5 |
-| \`testimonial\` | string | YES | Review text, max 500 chars |
-| \`date\` | string | YES | YYYY-MM-DD format |
-| \`suburb\` | string | — | Customer suburb |
-| \`vehicleType\` | string | — | Vehicle make/model |
-| \`featured\` | boolean | — | Show in homepage carousel |
-| \`source\` | string | — | One of: google / facebook / email / in-person / other |
-| \`verified\` | boolean | — | Confirmed real customer |
+| \`customerName\` | string | YES | Full name or first name + last initial. E.g. \`"John Smith"\` or \`"Sarah T."\` |
+| \`rating\` | number | YES | Integer 1-5. |
+| \`testimonial\` | string | YES | Review text, max 500 chars. Keep it authentic — mention the specific service, experience, and outcome. |
+| \`date\` | string | YES | YYYY-MM-DD format. E.g. \`"2026-05-20"\` |
+| \`suburb\` | string | — | Customer's suburb. Adds local trust signals. E.g. \`"Golden Grove"\` |
+| \`vehicleType\` | string | — | Vehicle make/model. E.g. \`"2018 Toyota RAV4"\`, \`"Ford Ranger XLT"\` |
+| \`featured\` | boolean | — | \`true\` = show in homepage carousel. Use sparingly — pick the best 4-6 reviews. |
+| \`source\` | string | — | Where the review came from. One of: \`google\` / \`facebook\` / \`email\` / \`in-person\` / \`other\` |
+| \`verified\` | boolean | — | \`true\` if you can confirm this is a real customer. |
 
 ---
 
@@ -703,12 +1167,45 @@ Same structure as the Service Page — standard blocks only.
   "suburb": "Golden Grove",
   "vehicleType": "2018 Toyota RAV4",
   "rating": 5,
-  "testimonial": "Brought my RAV4 in for a brake and clutch check. They diagnosed a worn clutch disc and replaced it same day. The car drives like new and the team was upfront about cost the whole time. Won't take my car anywhere else.",
+  "testimonial": "Brought my RAV4 in for a brake and clutch check after noticing the pedal felt different. They diagnosed a worn clutch disc and replaced it same day. The car drives like new and the team was upfront about cost the whole time. Will not take my car anywhere else.",
   "featured": true,
   "date": "2026-05-20",
   "source": "google",
   "verified": true
 }
+\`\`\`
+
+### Multiple testimonials in one import
+
+When importing a batch, wrap them in an array:
+
+\`\`\`json
+[
+  {
+    "_type": "testimonial",
+    "customerName": "Sarah T.",
+    "suburb": "Golden Grove",
+    "vehicleType": "2018 Toyota RAV4",
+    "rating": 5,
+    "testimonial": "Brought my RAV4 in for a brake and clutch check. Diagnosed and replaced same day. Car drives like new.",
+    "featured": true,
+    "date": "2026-05-20",
+    "source": "google",
+    "verified": true
+  },
+  {
+    "_type": "testimonial",
+    "customerName": "James R.",
+    "suburb": "Modbury",
+    "vehicleType": "2020 Ford Ranger",
+    "rating": 5,
+    "testimonial": "Had my Ranger's clutch replaced after it started slipping under load. Quick turnaround and the price matched the quote exactly. Very happy.",
+    "featured": false,
+    "date": "2026-04-11",
+    "source": "facebook",
+    "verified": true
+  }
+]
 \`\`\`
 `,
 
@@ -721,18 +1218,21 @@ Same structure as the Service Page — standard blocks only.
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | \`_type\` | string | YES | Always \`"project"\` |
-| \`title\` | string | YES | Project title |
-| \`slug.current\` | string | YES | URL slug |
-| \`description\` | string | YES | Detailed project description, 100-400 words |
-| \`tags\` | string[] | — | Project category tags |
-| \`order\` | number | — | Display order |
+| \`title\` | string | YES | Project title. Specific and descriptive. E.g. \`"AP6 Valiant Clutch Rebuild"\` |
+| \`slug.current\` | string | YES | URL slug. E.g. \`"ap6-valiant-clutch-rebuild"\` → /projects/ap6-valiant-clutch-rebuild |
+| \`description\` | string | YES | Plain text description of the job — vehicle, problem, work performed, parts used, outcome. 100-400 words. |
+| \`tags\` | string[] | — | Project category tags. Use the tag options below. |
+| \`order\` | number | — | Display order. Lower = appears first. |
+
+NOTE: \`images\` cannot be set via JSON import — add project photos manually in Sanity Studio after import.
 
 ---
 
-## tags examples
+## tag options
 
 \`Clutch Replacement\` \`Flywheel Machining\` \`Transmission Rebuild\` \`Brake Overhaul\`
 \`Performance Build\` \`Race Preparation\` \`Classic / Vintage\` \`4WD Upgrade\` \`Custom Work\`
+\`Brake Pipe Fabrication\` \`Dual-Mass Flywheel Conversion\` \`Heavy Duty Upgrade\`
 
 ---
 
@@ -743,10 +1243,33 @@ Same structure as the Service Page — standard blocks only.
   "_type": "project",
   "title": "AP6 Valiant Full Clutch & Brake Rebuild",
   "slug": { "current": "ap6-valiant-clutch-brake-rebuild" },
-  "description": "A customer brought in their numbers-matching AP6 Valiant for a full clutch and brake overhaul ahead of a club rally. The original single-plate clutch was replaced with a heavy-duty unit rated for the rebuilt 245 cubic inch Hemi-6. The front drums were skimmed and fitted with new shoes, and the master cylinder and wheel cylinders were rebuilt. The car left driving exactly as the factory intended — crisp gear changes and predictable braking throughout.",
+  "description": "A customer brought in their numbers-matching AP6 Valiant for a full clutch and brake overhaul ahead of a club rally season. The original single-plate clutch had been slipping under load, and the drums had worn beyond the serviceable limit. The clutch was replaced with a heavy-duty single-plate unit rated for the rebuilt 245 cubic inch Hemi-6. Front and rear drums were machined back within tolerance, fitted with new high-friction shoes, and all wheel cylinders were rebuilt with fresh seals. The brake master cylinder was also sleeved and resealed. The car left with crisp, progressive braking and a clutch that engages cleanly throughout the rev range — exactly as the factory intended.",
   "tags": ["Classic / Vintage", "Clutch Replacement", "Brake Overhaul", "Custom Work"],
   "order": 3
 }
+\`\`\`
+
+### Multiple projects in one import
+
+\`\`\`json
+[
+  {
+    "_type": "project",
+    "title": "AP6 Valiant Full Clutch & Brake Rebuild",
+    "slug": { "current": "ap6-valiant-clutch-brake-rebuild" },
+    "description": "Full clutch and drum brake overhaul on a numbers-matching AP6 Valiant ahead of the club rally season...",
+    "tags": ["Classic / Vintage", "Clutch Replacement", "Brake Overhaul"],
+    "order": 1
+  },
+  {
+    "_type": "project",
+    "title": "S13 Nissan 180SX Track Prep — Clutch & Brake Upgrade",
+    "slug": { "current": "s13-180sx-track-prep" },
+    "description": "Customer preparing their S13 for club track days. Fitted a heavy-duty clutch kit and upgraded to braided brake lines with fresh fluid and pad compound suited to track temperatures...",
+    "tags": ["Performance Build", "Race Preparation", "Clutch Replacement", "Brake Overhaul"],
+    "order": 2
+  }
+]
 \`\`\`
 `,
 
@@ -760,17 +1283,39 @@ Same structure as the Service Page — standard blocks only.
 |---|---|---|---|
 | \`_type\` | string | YES | Always \`"promotion"\` |
 | \`title\` | string | YES | Promotion title, max 80 chars |
-| \`description\` | string | YES | Short description, max 250 chars |
-| \`startDate\` | string | YES | YYYY-MM-DD |
-| \`endDate\` | string | YES | YYYY-MM-DD — auto-hides after this |
-| \`discountType\` | string | — | percentage / dollar / free / package / other |
-| \`discountValue\` | string | — | Displayed value e.g. '15%' or '$50' |
-| \`ctaLabel\` | string | — | Button label |
-| \`ctaLink\` | string | — | Path or URL |
-| \`featured\` | boolean | — | Show on homepage |
-| \`bannerStyle\` | string | — | default / urgent / premium / subtle |
-| \`active\` | boolean | — | Manual on/off switch |
-| \`termsAndConditions\` | string | — | Fine print |
+| \`description\` | string | YES | Short compelling description, max 250 chars |
+| \`startDate\` | string | YES | YYYY-MM-DD — promotion becomes active on this date |
+| \`endDate\` | string | YES | YYYY-MM-DD — promotion auto-hides after this date |
+| \`discountType\` | string | — | \`percentage\` / \`dollar\` / \`free\` / \`package\` / \`other\` |
+| \`discountValue\` | string | — | Displayed value. E.g. \`"15%"\` or \`"$50 off"\` or \`"Free brake inspection"\` |
+| \`ctaLabel\` | string | — | Button label. E.g. \`"Claim This Offer"\`, \`"Book Now"\`, \`"Get a Quote"\` |
+| \`ctaLink\` | string | — | Path or URL. E.g. \`"/contact"\` or \`"/services/clutch-replacement"\` |
+| \`featured\` | boolean | — | \`true\` = show prominently on homepage |
+| \`bannerStyle\` | string | — | \`default\` (orange) / \`urgent\` (red) / \`premium\` (dark) / \`subtle\` (light) |
+| \`active\` | boolean | — | Manual on/off switch independent of dates. Set \`false\` to hide without deleting. |
+| \`termsAndConditions\` | string | — | Fine print displayed under the offer |
+
+---
+
+## Example
+
+\`\`\`json
+{
+  "_type": "promotion",
+  "title": "Winter Special: Free Brake Inspection with Every Clutch Job",
+  "description": "Book your clutch replacement this June or July and receive a full brake inspection at no extra charge. All makes and models. Bookings essential.",
+  "discountType": "free",
+  "discountValue": "Free brake inspection (valued at $80)",
+  "startDate": "2026-06-01",
+  "endDate": "2026-07-31",
+  "ctaLabel": "Book Now",
+  "ctaLink": "/contact",
+  "featured": true,
+  "bannerStyle": "urgent",
+  "active": true,
+  "termsAndConditions": "Valid for new bookings only. Cannot be combined with other offers. Applies to full clutch replacement jobs only. Bookings essential — call (08) 8277 8122."
+}
+\`\`\`
 `,
 
   productPage: `# All Clutch & Brake — Product Page Schema Guide
@@ -782,36 +1327,86 @@ Same structure as the Service Page — standard blocks only.
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | \`_type\` | string | YES | Always \`"productPage"\` |
-| \`title\` | string | YES | Page title |
-| \`slug.current\` | string | YES | URL slug |
-| \`heading\` | string | YES | H1 displayed on the page |
-| \`introText\` | string | — | Introductory paragraph |
-| \`detailedDescription\` | string | — | In-depth description |
-| \`specifications\` | string[] | — | Bullet point specs/options |
-| \`ctaHeading\` | string | — | CTA section heading |
-| \`ctaText\` | string | — | CTA supporting text |
-| \`ctaButtonLabel\` | string | — | Button label |
-| \`ctaButtonLink\` | string | — | Path or URL |
+| \`title\` | string | YES | Page title used in navigation and metadata |
+| \`slug.current\` | string | YES | URL slug. E.g. \`"brake-pipes"\` → /products/brake-pipes |
+| \`heading\` | string | YES | H1 heading displayed at the top of the page |
+| \`introText\` | string | — | Introductory paragraph. 2-4 sentences explaining what the page covers. |
+| \`detailedDescription\` | string | — | In-depth description of the product — materials, specs, process, applications. 4-8 sentences. |
+| \`specifications\` | string[] | — | Bullet point list of specs or available options |
+| \`sections\` | array | — | Repeatable heading + content sections for breaking up the page |
+| \`ctaHeading\` | string | — | CTA section heading at the bottom of the page |
+| \`ctaText\` | string | — | CTA supporting text, 1-2 sentences |
+| \`ctaButtonLabel\` | string | — | Button label. E.g. \`"Get a Quote"\`, \`"Contact Us"\` |
+| \`ctaButtonLink\` | string | — | Path or URL. E.g. \`"/contact"\` |
 | \`seoTitle\` | string | — | Max 60 chars |
 | \`seoDescription\` | string | — | Max 155 chars |
 
+NOTE: \`heroImage\` cannot be set via JSON import — upload the image manually in Sanity Studio after import.
+
 ---
 
-## sections
+## sections — Repeatable Content Sections
+
+Each section has a heading and a plain text content field. Add as many sections as needed to cover different product types, variants, or use cases.
 
 \`\`\`json
 "sections": [
   {
     "_key": "section-1",
     "heading": "Steel Brake Pipes",
-    "content": "Our steel brake pipes are manufactured to OEM specifications and available in standard lengths or cut and flared to any custom length required."
+    "content": "Our steel brake pipes are manufactured to OEM specifications and are available in standard lengths or cut and flared to any custom length. Suitable for all standard road vehicles."
   },
   {
     "_key": "section-2",
     "heading": "Stainless Steel Pipes",
-    "content": "For performance and show vehicles, our stainless steel brake pipes offer superior corrosion resistance and a polished finish."
+    "content": "For performance builds and show vehicles, stainless steel brake pipes offer superior corrosion resistance and a polished finish. Available in 3/16 and 1/4 inch bore."
+  },
+  {
+    "_key": "section-3",
+    "heading": "Cunifer (Copper-Nickel) Pipes",
+    "content": "Cunifer pipes are the preferred choice for marine and coastal environments where corrosion is a concern. Easier to bend and flare than steel, with excellent longevity."
   }
 ]
+\`\`\`
+
+---
+
+## Full Example
+
+\`\`\`json
+{
+  "_type": "productPage",
+  "title": "Brake Pipes",
+  "slug": { "current": "brake-pipes" },
+  "heading": "Brake Pipes — Cut, Flared & Fitted to Any Vehicle",
+  "introText": "All Clutch & Brake stocks and fabricates brake pipes for all vehicle types. Whether you need a straight replacement or a custom run for a classic or modified vehicle, we cut and flare to any length on-site.",
+  "detailedDescription": "Brake pipes are a safety-critical component that corrodes over time, particularly on older vehicles and those used in coastal or high-humidity environments. We stock steel, stainless steel, and cunifer (copper-nickel) pipe in 3/16 and 1/4 inch bore. All pipes are double-flared to Australian standards and pressure-tested before fitting. We can fabricate single pipes or complete replacement sets for any vehicle.",
+  "specifications": [
+    "Available in 3/16\\\" and 1/4\\\" bore",
+    "Steel, stainless steel, and cunifer options",
+    "Cut and double-flared to any custom length",
+    "Pressure-tested before installation",
+    "Suits all domestic and imported vehicles"
+  ],
+  "sections": [
+    {
+      "_key": "section-1",
+      "heading": "Steel Brake Pipes",
+      "content": "Standard OEM-spec steel pipes for everyday road vehicles. Cost-effective and reliable for most applications."
+    },
+    {
+      "_key": "section-2",
+      "heading": "Stainless Steel Pipes",
+      "content": "For show vehicles and performance builds where appearance and corrosion resistance matter. Available polished or brushed finish."
+    }
+  ],
+  "ctaHeading": "Need a Brake Pipe Fabricated?",
+  "ctaText": "Bring your vehicle in or call ahead with your make, model, and year. We fabricate and fit same day in most cases.",
+  "ctaButtonLabel": "Get a Quote",
+  "ctaButtonLink": "/contact",
+  "seoTitle": "Brake Pipes Adelaide — Cut, Flared & Fitted | All Clutch & Brake",
+  "seoDescription": "Custom brake pipe fabrication in Adelaide. Steel, stainless, and cunifer. Cut and double-flared to any length. All Clutch & Brake, Edwardstown SA."
+}
 \`\`\`
 `,
 
@@ -824,20 +1419,59 @@ Same structure as the Service Page — standard blocks only.
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | \`_type\` | string | YES | Always \`"staff"\` |
-| \`name\` | string | YES | Full name |
-| \`role\` | string | YES | Job title |
-| \`bio\` | string | — | Background and specialties, 2-4 sentences |
-| \`order\` | number | — | Display order on Meet Our Staff page |
+| \`name\` | string | YES | Full name. E.g. \`"Michael Farzan"\` |
+| \`role\` | string | YES | Job title. E.g. \`"Head Mechanic"\`, \`"Service Manager"\`, \`"Brake & Clutch Technician"\` |
+| \`bio\` | string | — | Background, experience, specialties, or something personal. 2-4 sentences. |
+| \`order\` | number | — | Controls display order on the Meet Our Staff page. Lower = appears first. |
+
+NOTE: \`photo\` cannot be set via JSON import — upload the staff member's photo manually in Sanity Studio after import.
 
 ---
 
-## Notes
+## Bio writing guide
 
-- \`photo\` cannot be set via JSON import — upload the photo manually in Sanity Studio after import.
-- Keep the \`bio\` authentic and specific — mention years of experience, specialties, and something personal.
+A good bio is specific and human. Include:
+- How long they have been with the business or in the industry
+- Their specialties or vehicle types they love working on
+- A personal detail or philosophy that makes them feel real
+
+---
+
+## Example
+
+\`\`\`json
+{
+  "_type": "staff",
+  "name": "Michael Farzan",
+  "role": "Head Mechanic",
+  "bio": "Michael has over 20 years of experience in clutch and brake repairs and has been with All Clutch & Brake since 2008. He specialises in high-performance clutch builds, dual-mass flywheel conversions, and vintage vehicle restorations. Outside the workshop, Michael competes in club-level motorsport with a heavily modified S13 Silvia.",
+  "order": 1
+}
+\`\`\`
+
+### Multiple staff in one import
+
+\`\`\`json
+[
+  {
+    "_type": "staff",
+    "name": "Michael Farzan",
+    "role": "Head Mechanic",
+    "bio": "Michael has over 20 years of experience and specialises in high-performance clutch builds and vintage restorations.",
+    "order": 1
+  },
+  {
+    "_type": "staff",
+    "name": "David Chen",
+    "role": "Brake Technician",
+    "bio": "David joined the team in 2019 and has a particular interest in brake system upgrades for 4WDs and touring vehicles. He holds a Certificate III in Automotive Technology.",
+    "order": 2
+  }
+]
+\`\`\`
 `,
 
-  certification: `# All Clutch & Brake — Certification Schema Guide
+  certification: `# All Clutch & Brake — Certification / Affiliation Schema Guide
 
 ---
 
@@ -846,23 +1480,69 @@ Same structure as the Service Page — standard blocks only.
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | \`_type\` | string | YES | Always \`"certification"\` |
-| \`name\` | string | YES | Full certification name |
-| \`abbreviation\` | string | — | Short form |
-| \`description\` | string | — | What it means and why it matters |
-| \`issuer\` | string | — | Issuing organisation name |
-| \`externalLink\` | string | — | URL to issuer or verification page |
-| \`certificateNumber\` | string | — | Member/cert number |
-| \`dateObtained\` | string | — | YYYY-MM-DD |
-| \`expiryDate\` | string | — | YYYY-MM-DD — leave empty if no expiry |
-| \`showInFooter\` | boolean | — | Display in footer trust badges |
-| \`showOnAboutPage\` | boolean | — | Display on About page |
-| \`displayOrder\` | number | — | Display order, lower = first |
+| \`name\` | string | YES | Full certification or membership name. E.g. \`"MTA Member"\` |
+| \`abbreviation\` | string | — | Short form. E.g. \`"MTA"\`, \`"VACC"\`, \`"AAA"\` |
+| \`description\` | string | — | What this certification means and why it matters to customers. 2-3 sentences. |
+| \`issuer\` | string | — | Full name of the issuing organisation. E.g. \`"Motor Trade Association of South Australia"\` |
+| \`externalLink\` | string | — | URL to the issuer's website or verification page. |
+| \`certificateNumber\` | string | — | Membership or certificate number. Leave empty if not applicable. |
+| \`dateObtained\` | string | — | Date first obtained in YYYY-MM-DD format. |
+| \`expiryDate\` | string | — | Expiry date in YYYY-MM-DD format. Leave empty if it does not expire. |
+| \`showInFooter\` | boolean | — | \`true\` = display this badge in the footer trust section. |
+| \`showOnAboutPage\` | boolean | — | \`true\` = display on the About page certifications section. |
+| \`displayOrder\` | number | — | Controls display order. Lower = appears first. |
+
+NOTE: \`logo\` cannot be set via JSON import — upload the certification badge image manually in Sanity Studio after import.
 
 ---
 
-## Notes
+## Example
 
-- \`logo\` cannot be set via JSON import — upload the certification badge image manually in Studio after import.
+\`\`\`json
+{
+  "_type": "certification",
+  "name": "MTA Member",
+  "abbreviation": "MTA",
+  "description": "All Clutch & Brake is a member of the Motor Trade Association of South Australia — the peak industry body representing automotive repairers in SA. MTA membership signals adherence to industry standards, fair trading, and professional conduct.",
+  "issuer": "Motor Trade Association of South Australia",
+  "externalLink": "https://www.mtasa.com.au",
+  "certificateNumber": "MTA-12345",
+  "dateObtained": "2010-01-01",
+  "expiryDate": "",
+  "showInFooter": true,
+  "showOnAboutPage": true,
+  "displayOrder": 1
+}
+\`\`\`
+
+### Multiple certifications in one import
+
+\`\`\`json
+[
+  {
+    "_type": "certification",
+    "name": "MTA Member",
+    "abbreviation": "MTA",
+    "description": "Member of the Motor Trade Association of South Australia — the peak body for automotive repairers in SA.",
+    "issuer": "Motor Trade Association of South Australia",
+    "externalLink": "https://www.mtasa.com.au",
+    "showInFooter": true,
+    "showOnAboutPage": true,
+    "displayOrder": 1
+  },
+  {
+    "_type": "certification",
+    "name": "VACC Accredited Repairer",
+    "abbreviation": "VACC",
+    "description": "VACC accreditation recognises repairers who meet strict standards for training, equipment, and customer service. It is one of the most respected credentials in the Australian automotive industry.",
+    "issuer": "Victorian Automobile Chamber of Commerce",
+    "externalLink": "https://www.vacc.com.au",
+    "showInFooter": true,
+    "showOnAboutPage": true,
+    "displayOrder": 2
+  }
+]
+\`\`\`
 `,
 }
 
