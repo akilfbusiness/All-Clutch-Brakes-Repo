@@ -48,6 +48,34 @@ export default async function MeetOurStaffPage() {
     ],
   }
 
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: pageHeading,
+    description: `Meet the qualified team behind ${businessName} — experienced mechanics who take pride in honest, expert workmanship.`,
+    url: `${siteUrl}/meet-our`,
+    isPartOf: { "@type": "WebSite", name: businessName, url: siteUrl },
+  }
+
+  const staffListSchema = staff.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: `${businessName} — Staff`,
+        itemListElement: staff.map((member, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          item: {
+            "@type": "Person",
+            name: member.name,
+            jobTitle: member.role,
+            ...(member.bio && { description: member.bio }),
+            worksFor: { "@type": "LocalBusiness", name: businessName, url: siteUrl },
+          },
+        })),
+      }
+    : null
+
   const ease = [0.22, 1, 0.36, 1]
 
   const fadeUp = {
@@ -63,6 +91,10 @@ export default async function MeetOurStaffPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
+      {staffListSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(staffListSchema) }} />
+      )}
 
       {/* ══════════════════════════════════════════════════════════════════════
           HERO

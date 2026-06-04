@@ -32,9 +32,39 @@ export default async function BrandsPage() {
     ],
   }
 
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Brands We Stock",
+    description: `The trusted brands stocked and used by ${businessName} — quality parts for clutch, brake, and transmission repairs.`,
+    url: `${siteUrl}/brands`,
+    isPartOf: { "@type": "WebSite", name: businessName, url: siteUrl },
+  }
+
+  const brandsListSchema = brands.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: `Parts Brands — ${businessName}`,
+        itemListElement: brands.map((brand, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          item: {
+            "@type": "Brand",
+            name: brand.name,
+            ...(brand.description && { description: brand.description }),
+          },
+        })),
+      }
+    : null
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
+      {brandsListSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(brandsListSchema) }} />
+      )}
 
       {/* HERO */}
       <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">

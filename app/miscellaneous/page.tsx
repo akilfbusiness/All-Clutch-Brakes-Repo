@@ -20,11 +20,32 @@ export default async function MiscellaneousPage() {
   const page = await getPageBySlug("miscellaneous")
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
   const phone = settings?.phone?.[0] ?? "(08) 8277 8122"
+  const siteUrl = settings?.siteUrl ?? "https://www.allclutchandbrake.com.au"
 
   const heroSubheading = page?.heroSubheading || `Additional products and parts available from ${businessName}. Content for this section is being updated — get in touch and we can help you find what you need.`
 
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: page?.metaTitle || "Miscellaneous",
+    description: page?.metaDescription || `Miscellaneous products and parts from ${businessName}.`,
+    url: `${siteUrl}/miscellaneous`,
+    isPartOf: { "@type": "WebSite", name: businessName, url: siteUrl },
+  }
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home",          item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Miscellaneous", item: `${siteUrl}/miscellaneous` },
+    ],
+  }
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-background overflow-hidden border-b border-border">
         <span aria-hidden className="absolute bottom-0 right-0 text-[80px] md:text-[160px] font-bold leading-none text-foreground/[0.06] select-none pointer-events-none whitespace-nowrap">
           Miscellaneous

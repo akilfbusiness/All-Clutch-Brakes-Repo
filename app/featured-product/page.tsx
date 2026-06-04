@@ -38,9 +38,20 @@ export default async function FeaturedProductPage() {
     ],
   }
 
+  const collectionPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Featured Products & News",
+    description: `Latest featured products, news, and promotions from ${businessName}.`,
+    url: `${siteUrl}/featured-product`,
+    isPartOf: { "@type": "WebSite", name: businessName, url: siteUrl },
+    ...(items.length > 0 && { numberOfItems: items.length }),
+  }
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionPageSchema) }} />
 
       <main className="min-h-screen bg-background">
 

@@ -41,9 +41,27 @@ export default async function ProjectsPage() {
     ],
   }
 
+  const collectionPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Our Projects",
+    description: `Browse past projects completed by ${businessName} — real work, real results.`,
+    url: `${siteUrl}/projects`,
+    isPartOf: { "@type": "WebSite", name: businessName, url: siteUrl },
+    ...(projects.length > 0 && {
+      hasPart: projects.map((p) => ({
+        "@type": "CreativeWork",
+        name: p.title,
+        url: `${siteUrl}/projects/${p.slug}`,
+        ...(p.description && { description: p.description.slice(0, 160) }),
+      })),
+    }),
+  }
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionPageSchema) }} />
 
       {/* ══════════════════════════════════════════════════════════════════════
           HERO
