@@ -24,9 +24,9 @@ export async function generateMetadata({
   ])
 
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
-  if (!location) return { title: `Location Not Found | ${businessName}` }
+  if (!location) return { title: "Location Not Found" }
 
-  const title = location.seoTitle ?? `Clutch & Brake Service in ${location.title} | ${businessName}`
+  const title = location.seoTitle ?? `Clutch & Brake Service in ${location.title}`
   const description =
     location.seoDescription ??
     location.answerCapsule ??

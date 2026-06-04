@@ -15,11 +15,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const siteUrl      = settings?.siteUrl      ?? "https://example.com"
 
   return {
-    title: `Meet Our Staff | ${businessName}`,
+    title: "Meet Our Staff",
     description: `Meet the qualified team behind ${businessName} — experienced mechanics who take pride in honest, expert workmanship.`,
     alternates: { canonical: "/meet-our" },
     openGraph: {
-      title: `Meet Our Staff | ${businessName}`,
+      title: "Meet Our Staff",
       description: `Meet the team behind ${businessName}.`,
       url: `${siteUrl}/meet-our`,
       type: "website",

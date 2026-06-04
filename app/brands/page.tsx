@@ -9,10 +9,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
   const siteUrl      = settings?.siteUrl      ?? "https://example.com"
   return {
-    title: `Brands We Stock | ${businessName}`,
+    title: "Brands We Stock",
     description: `The trusted brands stocked and used by ${businessName} — quality parts for clutch, brake, and transmission repairs.`,
     alternates: { canonical: "/brands" },
-    openGraph: { title: `Brands | ${businessName}`, url: `${siteUrl}/brands`, type: "website" },
+    openGraph: { title: "Brands We Stock", description: `The trusted brands stocked and used by ${businessName} — quality parts for clutch, brake, and transmission repairs.`, url: `${siteUrl}/brands`, type: "website" },
   }
 }
 

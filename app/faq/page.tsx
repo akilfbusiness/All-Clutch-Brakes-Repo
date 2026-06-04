@@ -38,10 +38,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const siteUrl      = settings?.siteUrl      ?? "https://example.com"
 
   return {
-    title: `FAQ | ${businessName}`,
+    title: "FAQ - Frequently Asked Questions",
     description: `Frequently asked questions about clutch, brake, and transmission repairs at ${businessName}.`,
     alternates: { canonical: "/faq" },
-    openGraph: { title: `FAQ | ${businessName}`, url: `${siteUrl}/faq`, type: "website" },
+    openGraph: { title: "FAQ - Frequently Asked Questions", description: `Frequently asked questions about clutch, brake, and transmission repairs at ${businessName}.`, url: `${siteUrl}/faq`, type: "website" },
   }
 }
 

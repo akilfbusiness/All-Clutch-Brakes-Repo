@@ -30,9 +30,9 @@ export async function generateMetadata({
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
   const siteUrl      = settings?.siteUrl      ?? "https://example.com"
 
-  if (!service) return { title: `Service Not Found | ${businessName}` }
+  if (!service) return { title: "Service Not Found" }
 
-  const title       = service.seoTitle       ?? `${service.title} | ${businessName}`
+  const title       = service.seoTitle       ?? service.title
   const description = service.seoDescription ?? service.answerCapsule ?? `Expert ${service.title.toLowerCase()} in Adelaide. All makes and models. Free quotes.`
 
   return {

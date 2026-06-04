@@ -43,18 +43,18 @@ export async function generateMetadata({
   ])
 
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
-  if (!post) return { title: `Post Not Found | ${businessName}` }
+  if (!post) return { title: "Post Not Found" }
 
   const title = post.seoTitle ?? post.title
   const description = post.seoDescription ?? post.answerCapsule
   const siteUrl = settings?.siteUrl ?? "https://example.com"
 
   return {
-    title: `${title} | ${businessName}`,
+    title,
     description,
     alternates: { canonical: `/blog/${slug}` },
     openGraph: {
-      title: `${title} | ${businessName}`,
+      title,
       description,
       url: `${siteUrl}/blog/${slug}`,
       type: "article",
