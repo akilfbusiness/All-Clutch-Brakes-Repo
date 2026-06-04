@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
 
   return {
-    title: `Privacy Policy | ${businessName}`,
+    title: "Privacy Policy",
     description: `${businessName}'s Privacy Policy. Learn how we collect, use, and protect your personal information in accordance with Australian privacy laws.`,
     alternates: { canonical: "/privacy-policy" },
     robots: { index: true, follow: false },

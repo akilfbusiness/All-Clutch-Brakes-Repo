@@ -9,7 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const page = await getPageBySlug("miscellaneous")
 
   return {
-    title: page?.metaTitle || `Miscellaneous | ${businessName}`,
+    title: page?.metaTitle || "Miscellaneous",
     description: page?.metaDescription || `Miscellaneous products and parts from ${businessName}.`,
     alternates: { canonical: "/miscellaneous" },
   }

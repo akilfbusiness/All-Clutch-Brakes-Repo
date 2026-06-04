@@ -21,14 +21,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
   const siteUrl = settings?.siteUrl ?? "https://example.com"
 
-  if (!project) return { title: `Project Not Found | ${businessName}` }
+  if (!project) return { title: "Project Not Found" }
 
   return {
-    title: `${project.title} | ${businessName}`,
+    title: project.title,
     description: project.description ?? `View details of the ${project.title} project by ${businessName}.`,
     alternates: { canonical: `/projects/${slug}` },
     openGraph: {
-      title: `${project.title} | ${businessName}`,
+      title: project.title,
       description: project.description ?? "",
       url: `${siteUrl}/projects/${slug}`,
       type: "website",

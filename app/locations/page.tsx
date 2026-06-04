@@ -13,10 +13,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const description  = settings?.locationsPageAnswerCapsule ?? `${businessName} provides clutch, brake, and transmission services across Adelaide and surrounding suburbs.`
 
   return {
-    title: `Service Areas | ${businessName}`,
+    title: "Service Areas",
     description,
     alternates: { canonical: "/locations" },
-    openGraph: { title: `Service Areas | ${businessName}`, description, url: `${siteUrl}/locations`, type: "website" },
+    openGraph: { title: "Service Areas", description, url: `${siteUrl}/locations`, type: "website" },
   }
 }
 

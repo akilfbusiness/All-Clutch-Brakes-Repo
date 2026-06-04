@@ -6,7 +6,7 @@ import { GalleryGrid } from "@/components/gallery-grid"
 import { PageHeroMedia } from "@/components/page-hero-media"
 
 export const metadata: Metadata = {
-  title: "Gallery | All Clutch & Brake Service",
+  title: "Gallery",
   description: "View our workshop, team, and completed work. Professional clutch and brake repairs in Adelaide.",
 }
 

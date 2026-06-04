@@ -4,7 +4,7 @@ import { Star } from "lucide-react"
 import type { Testimonial } from "@/sanity/queries"
 
 export const metadata: Metadata = {
-  title: "Customer Testimonials | All Clutch & Brake Service",
+  title: "Customer Testimonials",
   description: "Read reviews from our satisfied customers across Adelaide. Expert clutch and brake repairs with over 30 years of experience.",
 }
 

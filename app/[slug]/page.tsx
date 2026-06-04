@@ -23,9 +23,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
   const siteUrl = settings?.siteUrl ?? "https://example.com"
 
-  if (!page) return { title: `Not Found | ${businessName}` }
+  if (!page) return { title: "Not Found" }
 
-  const title       = page.metaTitle       ?? `${page.title} | ${businessName}`
+  const title       = page.metaTitle       ?? page.title
   const description = page.metaDescription ?? ""
 
   return {

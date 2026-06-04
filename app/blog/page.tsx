@@ -12,13 +12,13 @@ export async function generateMetadata(): Promise<Metadata> {
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
 
   return {
-    title: settings?.articlesPageSeoTitle ?? `Blog | ${businessName}`,
+    title: settings?.articlesPageSeoTitle ?? "Blog & Resources",
     description:
       settings?.articlesPageSeoDescription ??
       "Expert guides and answers about clutch, brake, and transmission repairs. Tips, maintenance advice, and industry insights from Adelaide's specialists.",
     alternates: { canonical: "/blog" },
     openGraph: {
-      title: settings?.articlesPageSeoTitle ?? `Blog | ${businessName}`,
+      title: settings?.articlesPageSeoTitle ?? "Blog & Resources",
       description:
         settings?.articlesPageSeoDescription ??
         "Expert guides and answers about clutch, brake, and transmission repairs.",
