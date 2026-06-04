@@ -794,10 +794,28 @@ export const ALL_PRODUCT_SLUGS_QUERY = `
 `
 
 export async function getAllProductSlugs(): Promise<{ slug: string }[]> {
-  return await sanityFetch<{ slug: string }[]>({
+  const result = await sanityFetch<{ slug: string }[] | null>({
     query: ALL_PRODUCT_SLUGS_QUERY,
     tags: ["productPages"],
   })
+  return result ?? []
+}
+
+// ─── FREE-FORM PAGES (the "Pages" document type in Sanity) ───────────────────
+// These are pages created in Sanity Studio under Pages → they render via
+// app/[slug]/page.tsx. Every published page with a slug must appear in the
+// sitemap, so we fetch all slugs here.
+
+export const ALL_PAGE_SLUGS_QUERY = `
+  *[_type == "page" && defined(slug.current)] { "slug": slug.current }
+`
+
+export async function getAllPageSlugs(): Promise<{ slug: string }[]> {
+  const result = await sanityFetch<{ slug: string }[] | null>({
+    query: ALL_PAGE_SLUGS_QUERY,
+    tags: ["pages"],
+  })
+  return result ?? []
 }
 
 // ─── TESTIMONIALS ─────────────────────────────────────────────────────────────
@@ -925,7 +943,7 @@ export async function getFeaturedGalleryImages(): Promise<GalleryImage[]> {
   return result ?? []
 }
 
-// ─── PAGES ────────────────────────────────────────────────────────────────────
+// ─── PAGES ──────────────────���─────────────────────────────────────────────────
 
 export const PAGE_BY_SLUG_QUERY = `
   *[_type == "page" && slug.current == $slug][0] {

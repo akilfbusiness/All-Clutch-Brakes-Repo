@@ -10,6 +10,7 @@ import {
   getAllLocationSlugs,
   getAllProjectSlugs,
   getAllProductSlugs,
+  getAllPageSlugs,
 } from "@/sanity/queries"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -44,15 +45,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let locationPages: MetadataRoute.Sitemap = []
   let projectPages:  MetadataRoute.Sitemap = []
   let productPages:  MetadataRoute.Sitemap = []
+  let customPages:   MetadataRoute.Sitemap = []
 
   try {
-    const [postSlugs, serviceSlugs, locationSlugs, projectSlugs, productSlugs] =
+    const [postSlugs, serviceSlugs, locationSlugs, projectSlugs, productSlugs, pageSlugs] =
       await Promise.all([
         getAllPostSlugs(),
         getAllServiceSlugs(),
         getAllLocationSlugs(),
         getAllProjectSlugs(),
         getAllProductSlugs(),
+        getAllPageSlugs(),
       ])
 
     blogPages = postSlugs.map(({ slug }) => ({
@@ -89,6 +92,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.7,
     }))
+
+    // Free-form CMS pages (the "Pages" document type — e.g. /faqs, /warranty, etc.)
+    // These render via app/[slug]/page.tsx. Any page published in Sanity Studio
+    // automatically appears here — no code changes needed when adding new pages.
+    customPages = pageSlugs.map(({ slug }) => ({
+      url: `${siteUrl}/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    }))
   } catch {
     // Sanity unreachable — sitemap still generates with static pages only
   }
@@ -100,5 +113,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...blogPages,
     ...projectPages,
     ...productPages,
+    ...customPages,
   ]
 }
