@@ -105,9 +105,12 @@ export default async function RootLayout({
   const phone = settings?.phone ?? []
   const email = settings?.email ?? ""
   const businessHours = settings?.businessHours ?? []
+  const structuredHours = settings?.structuredHours ?? []
   const areaServed = settings?.areaServed ?? []
   const abn = settings?.abn
   const registrationId = settings?.registrationId
+  const priceRange = settings?.priceRange
+  const foundingDate = settings?.foundingDate
 
   // ── WebSite schema ─────────────────────────────────────────────────────────
   // Declares the site as a coherent entity. Enables sitelink searchbox in Google.
@@ -129,19 +132,42 @@ export default async function RootLayout({
   }
 
   // ── LocalBusiness schema ───────────────────────────────────────────────────
-  // All values come from siteSettings in Sanity.
+  // @type is AutoRepair (subtype of LocalBusiness) — unlocks automotive-specific
+  // rich results in Google Search. All values come from siteSettings in Sanity.
   // When the customer updates their address, phone, or hours in the CMS,
   // this schema automatically reflects those changes on the next build.
+  //
+  // OpeningHoursSpecification: uses structured dayOfWeek/opens/closes fields
+  // from the "Business Hours (structured)" array in Sanity. Falls back to the
+  // free-form businessHours array if no structured hours are configured — but
+  // the fallback format is not parsed by Google for rich results.
+  const openingHoursSpecification =
+    structuredHours.length > 0
+      ? structuredHours
+          .filter((h: { dayOfWeek?: string[]; opens?: string; closes?: string }) =>
+            h.dayOfWeek?.length && h.opens && h.closes
+          )
+          .map((h: { dayOfWeek: string[]; opens: string; closes: string }) => ({
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: h.dayOfWeek,
+            opens: h.opens,
+            closes: h.closes,
+          }))
+      : businessHours.map((h: { days: string; hours: string }) => ({
+          "@type": "OpeningHoursSpecification",
+          description: `${h.days}: ${h.hours}`,
+        }))
+
   const localBusinessSchema = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": "AutoRepair",
     "@id": `${siteUrl}/#business`,
     name: businessName,
     description: defaultDescription,
     url: siteUrl,
     logo: settings?.logo ?? `${siteUrl}/assets/logo.svg`,
     image: `${siteUrl}/opengraph-image`,
-    telephone: phone.map((p) => `+61${p.replace(/^0/, "")}`),
+    telephone: phone.map((p: string) => `+61${p.replace(/^0/, "")}`),
     email,
     ...(address && {
       address: {
@@ -153,11 +179,10 @@ export default async function RootLayout({
         addressCountry: "AU",
       },
     }),
-    openingHoursSpecification: businessHours.map((h) => ({
-      "@type": "OpeningHoursSpecification",
-      description: `${h.days}: ${h.hours}`,
-    })),
+    openingHoursSpecification,
     areaServed: areaServed.length > 0 ? areaServed : ["Australia"],
+    ...(priceRange && { priceRange }),
+    ...(foundingDate && { foundingDate }),
     ...(abn || registrationId
       ? {
           identifier: [
@@ -173,7 +198,7 @@ export default async function RootLayout({
       name: "Services",
     },
     // sameAs — links entity to known external profiles for Google entity disambiguation.
-    // Add/remove URLs as the business creates new profiles. Leave empty array if not set.
+    // Populated from socialLinks and googleBusinessProfileUrl in Sanity Site Settings.
     sameAs: [
       ...(settings?.socialLinks?.facebook ? [settings.socialLinks.facebook] : []),
       ...(settings?.socialLinks?.instagram ? [settings.socialLinks.instagram] : []),
