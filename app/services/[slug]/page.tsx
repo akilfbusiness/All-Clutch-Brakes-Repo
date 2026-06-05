@@ -90,7 +90,7 @@ export default async function ServicePage({
     areaServed: service.serviceAreas?.length
       ? service.serviceAreas.map((a) => ({ "@type": "City", name: a.title }))
       : { "@type": "State", name: "South Australia" },
-    serviceType: "Automotive Repair",
+    serviceType: service.serviceType ?? "Automotive Repair",
     ...(service.featuredImage && { image: service.featuredImage }),
   }
 
@@ -129,6 +129,8 @@ export default async function ServicePage({
         relatedServices={relatedServices}
         howWeDeliverHeading={howWeDeliverHeading}
         deliverPoints={deliverPoints}
+        pricingTable={service.pricingTable ?? []}
+        internalLinks={service.internalLinks ?? []}
       />
     </>
   )

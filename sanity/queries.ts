@@ -204,6 +204,9 @@ export interface Service {
   serviceAreas?: { title: string; slug: string }[]
   seoTitle?: string
   seoDescription?: string
+  serviceType?: string
+  pricingTable?: { vehicleType: string; priceRange: string; notes?: string }[]
+  internalLinks?: { label: string; url: string; description?: string }[]
 }
 
 export interface Location {
@@ -366,7 +369,7 @@ export const ALL_SERVICES_QUERY = `
 export const SERVICE_BY_SLUG_QUERY = `
   *[_type == "service" && slug.current == $slug][0] {
     title, "slug": slug.current, answerCapsule, body,
-    whoIsItFor, faqItems, icon,
+    whoIsItFor, faqItems, icon, serviceType,
     "heroImage": heroImage.asset->url,
     "heroVideo": heroVideo.asset->url,
     "featuredImage": featuredImage.asset->url,
@@ -375,6 +378,8 @@ export const SERVICE_BY_SLUG_QUERY = `
       caption
     },
     "serviceAreas": serviceAreas[]->{ title, "slug": slug.current },
+    pricingTable,
+    internalLinks,
     seoTitle, seoDescription
   }
 `

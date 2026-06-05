@@ -147,6 +147,88 @@ export const serviceSchema = defineType({
       type: "number",
       description: "Controls the order services appear on the Services page. Lower number = appears first.",
     }),
+    defineField({
+      name: "serviceType",
+      title: "Service Type (for Google schema)",
+      type: "string",
+      description: "Specific label Google uses in search results (e.g. 'Clutch Replacement and Repair', 'Brake Pad Replacement'). Falls back to 'Automotive Repair' if left blank.",
+    }),
+    defineField({
+      name: "pricingTable",
+      title: "Pricing Table",
+      type: "array",
+      description: "Optional pricing guide shown on this service page. Add rows per vehicle type or service variant. Leave empty to hide the section.",
+      of: [
+        {
+          type: "object",
+          name: "pricingRow",
+          title: "Pricing Row",
+          fields: [
+            {
+              name: "vehicleType",
+              title: "Vehicle Type / Service Variant",
+              type: "string",
+              description: "e.g. 'Small Car', 'SUV / 4WD', 'Performance Vehicle', 'Standard Clutch Kit'",
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "priceRange",
+              title: "Price Range",
+              type: "string",
+              description: "e.g. '$350 – $550', 'From $290', 'POA'",
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "notes",
+              title: "Notes (optional)",
+              type: "string",
+              description: "e.g. 'Includes parts and labour', 'Call for exact quote'",
+            },
+          ],
+          preview: {
+            select: { title: "vehicleType", subtitle: "priceRange" },
+          },
+        },
+      ],
+    }),
+    defineField({
+      name: "internalLinks",
+      title: "Internal Links / Related Pages",
+      type: "array",
+      description: "Add links to related pages for internal linking. These appear as a dedicated section on the service page — great for SEO and navigation. Can link to any page type.",
+      of: [
+        {
+          type: "object",
+          name: "internalLink",
+          title: "Link",
+          fields: [
+            {
+              name: "label",
+              title: "Link Label",
+              type: "string",
+              description: "The clickable text shown on the page (e.g. 'Transmission Repairs', 'Contact Us')",
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "description",
+              title: "Short Description (optional)",
+              type: "string",
+              description: "One sentence describing what this page is about",
+            },
+            {
+              name: "url",
+              title: "URL / Path",
+              type: "string",
+              description: "Relative path (e.g. /services/transmission-repairs) or full URL for external links",
+              validation: (Rule) => Rule.required(),
+            },
+          ],
+          preview: {
+            select: { title: "label", subtitle: "url" },
+          },
+        },
+      ],
+    }),
   ],
   preview: {
     select: {

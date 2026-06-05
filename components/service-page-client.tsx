@@ -28,6 +28,8 @@ export interface ServicePageClientProps {
   relatedServices: { title: string; slug: string; description: string | null }[]
   howWeDeliverHeading: string
   deliverPoints: string[]
+  pricingTable?: { vehicleType: string; priceRange: string; notes?: string }[]
+  internalLinks?: { label: string; url: string; description?: string }[]
 }
 
 // ─── ANIMATION PRESETS ────────────────────────────────────────────────────────
@@ -89,6 +91,7 @@ const ptComponents = {
 export function ServicePageClient({
   businessName, phone, service,
   relatedServices, howWeDeliverHeading, deliverPoints,
+  pricingTable = [], internalLinks = [],
 }: ServicePageClientProps) {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
 
@@ -235,6 +238,48 @@ export function ServicePageClient({
                 </motion.div>
               )}
 
+              {/* Pricing table */}
+              {pricingTable.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }} transition={{ duration: 0.6, ease }}
+                  className="mb-14"
+                >
+                  <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">Pricing Guide</p>
+                  <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
+                    How Much Does {service.title} Cost?
+                  </h2>
+                  <div className="border border-border overflow-hidden">
+                    {/* Table header */}
+                    <div className="grid grid-cols-[1fr_auto] md:grid-cols-[1fr_160px_1fr] bg-foreground/[0.04] border-b border-border px-6 py-3">
+                      <span className="text-[10px] font-bold tracking-[0.25em] uppercase text-muted-foreground/60">Vehicle Type</span>
+                      <span className="text-[10px] font-bold tracking-[0.25em] uppercase text-muted-foreground/60 text-right md:text-center">Price Range</span>
+                      <span className="hidden md:block text-[10px] font-bold tracking-[0.25em] uppercase text-muted-foreground/60">Notes</span>
+                    </div>
+                    {/* Rows */}
+                    {pricingTable.map((row, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: -8 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.06, duration: 0.4, ease }}
+                        className="grid grid-cols-[1fr_auto] md:grid-cols-[1fr_160px_1fr] items-center px-6 py-4 border-b border-border last:border-b-0 hover:bg-foreground/[0.02] transition-colors duration-200"
+                      >
+                        <span className="font-bold text-foreground text-sm">{row.vehicleType}</span>
+                        <span className="text-accent font-bold text-sm text-right md:text-center whitespace-nowrap">{row.priceRange}</span>
+                        {row.notes && (
+                          <span className="hidden md:block text-xs text-muted-foreground/70 leading-relaxed">{row.notes}</span>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground/50 mt-3 leading-relaxed">
+                    Prices are a guide only. Final price depends on vehicle make, model, and parts required. Contact us for an exact quote.
+                  </p>
+                </motion.div>
+              )}
+
               {/* How We Deliver */}
               <motion.div
                 initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
@@ -309,9 +354,48 @@ export function ServicePageClient({
                 </motion.div>
               )}
 
-              {/* FAQ */}
-              {service.faqItems && service.faqItems.length > 0 && (
+              {/* Internal links / related pages */}
+              {internalLinks.length > 0 && (
                 <motion.div
+                  initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }} transition={{ duration: 0.6, ease }}
+                  className="mb-14"
+                >
+                  <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-5">Related Pages</p>
+                  <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
+                    You May Also Be Interested In
+                  </h2>
+                  <motion.div
+                    variants={stagger} initial="hidden"
+                    whileInView="show" viewport={{ once: true }}
+                    className="grid sm:grid-cols-2 gap-3"
+                  >
+                    {internalLinks.map((link, i) => (
+                      <motion.div key={i} variants={fadeUp}>
+                        <Link
+                          href={link.url}
+                          className="group flex items-start justify-between gap-4 border border-border hover:border-accent/50 p-5 transition-all duration-300 hover:bg-foreground/[0.02]"
+                        >
+                          <div className="min-w-0">
+                            <span className="block font-bold text-foreground text-sm group-hover:text-accent transition-colors duration-300 mb-1">
+                              {link.label}
+                            </span>
+                            {link.description && (
+                              <span className="block text-xs text-muted-foreground/70 leading-relaxed line-clamp-2">
+                                {link.description}
+                              </span>
+                            )}
+                          </div>
+                          <ArrowRight className="h-4 w-4 text-accent/40 group-hover:text-accent group-hover:translate-x-1 transition-all duration-300 flex-shrink-0 mt-0.5" />
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </motion.div>
+              )}
+
+              {/* FAQ */}
+              {service.faqItems && service.faqItems.length > 0 && (                <motion.div
                   initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }} transition={{ duration: 0.6, ease }}
                 >
