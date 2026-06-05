@@ -180,6 +180,27 @@ export const siteSettingsSchema = defineType({
       description: "The year the business was founded (e.g. 1984). Used in LocalBusiness schema and displayed on the About page.",
     }),
     defineField({
+      name: "aggregateRating",
+      title: "Aggregate Rating (for Google schema)",
+      type: "object",
+      group: "business",
+      description: "Your overall rating used in AutoRepair and Service JSON-LD schemas. Update this whenever your review count changes. Google uses this to show star ratings in search results.",
+      fields: [
+        {
+          name: "ratingValue",
+          title: "Rating Value (e.g. 4.9)",
+          type: "string",
+          description: "Your average star rating out of 5.",
+        },
+        {
+          name: "reviewCount",
+          title: "Total Review Count (e.g. 127)",
+          type: "string",
+          description: "Total number of reviews across all platforms.",
+        },
+      ],
+    }),
+    defineField({
       name: "abn",
       title: "ABN",
       type: "string",

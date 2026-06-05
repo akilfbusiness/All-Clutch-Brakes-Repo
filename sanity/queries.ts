@@ -154,6 +154,7 @@ export interface SiteSettings {
   bingVerificationToken?: string
   googleBusinessProfileUrl?: string
   areaServed?: string[]
+  aggregateRating?: { ratingValue: string; reviewCount: string }
 }
 
 export interface Post {
@@ -204,6 +205,10 @@ export interface Service {
   serviceAreas?: { title: string; slug: string }[]
   seoTitle?: string
   seoDescription?: string
+  serviceType?: string
+  pricingDescription?: string
+  pricingTable?: { vehicleType: string; priceRange: string; notes?: string }[]
+  internalLinks?: { label: string; url: string; description?: string }[]
 }
 
 export interface Location {
@@ -295,7 +300,7 @@ export const SITE_SETTINGS_QUERY = `
     footerTagline, footerCopyrightText, footerLinks, footerBrandLabel,
     siteUrl, defaultSeoTitle, defaultSeoDescription,
     googleSearchConsoleToken, bingVerificationToken,
-    googleBusinessProfileUrl, areaServed
+    googleBusinessProfileUrl, areaServed, aggregateRating
   }
 `
 
@@ -366,7 +371,7 @@ export const ALL_SERVICES_QUERY = `
 export const SERVICE_BY_SLUG_QUERY = `
   *[_type == "service" && slug.current == $slug][0] {
     title, "slug": slug.current, answerCapsule, body,
-    whoIsItFor, faqItems, icon,
+    whoIsItFor, faqItems, icon, serviceType, pricingDescription,
     "heroImage": heroImage.asset->url,
     "heroVideo": heroVideo.asset->url,
     "featuredImage": featuredImage.asset->url,
@@ -375,6 +380,8 @@ export const SERVICE_BY_SLUG_QUERY = `
       caption
     },
     "serviceAreas": serviceAreas[]->{ title, "slug": slug.current },
+    pricingTable,
+    internalLinks,
     seoTitle, seoDescription
   }
 `
@@ -899,7 +906,7 @@ export async function getAllCertifications(): Promise<Certification[]> {
   return result ?? []
 }
 
-// ─── GALLERY ──────────────────────────────────────────────────────────────────
+// ─── GALLERY ───────────────────────────────────���──────────────────────────────
 
 export const ALL_GALLERY_IMAGES_QUERY = `
   *[_type == "galleryImage"] | order(coalesce(order, 9999) asc, _createdAt desc) {
