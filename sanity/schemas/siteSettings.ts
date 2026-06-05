@@ -88,9 +88,10 @@ export const siteSettingsSchema = defineType({
     }),
     defineField({
       name: "businessHours",
-      title: "Business Hours",
+      title: "Business Hours (display only)",
       type: "array",
       group: "business",
+      description: "Free-form hours shown in the hero bar. Used for display only — add structured hours below for Google schema.",
       of: [
         {
           type: "object",
@@ -101,6 +102,82 @@ export const siteSettingsSchema = defineType({
           preview: { select: { title: "days", subtitle: "hours" } },
         },
       ],
+    }),
+    defineField({
+      name: "structuredHours",
+      title: "Business Hours (structured — for Google schema)",
+      type: "array",
+      group: "business",
+      description: "These values feed directly into the OpeningHoursSpecification schema that Google reads. Use 24-hour time (e.g. 08:00, 17:00). Select every day this entry applies to.",
+      of: [
+        {
+          type: "object",
+          name: "hoursEntry",
+          title: "Hours Entry",
+          fields: [
+            {
+              name: "dayOfWeek",
+              title: "Days of Week",
+              type: "array",
+              of: [{ type: "string" }],
+              options: {
+                list: [
+                  { title: "Monday",    value: "Monday"    },
+                  { title: "Tuesday",   value: "Tuesday"   },
+                  { title: "Wednesday", value: "Wednesday" },
+                  { title: "Thursday",  value: "Thursday"  },
+                  { title: "Friday",    value: "Friday"    },
+                  { title: "Saturday",  value: "Saturday"  },
+                  { title: "Sunday",    value: "Sunday"    },
+                ],
+                layout: "grid",
+              },
+            },
+            {
+              name: "opens",
+              title: "Opens (24-hr, e.g. 08:00)",
+              type: "string",
+              description: "Leave blank if closed this day.",
+            },
+            {
+              name: "closes",
+              title: "Closes (24-hr, e.g. 17:00)",
+              type: "string",
+              description: "Leave blank if closed this day.",
+            },
+          ],
+          preview: {
+            select: { days: "dayOfWeek", opens: "opens", closes: "closes" },
+            prepare({ days, opens, closes }: { days?: string[]; opens?: string; closes?: string }) {
+              const label = days?.join(", ") ?? "No days selected"
+              const hours = opens && closes ? `${opens} – ${closes}` : "Closed"
+              return { title: label, subtitle: hours }
+            },
+          },
+        },
+      ],
+    }),
+    defineField({
+      name: "priceRange",
+      title: "Price Range",
+      type: "string",
+      group: "business",
+      description: "Google uses this to show price context in search results. Use $ / $$ / $$$ / $$$$ convention.",
+      options: {
+        list: [
+          { title: "$ — Budget",        value: "$"    },
+          { title: "$$ — Moderate",     value: "$$"   },
+          { title: "$$$ — Premium",     value: "$$$"  },
+          { title: "$$$$ — Luxury",     value: "$$$$" },
+        ],
+      },
+    }),
+    defineField({
+      name: "foundingDate",
+      title: "Year Established",
+      type: "string",
+      group: "business",
+      description: "The year the business was founded (e.g. 1984). Used in LocalBusiness schema and displayed on the About page.",
     }),
     defineField({
       name: "abn",

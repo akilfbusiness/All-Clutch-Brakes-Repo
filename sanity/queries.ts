@@ -34,8 +34,11 @@ export interface SiteSettings {
   }
   heroTradingHours?: string
   businessHours?: { days: string; hours: string }[]
+  structuredHours?: { dayOfWeek: string[]; opens: string; closes: string }[]
   abn?: string
   registrationId?: string
+  priceRange?: string
+  foundingDate?: string
   googleMapsEmbedUrl?: string
   socialLinks?: {
     facebook?: string
@@ -239,7 +242,8 @@ export const SITE_SETTINGS_QUERY = `
   *[_type == "siteSettings"][0] {
     businessName, tagline,
     "logo": logo.asset->url,
-    phone, email, address, heroTradingHours, businessHours, abn, registrationId,
+    phone, email, address, heroTradingHours, businessHours, structuredHours,
+    abn, registrationId, priceRange, foundingDate,
     googleMapsEmbedUrl, socialLinks,
     heroHeading, heroAnswerCapsule, heroPrimaryCtaLabel, heroSecondaryCtaLabel,
     heroTagline,
