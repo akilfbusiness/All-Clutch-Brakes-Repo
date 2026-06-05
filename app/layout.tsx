@@ -205,6 +205,19 @@ export default async function RootLayout({
       ...(settings?.socialLinks?.linkedin ? [settings.socialLinks.linkedin] : []),
       ...(settings?.googleBusinessProfileUrl ? [settings.googleBusinessProfileUrl] : []),
     ].filter(Boolean),
+    // aggregateRating — sourced from Site Settings → Business Details in Sanity.
+    // Update ratingValue and reviewCount whenever your review count changes.
+    ...(settings?.aggregateRating?.ratingValue && settings?.aggregateRating?.reviewCount
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: settings.aggregateRating.ratingValue,
+            reviewCount: settings.aggregateRating.reviewCount,
+            bestRating: "5",
+            worstRating: "1",
+          },
+        }
+      : {}),
   }
 
   return (

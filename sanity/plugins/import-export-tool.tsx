@@ -164,6 +164,36 @@ const TEMPLATES: Record<DocType, object> = {
       "Optional Lucide icon name used in service cards. E.g. 'wrench', 'settings', 'tool', 'shield-check'",
     order: 1,
     _instructions_order: "Controls display order on the Services page. Lower number = appears first.",
+    serviceType: "",
+    _instructions_serviceType:
+      "Specific service label for Google schema. E.g. 'Clutch Replacement and Repair', 'Brake Pad Replacement'. Falls back to 'Automotive Repair' if blank.",
+    pricingDescription: "",
+    _instructions_pricingDescription:
+      "One sentence pricing summary for Google Offer schema. E.g. 'Clutch replacements from $350 depending on vehicle type. Fixed-price quotes with no hidden fees.' Max 160 chars.",
+    pricingTable: [
+      {
+        _key: "price-1",
+        vehicleType: "",
+        priceRange: "",
+        notes: "",
+        _instructions:
+          "One pricing row. vehicleType: e.g. 'Small Car', 'SUV / 4WD'. priceRange: e.g. '$350 – $550'. notes: e.g. 'Includes parts and labour'. Add 2-5 rows total.",
+      },
+    ],
+    _instructions_pricingTable:
+      "Optional pricing table shown on the service page. Leave as empty array [] to hide the section. Each row needs vehicleType and priceRange — notes is optional.",
+    internalLinks: [
+      {
+        _key: "link-1",
+        label: "",
+        url: "",
+        description: "",
+        _instructions:
+          "One internal link. label: clickable text (e.g. 'Transmission Repairs'). url: relative path (e.g. /services/transmission-repairs). description: one sentence about the page. Add 2-4 links total.",
+      },
+    ],
+    _instructions_internalLinks:
+      "Related pages for internal linking — shown as a card grid above the FAQ section. Leave as empty array [] to hide the section.",
     seoTitle: "",
     _instructions_seoTitle: "Max 60 chars. Leave empty to use the service title.",
     seoDescription: "",
@@ -822,6 +852,10 @@ List any external sources or citations used in the article. These are displayed 
 | \`whoIsItFor\` | string | — | Plain text description of which customers this service suits |
 | \`icon\` | string | — | Lucide icon name. E.g. \`"wrench"\`, \`"settings"\`, \`"shield-check"\` |
 | \`order\` | number | — | Display order on Services page. Lower = first. |
+| \`serviceType\` | string | — | Specific Google schema label. E.g. \`"Clutch Replacement and Repair"\`. Falls back to \`"Automotive Repair"\` if blank. |
+| \`pricingDescription\` | string | — | One sentence pricing summary for Google Offer schema. Max 160 chars. E.g. \`"Clutch replacements from $350. Fixed-price quotes."\` |
+| \`pricingTable\` | array | — | Pricing rows shown on page (see below). Leave as \`[]\` to hide the section. |
+| \`internalLinks\` | array | — | Related page link cards shown above FAQ (see below). Leave as \`[]\` to hide the section. |
 | \`seoTitle\` | string | — | Max 60 chars. Leave empty to use the service title. |
 | \`seoDescription\` | string | — | Max 155 chars. |
 
@@ -836,9 +870,53 @@ List any external sources or citations used in the article. These are displayed 
   "whoIsItFor": "Ideal for manual transmission vehicles of any age or make showing signs of clutch slip, heavy pedal, or difficulty engaging gears. We service passenger cars, 4WDs, utes, and performance vehicles.",
   "icon": "wrench",
   "order": 1,
+  "serviceType": "Clutch Replacement and Repair",
+  "pricingDescription": "Clutch replacements from $350 depending on vehicle type. Fixed-price quotes with no hidden fees.",
   "seoTitle": "Clutch Replacement Adelaide | All Clutch & Brake",
   "seoDescription": "Expert clutch replacement in Adelaide for all makes and models. Free inspection, fixed-price quotes, OEM and aftermarket parts. Call All Clutch & Brake today."
 }
+\`\`\`
+
+---
+
+## pricingTable
+
+Optional — leave as \`[]\` to hide the pricing section entirely. Add 2-5 rows. Each \`_key\` must be unique.
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| \`_key\` | string | YES | Unique key. E.g. \`"price-1"\`, \`"price-2"\` |
+| \`vehicleType\` | string | YES | E.g. \`"Small Car"\`, \`"SUV / 4WD"\`, \`"Performance Vehicle"\` |
+| \`priceRange\` | string | YES | E.g. \`"$350 – $550"\`, \`"From $290"\`, \`"POA"\` |
+| \`notes\` | string | — | E.g. \`"Includes parts and labour"\`, \`"Call for exact quote"\` |
+
+\`\`\`json
+"pricingTable": [
+  { "_key": "price-1", "vehicleType": "Small Car", "priceRange": "$350 – $490", "notes": "Includes parts and labour" },
+  { "_key": "price-2", "vehicleType": "SUV / 4WD", "priceRange": "$490 – $750", "notes": "Includes parts and labour" },
+  { "_key": "price-3", "vehicleType": "Performance Vehicle", "priceRange": "POA", "notes": "Call for exact quote" }
+]
+\`\`\`
+
+---
+
+## internalLinks
+
+Optional — leave as \`[]\` to hide the section. Add 2-4 links. Each \`_key\` must be unique.
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| \`_key\` | string | YES | Unique key. E.g. \`"link-1"\`, \`"link-2"\` |
+| \`label\` | string | YES | Clickable link text. E.g. \`"Transmission Repairs"\` |
+| \`url\` | string | YES | Relative path or full URL. E.g. \`"/services/transmission-repairs"\` |
+| \`description\` | string | — | One sentence about the linked page |
+
+\`\`\`json
+"internalLinks": [
+  { "_key": "link-1", "label": "Transmission Repairs", "url": "/services/transmission-repairs", "description": "Full gearbox diagnostics and repairs for manual and automatic vehicles." },
+  { "_key": "link-2", "label": "Brake Pad Replacement", "url": "/services/brake-pad-replacement", "description": "Front and rear brake pad replacements for all makes and models." },
+  { "_key": "link-3", "label": "Contact Us", "url": "/contact", "description": "Get a free quote or book your vehicle in today." }
+]
 \`\`\`
 
 ---
@@ -927,31 +1005,24 @@ Supported block types: \`normal\` paragraph, \`h2\`, \`h3\`, \`h4\`, \`blockquot
     "markDefs": []
   },
   {
-    "_key": "block-2",
+    "_key": "block-h2-2",
     "_type": "block",
     "style": "normal",
     "children": [
-      { "_type": "span", "text": "A standard clutch replacement includes the ", "marks": [] },
-      { "_type": "span", "text": "clutch disc, pressure plate, and release bearing", "marks": ["strong"] },
-      { "_type": "span", "text": ". The flywheel is inspected and resurfaced or replaced if worn.", "marks": [] }
+      { "_type": "span", "text": "Every replacement includes a ", "marks": [] },
+      { "_type": "span", "text": "free flywheel inspection", "marks": ["strong"] },
+      { "_type": "span", "text": " and a labour warranty.", "marks": [] }
     ],
     "markDefs": []
   },
   {
-    "_key": "block-h2-2",
-    "_type": "block",
-    "style": "h2",
-    "children": [{ "_type": "span", "text": "Get a Free Quote", "marks": [] }],
-    "markDefs": []
-  },
-  {
-    "_key": "block-3",
+    "_key": "block-link",
     "_type": "block",
     "style": "normal",
     "children": [
-      { "_type": "span", "text": "Call us on (08) 8277 8122 or submit a request via our ", "marks": [] },
+      { "_type": "span", "text": "Get a free quote via our ", "marks": [] },
       { "_type": "span", "text": "contact page", "marks": ["link-1"] },
-      { "_type": "span", "text": ". We provide fixed-price quotes before any work begins.", "marks": [] }
+      { "_type": "span", "text": " or call us on (08) 8277 8122.", "marks": [] }
     ],
     "markDefs": [
       { "_key": "link-1", "_type": "link", "href": "/contact", "blank": false }
@@ -988,6 +1059,7 @@ Add 5-7 service-specific FAQs. Each \`_key\` must be unique.
 `,
 
   location: `# All Clutch & Brake — Location Page Schema Guide
+
 
 ---
 

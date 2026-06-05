@@ -154,6 +154,13 @@ export const serviceSchema = defineType({
       description: "Specific label Google uses in search results (e.g. 'Clutch Replacement and Repair', 'Brake Pad Replacement'). Falls back to 'Automotive Repair' if left blank.",
     }),
     defineField({
+      name: "pricingDescription",
+      title: "Pricing Description (for Google schema)",
+      type: "string",
+      description: "One sentence summarising pricing for this service — used inside the Offer schema Google reads. E.g. 'Clutch replacements from $350 depending on vehicle type. Fixed-price quotes with no hidden fees.' Max 160 chars.",
+      validation: (Rule) => Rule.max(160),
+    }),
+    defineField({
       name: "pricingTable",
       title: "Pricing Table",
       type: "array",

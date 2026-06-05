@@ -92,6 +92,34 @@ export default async function ServicePage({
       : { "@type": "State", name: "South Australia" },
     serviceType: service.serviceType ?? "Automotive Repair",
     ...(service.featuredImage && { image: service.featuredImage }),
+    // availableChannel tells Google how to contact / book this specific service
+    availableChannel: {
+      "@type": "ServiceChannel",
+      serviceUrl: `${siteUrl}/services/${service.slug}`,
+      servicePhone: `+61${phone.replace(/^0/, "")}`,
+      availableLanguage: { "@type": "Language", name: "English" },
+    },
+    // offers — pricing context per service
+    offers: {
+      "@type": "Offer",
+      availability: "https://schema.org/InStock",
+      priceCurrency: "AUD",
+      seller: { "@type": "LocalBusiness", name: businessName, url: siteUrl },
+      ...(service.pricingDescription && { description: service.pricingDescription }),
+    },
+    // aggregateRating — sourced from site-wide settings so it stays in sync with
+    // the root AutoRepair entity. Only emitted if both values are present.
+    ...(settings?.aggregateRating?.ratingValue && settings?.aggregateRating?.reviewCount
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: settings.aggregateRating.ratingValue,
+            reviewCount: settings.aggregateRating.reviewCount,
+            bestRating: "5",
+            worstRating: "1",
+          },
+        }
+      : {}),
   }
 
   const breadcrumbSchema = {
