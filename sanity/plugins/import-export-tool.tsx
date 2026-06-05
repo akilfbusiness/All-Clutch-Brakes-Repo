@@ -9,7 +9,7 @@
  * Covers every document type in the All Clutch & Brake CMS.
  */
 
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import { definePlugin, useClient } from "sanity"
 
 // ─── Document type registry ────────────────────────────────────────────────────
@@ -1666,6 +1666,97 @@ interface ValidationResult {
   cleanDoc: Record<string, unknown> | null
 }
 
+// ─── Update / Diff types ───────────────────────────────────────────────────────
+
+type FieldAction = "override" | "keep" | "append" | "skip"
+
+interface DiffField {
+  key: string
+  label: string
+  existingValue: unknown
+  newValue: unknown
+  isArray: boolean
+  isObject: boolean
+  hasChange: boolean
+  action: FieldAction
+}
+
+interface DiffResult {
+  docId: string
+  docTitle: string
+  docType: string
+  fields: DiffField[]
+}
+
+function formatValuePreview(val: unknown): string {
+  if (val === null || val === undefined) return "(empty)"
+  if (typeof val === "boolean") return val ? "true" : "false"
+  if (typeof val === "number") return String(val)
+  if (typeof val === "string") return val.length > 120 ? val.slice(0, 120) + "…" : val
+  if (Array.isArray(val)) {
+    if (val.length === 0) return "(empty array)"
+    return `(${val.length} item${val.length === 1 ? "" : "s"})`
+  }
+  if (typeof val === "object") {
+    const keys = Object.keys(val as object)
+    return `{${keys.slice(0, 3).join(", ")}${keys.length > 3 ? ", …" : ""}}`
+  }
+  return String(val)
+}
+
+function valuesAreEqual(a: unknown, b: unknown): boolean {
+  return JSON.stringify(a) === JSON.stringify(b)
+}
+
+function computeDiff(existing: Record<string, unknown>, incoming: Record<string, unknown>): DiffField[] {
+  const SKIP_META = new Set(["_id", "_rev", "_createdAt", "_updatedAt", "_type"])
+  const allKeys = new Set([
+    ...Object.keys(existing).filter((k) => !SKIP_META.has(k)),
+    ...Object.keys(incoming).filter((k) => !SKIP_META.has(k) && !k.startsWith("_instructions")),
+  ])
+
+  const fields: DiffField[] = []
+  for (const key of allKeys) {
+    const existingVal = existing[key]
+    const newVal = incoming[key]
+    if (newVal === undefined) continue // incoming doesn't have this field — skip entirely
+    const isArray = Array.isArray(newVal) || Array.isArray(existingVal)
+    const isObject = !isArray && typeof newVal === "object" && newVal !== null
+    const hasChange = !valuesAreEqual(existingVal, newVal)
+
+    // Default action logic:
+    // Arrays with existing content → "keep" by default (safest — user must opt in to replace)
+    // Everything else with a change → "override" by default
+    // No change → "keep" (no-op)
+    let defaultAction: FieldAction = "keep"
+    if (hasChange) {
+      if (isArray && Array.isArray(existingVal) && existingVal.length > 0) {
+        defaultAction = "keep"
+      } else {
+        defaultAction = "override"
+      }
+    }
+
+    fields.push({
+      key,
+      label: key.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase()),
+      existingValue: existingVal,
+      newValue: newVal,
+      isArray,
+      isObject,
+      hasChange,
+      action: defaultAction,
+    })
+  }
+
+  // Sort: changed fields first, then unchanged
+  return fields.sort((a, b) => {
+    if (a.hasChange && !b.hasChange) return -1
+    if (!a.hasChange && b.hasChange) return 1
+    return a.key.localeCompare(b.key)
+  })
+}
+
 function validateImport(raw: string, expectedType: DocType): ValidationResult {
   const warnings: string[] = []
   const errors: string[] = []
@@ -1753,6 +1844,175 @@ function ImportExportTool() {
   const [importStatus, setImportStatus] = useState<"idle" | "reviewing" | "importing" | "success" | "error">("idle")
   const [validation, setValidation] = useState<ValidationResult | null>(null)
   const [importError, setImportError] = useState("")
+
+  // ─── Update Existing mode state ───────────────────────────────────────────
+  const [activeTab, setActiveTab] = useState<"create" | "update">("create")
+  const [updateJsonInput, setUpdateJsonInput] = useState("")
+  const [updateStatus, setUpdateStatus] = useState<
+    "idle" | "matching" | "matched" | "diffing" | "diffed" | "confirming" | "applying" | "success" | "error"
+  >("idle")
+  const [updateError, setUpdateError] = useState("")
+  const [matchedDoc, setMatchedDoc] = useState<Record<string, unknown> | null>(null)
+  const [diffResult, setDiffResult] = useState<DiffResult | null>(null)
+  const [diffFields, setDiffFields] = useState<DiffField[]>([])
+  const [showUnchanged, setShowUnchanged] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  async function handleMatchDocument() {
+    if (!updateJsonInput.trim()) return
+    setUpdateStatus("matching")
+    setUpdateError("")
+    setMatchedDoc(null)
+    setDiffResult(null)
+
+    let parsed: Record<string, unknown>
+    try {
+      parsed = JSON.parse(updateJsonInput)
+    } catch {
+      setUpdateStatus("error")
+      setUpdateError("Invalid JSON — could not parse. Check for missing commas, brackets, or trailing commas.")
+      return
+    }
+
+    const slugVal = (parsed.slug as { current?: string })?.current
+    const docType = parsed._type as string | undefined
+
+    if (!slugVal && !docType) {
+      setUpdateStatus("error")
+      setUpdateError("The JSON must contain either a slug.current field to match an existing document.")
+      return
+    }
+
+    try {
+      // Try to find by slug first, then fall back to title
+      let existing: Record<string, unknown> | null = null
+      if (slugVal) {
+        existing = await client.fetch(
+          `*[slug.current == $slug][0]`,
+          { slug: slugVal }
+        )
+      }
+      if (!existing && parsed.title) {
+        existing = await client.fetch(
+          `*[title == $title && _type == $type][0]`,
+          { title: parsed.title, type: docType ?? "" }
+        )
+      }
+
+      if (!existing) {
+        setUpdateStatus("error")
+        setUpdateError(
+          `No matching document found in Sanity for slug "${slugVal ?? ""}"${parsed.title ? ` or title "${parsed.title}"` : ""}. Check the slug is correct and the document is published (not a draft).`
+        )
+        return
+      }
+
+      // Strip _instructions from incoming
+      function stripInst(obj: unknown): unknown {
+        if (Array.isArray(obj)) return obj.map(stripInst)
+        if (obj && typeof obj === "object") {
+          const out: Record<string, unknown> = {}
+          for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
+            if (k.startsWith("_instructions")) continue
+            out[k] = stripInst(v)
+          }
+          return out
+        }
+        return obj
+      }
+      const cleanIncoming = stripInst(parsed) as Record<string, unknown>
+
+      const fields = computeDiff(existing, cleanIncoming)
+      setMatchedDoc(existing)
+      setDiffFields(fields)
+      setDiffResult({
+        docId: existing._id as string,
+        docTitle: (existing.title as string) ?? (existing.customerName as string) ?? "Untitled",
+        docType: existing._type as string,
+        fields,
+      })
+      setUpdateStatus("diffed")
+    } catch (err) {
+      setUpdateStatus("error")
+      setUpdateError(`Sanity fetch failed: ${(err as Error).message}`)
+    }
+  }
+
+  function handleFieldActionChange(key: string, action: FieldAction) {
+    setDiffFields((prev) => prev.map((f) => (f.key === key ? { ...f, action } : f)))
+  }
+
+  function handleSelectAll(action: FieldAction) {
+    setDiffFields((prev) => prev.map((f) => (f.hasChange ? { ...f, action } : f)))
+  }
+
+  async function handleApplyPatch() {
+    if (!diffResult || !matchedDoc) return
+    setUpdateStatus("applying")
+    setUpdateError("")
+
+    try {
+      let patch = client.patch(diffResult.docId)
+
+      const setFields: Record<string, unknown> = {}
+      const unsetFields: string[] = []
+
+      for (const field of diffFields) {
+        if (!field.hasChange) continue
+        if (field.action === "keep" || field.action === "skip") continue
+
+        if (field.action === "override") {
+          setFields[field.key] = field.newValue
+        } else if (field.action === "append" && field.isArray) {
+          // append: merge existing + new items, deduplicate by _key if present
+          const existing = (Array.isArray(matchedDoc[field.key]) ? matchedDoc[field.key] : []) as Record<string, unknown>[]
+          const incoming = (Array.isArray(field.newValue) ? field.newValue : []) as Record<string, unknown>[]
+          const existingKeys = new Set(existing.map((i) => i._key).filter(Boolean))
+          const toAdd = incoming.filter((i) => !i._key || !existingKeys.has(i._key))
+          setFields[field.key] = [...existing, ...toAdd]
+        }
+      }
+
+      if (Object.keys(setFields).length > 0) {
+        patch = patch.set(setFields)
+      }
+      if (unsetFields.length > 0) {
+        patch = patch.unset(unsetFields)
+      }
+
+      await patch.commit()
+      setUpdateStatus("success")
+    } catch (err) {
+      setUpdateStatus("applying")
+      setUpdateError(`Patch failed: ${(err as Error).message}`)
+      setUpdateStatus("error")
+    }
+  }
+
+  function handleUpdateReset() {
+    setUpdateStatus("idle")
+    setUpdateError("")
+    setMatchedDoc(null)
+    setDiffResult(null)
+    setDiffFields([])
+    setUpdateJsonInput("")
+    setShowUnchanged(false)
+  }
+
+  function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      setUpdateJsonInput(ev.target?.result as string ?? "")
+      setUpdateStatus("idle")
+      setUpdateError("")
+      setDiffResult(null)
+      setDiffFields([])
+    }
+    reader.readAsText(file)
+    e.target.value = ""
+  }
 
   const selectedLabel = DOCUMENT_TYPES.find((d) => d.value === selectedType)?.label ?? ""
   const slug = selectedLabel.toLowerCase().replace(/ /g, "-")
@@ -2023,7 +2283,146 @@ function ImportExportTool() {
       borderTop: "1px solid #1e1e1e",
       margin: "28px 0",
     } as React.CSSProperties,
+
+    tabBar: {
+      display: "flex",
+      gap: 0,
+      borderBottom: "1px solid #1e1e1e",
+      padding: "0 40px",
+      background: "#0a0a0a",
+    } as React.CSSProperties,
+
+    tab: (active: boolean) => ({
+      padding: "12px 20px",
+      fontSize: 12,
+      fontWeight: 600,
+      letterSpacing: "0.03em",
+      color: active ? "#ffffff" : "#4a4a4a",
+      borderBottom: active ? "2px solid #4f46e5" : "2px solid transparent",
+      cursor: "pointer",
+      background: "none",
+      border: "none",
+      borderBottomWidth: 2,
+      borderBottomStyle: "solid" as const,
+      borderBottomColor: active ? "#4f46e5" : "transparent",
+      marginBottom: -1,
+      transition: "color 0.15s, border-color 0.15s",
+    } as React.CSSProperties),
+
+    diffTable: {
+      width: "100%",
+      borderCollapse: "collapse" as const,
+      fontSize: 12,
+    } as React.CSSProperties,
+
+    diffTh: {
+      textAlign: "left" as const,
+      fontSize: 9,
+      fontWeight: 800,
+      letterSpacing: "0.1em",
+      textTransform: "uppercase" as const,
+      color: "#4a4a4a",
+      padding: "8px 12px",
+      borderBottom: "1px solid #1e1e1e",
+    } as React.CSSProperties,
+
+    diffRow: (hasChange: boolean) => ({
+      borderBottom: "1px solid #141414",
+      background: hasChange ? "transparent" : "#0c0c0c",
+      opacity: hasChange ? 1 : 0.45,
+    } as React.CSSProperties),
+
+    diffCell: {
+      padding: "10px 12px",
+      verticalAlign: "top" as const,
+    } as React.CSSProperties,
+
+    diffFieldName: {
+      fontWeight: 700,
+      color: "#e8e8e8",
+      fontSize: 12,
+      marginBottom: 2,
+    } as React.CSSProperties,
+
+    diffVal: (side: "existing" | "new") => ({
+      fontSize: 11,
+      fontFamily: "monospace",
+      color: side === "existing" ? "#6b6b6b" : "#a3e635",
+      lineHeight: 1.5,
+      wordBreak: "break-word" as const,
+      maxWidth: 220,
+    } as React.CSSProperties),
+
+    diffValLabel: {
+      fontSize: 9,
+      fontWeight: 700,
+      letterSpacing: "0.08em",
+      textTransform: "uppercase" as const,
+      color: "#3a3a3a",
+      marginBottom: 3,
+    } as React.CSSProperties,
+
+    actionBtn: (action: FieldAction, active: boolean) => {
+      const colors: Record<FieldAction, { bg: string; border: string; color: string }> = {
+        override: { bg: active ? "#312e81" : "transparent", border: active ? "#4f46e5" : "#2a2a2a", color: active ? "#c7d2fe" : "#4a4a4a" },
+        keep:     { bg: active ? "#1a2e1a" : "transparent", border: active ? "#166534" : "#2a2a2a", color: active ? "#86efac" : "#4a4a4a" },
+        append:   { bg: active ? "#2d1f00" : "transparent", border: active ? "#92400e" : "#2a2a2a", color: active ? "#fcd34d" : "#4a4a4a" },
+        skip:     { bg: active ? "#1c1c1c" : "transparent", border: active ? "#3a3a3a" : "#2a2a2a", color: active ? "#6b6b6b" : "#3a3a3a" },
+      }
+      const c = colors[action]
+      return {
+        padding: "3px 10px",
+        fontSize: 10,
+        fontWeight: 700,
+        letterSpacing: "0.06em",
+        textTransform: "uppercase" as const,
+        background: c.bg,
+        border: `1px solid ${c.border}`,
+        borderRadius: 4,
+        color: c.color,
+        cursor: "pointer",
+        transition: "all 0.12s",
+      } as React.CSSProperties
+    },
+
+    confirmModal: {
+      position: "fixed" as const,
+      inset: 0,
+      background: "rgba(0,0,0,0.75)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 9999,
+    } as React.CSSProperties,
+
+    confirmBox: {
+      background: "#111111",
+      border: "1px solid #2a2a2a",
+      borderRadius: 12,
+      padding: "32px 36px",
+      maxWidth: 480,
+      width: "100%",
+      margin: "0 20px",
+    } as React.CSSProperties,
+
+    matchBadge: {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 8,
+      background: "#0a1a0a",
+      border: "1px solid #166534",
+      borderRadius: 6,
+      padding: "8px 14px",
+      fontSize: 12,
+      color: "#86efac",
+      marginBottom: 20,
+    } as React.CSSProperties,
   }
+
+  const changedCount = diffFields.filter((f) => f.hasChange).length
+  const overrideCount = diffFields.filter((f) => f.hasChange && f.action === "override").length
+  const appendCount = diffFields.filter((f) => f.hasChange && f.action === "append").length
+  const keepCount = diffFields.filter((f) => f.hasChange && f.action === "keep").length
 
   return (
     <div style={s.page}>
@@ -2036,6 +2435,18 @@ function ImportExportTool() {
         </p>
       </div>
 
+      {/* Tab bar */}
+      <div style={s.tabBar}>
+        <button style={s.tab(activeTab === "create")} onClick={() => setActiveTab("create")}>
+          Create New
+        </button>
+        <button style={s.tab(activeTab === "update")} onClick={() => setActiveTab("update")}>
+          Update Existing
+        </button>
+      </div>
+
+      {/* ── CREATE NEW tab ───────────────────────────────────────────────────── */}
+      {activeTab === "create" && (
       <div style={s.body}>
         {/* Document Type Selector */}
         <div style={{ marginBottom: 32 }}>
@@ -2178,11 +2589,10 @@ function ImportExportTool() {
                   <>
                     {validation.valid ? (
                       <button
-                        style={importStatus === "importing" ? { ...s.btnPrimary, opacity: 0.6 } : s.btnPrimary}
+                        style={s.btnPrimary}
                         onClick={handleImport}
-                        disabled={importStatus === "importing"}
                       >
-                        {importStatus === "importing" ? "Importing..." : "Confirm Import"}
+                        Confirm Import
                       </button>
                     ) : (
                       <button style={{ ...s.btnPrimary, opacity: 0.4, cursor: "not-allowed" }} disabled>
@@ -2199,6 +2609,232 @@ function ImportExportTool() {
           )}
         </div>
       </div>
+      )} {/* end Create New tab */}
+
+      {/* ── UPDATE EXISTING tab ──────────────────────────────────────────────── */}
+      {activeTab === "update" && (
+        <div style={s.body}>
+
+          {/* Confirmation modal */}
+          {updateStatus === "confirming" && diffResult && (
+            <div style={s.confirmModal}>
+              <div style={s.confirmBox}>
+                <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: "#6b6b6b", margin: "0 0 12px" }}>
+                  Confirm Patch
+                </p>
+                <h2 style={{ ...s.cardTitle, marginBottom: 16 }}>Apply changes to &ldquo;{diffResult.docTitle}&rdquo;?</h2>
+                <div style={{ fontSize: 12, color: "#6b6b6b", lineHeight: 1.8, marginBottom: 24 }}>
+                  <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+                    <span><strong style={{ color: "#c7d2fe" }}>{overrideCount}</strong> field{overrideCount !== 1 ? "s" : ""} will be overridden</span>
+                    {appendCount > 0 && <span><strong style={{ color: "#fcd34d" }}>{appendCount}</strong> array{appendCount !== 1 ? "s" : ""} will be appended</span>}
+                    <span><strong style={{ color: "#86efac" }}>{keepCount}</strong> change{keepCount !== 1 ? "s" : ""} kept as-is</span>
+                  </div>
+                  <p style={{ marginTop: 12, color: "#4a4a4a", fontSize: 11 }}>
+                    This action cannot be undone from this tool. Sanity keeps version history — you can restore from the document&rsquo;s History tab if needed.
+                  </p>
+                </div>
+                <div style={{ display: "flex", gap: 10 }}>
+                  <button
+                    style={s.btnPrimary}
+                    onClick={handleApplyPatch}
+                  >
+                    Apply Changes
+                  </button>
+                  <button style={s.btnSecondary} onClick={() => setUpdateStatus("diffed")}>
+                    Go Back
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 1 — Upload JSON */}
+          <div style={s.card}>
+            <span style={s.stepTag}>Step 1 — Upload or Paste JSON</span>
+            <h2 style={s.cardTitle}>Provide the updated document JSON</h2>
+            <p style={s.cardDesc}>
+              Upload a filled JSON file or paste it below. The document must contain a <code style={{ color: "#a5b4fc", background: "#1e1b4b", padding: "1px 5px", borderRadius: 3 }}>slug.current</code> field
+              — this is how the tool finds the matching document in Sanity. Fields absent from your JSON are never touched.
+            </p>
+
+            {/* File upload */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json,application/json"
+              style={{ display: "none" }}
+              onChange={handleFileUpload}
+            />
+            <div style={{ ...s.btnRow, marginBottom: 14 }}>
+              <button style={s.btnSecondary} onClick={() => fileInputRef.current?.click()}>
+                &#8593; Upload JSON File
+              </button>
+              <span style={{ fontSize: 11, color: "#3a3a3a", alignSelf: "center" }}>or paste below</span>
+            </div>
+
+            <textarea
+              style={s.textarea}
+              placeholder='{ "_type": "service", "slug": { "current": "clutch-replacement-and-repair-in-adelaide" }, ... }'
+              value={updateJsonInput}
+              onChange={(e) => {
+                setUpdateJsonInput(e.target.value)
+                if (updateStatus !== "idle") handleUpdateReset()
+              }}
+              spellCheck={false}
+            />
+
+            {updateStatus === "error" && (
+              <div style={{ ...s.errorBanner, marginTop: 12 }}>
+                {updateError}
+              </div>
+            )}
+
+            <div style={{ ...s.btnRow, marginTop: 14 }}>
+              <button
+                style={updateJsonInput.trim() && updateStatus !== "matching"
+                  ? s.btnSecondary
+                  : { ...s.btnSecondary, opacity: 0.4, cursor: "not-allowed" }}
+                onClick={handleMatchDocument}
+                disabled={!updateJsonInput.trim() || updateStatus === "matching"}
+              >
+                {updateStatus === "matching" ? "Searching Sanity…" : "Find Matching Document"}
+              </button>
+            </div>
+          </div>
+
+          {/* Step 2 — Diff review */}
+          {(updateStatus === "diffed" || updateStatus === "confirming" || updateStatus === "applying") && diffResult && (
+            <div style={s.card}>
+              <span style={s.stepTag}>Step 2 — Review Changes</span>
+              <h2 style={s.cardTitle}>Field-by-field diff</h2>
+
+              {/* Match badge */}
+              <div style={s.matchBadge}>
+                <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#4ade80", flexShrink: 0, display: "inline-block" }} />
+                Matched: <strong>{diffResult.docTitle}</strong>
+                <span style={{ color: "#3a5a3a", marginLeft: 4 }}>({diffResult.docType} / {diffResult.docId.slice(0, 8)}…)</span>
+              </div>
+
+              {/* Bulk actions */}
+              <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 16, flexWrap: "wrap" }}>
+                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#3a3a3a", marginRight: 4 }}>
+                  Select all changed:
+                </span>
+                <button style={s.actionBtn("override", false)} onClick={() => handleSelectAll("override")}>Override All</button>
+                <button style={s.actionBtn("keep", false)} onClick={() => handleSelectAll("keep")}>Keep All</button>
+                <button style={{ fontSize: 11, color: "#4a4a4a", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
+                  onClick={() => setShowUnchanged((v) => !v)}>
+                  {showUnchanged ? "Hide unchanged" : `Show unchanged (${diffFields.filter(f => !f.hasChange).length})`}
+                </button>
+              </div>
+
+              {/* Summary counts */}
+              <div style={{ display: "flex", gap: 16, marginBottom: 20, fontSize: 11, color: "#6b6b6b" }}>
+                <span><strong style={{ color: "#e8e8e8" }}>{changedCount}</strong> changed</span>
+                <span><strong style={{ color: "#c7d2fe" }}>{overrideCount}</strong> to override</span>
+                {appendCount > 0 && <span><strong style={{ color: "#fcd34d" }}>{appendCount}</strong> to append</span>}
+                <span><strong style={{ color: "#86efac" }}>{keepCount}</strong> to keep</span>
+              </div>
+
+              {/* Diff table */}
+              <div style={{ border: "1px solid #1e1e1e", borderRadius: 8, overflow: "hidden", marginBottom: 20 }}>
+                <table style={s.diffTable}>
+                  <thead>
+                    <tr>
+                      <th style={{ ...s.diffTh, width: "22%" }}>Field</th>
+                      <th style={{ ...s.diffTh, width: "28%" }}>Current in Sanity</th>
+                      <th style={{ ...s.diffTh, width: "28%" }}>New Value (JSON)</th>
+                      <th style={{ ...s.diffTh, width: "22%" }}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {diffFields
+                      .filter((f) => f.hasChange || showUnchanged)
+                      .map((field) => (
+                        <tr key={field.key} style={s.diffRow(field.hasChange)}>
+                          <td style={s.diffCell}>
+                            <div style={s.diffFieldName}>{field.label}</div>
+                            <div style={{ fontSize: 10, color: "#3a3a3a", fontFamily: "monospace" }}>{field.key}</div>
+                            {field.isArray && <div style={{ fontSize: 9, color: "#4a4a4a", marginTop: 2, letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700 }}>Array</div>}
+                          </td>
+                          <td style={s.diffCell}>
+                            <div style={s.diffValLabel}>Existing</div>
+                            <div style={s.diffVal("existing")}>{formatValuePreview(field.existingValue)}</div>
+                          </td>
+                          <td style={s.diffCell}>
+                            <div style={s.diffValLabel}>Incoming</div>
+                            <div style={s.diffVal("new")}>{formatValuePreview(field.newValue)}</div>
+                          </td>
+                          <td style={s.diffCell}>
+                            {field.hasChange ? (
+                              <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                                <button style={s.actionBtn("override", field.action === "override")} onClick={() => handleFieldActionChange(field.key, "override")}>
+                                  Override
+                                </button>
+                                <button style={s.actionBtn("keep", field.action === "keep")} onClick={() => handleFieldActionChange(field.key, "keep")}>
+                                  Keep existing
+                                </button>
+                                {field.isArray && (
+                                  <button style={s.actionBtn("append", field.action === "append")} onClick={() => handleFieldActionChange(field.key, "append")}>
+                                    Append new
+                                  </button>
+                                )}
+                              </div>
+                            ) : (
+                              <span style={{ fontSize: 10, color: "#2a2a2a" }}>No change</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {overrideCount + appendCount === 0 && (
+                <div style={{ ...s.errorBanner, marginBottom: 16 }}>
+                  No fields are set to Override or Append — select at least one field to apply before proceeding.
+                </div>
+              )}
+
+              <div style={s.btnRow}>
+                <button
+                  style={overrideCount + appendCount > 0 ? s.btnPrimary : { ...s.btnPrimary, opacity: 0.4, cursor: "not-allowed" }}
+                  onClick={() => setUpdateStatus("confirming")}
+                  disabled={overrideCount + appendCount === 0}
+                >
+                  Review &amp; Confirm Patch
+                </button>
+                <button style={s.btnSecondary} onClick={handleUpdateReset}>
+                  Start Over
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Applying */}
+          {updateStatus === "applying" && (
+            <div style={{ ...s.card, textAlign: "center", padding: "40px 28px" }}>
+              <p style={{ color: "#6b6b6b", fontSize: 13 }}>Applying patch to Sanity…</p>
+            </div>
+          )}
+
+          {/* Success */}
+          {updateStatus === "success" && (
+            <div style={s.card}>
+              <div style={s.successBanner}>
+                <strong>Patch applied successfully.</strong> The document has been updated in Sanity.
+                Open the document in the Studio to verify the changes — use the History tab to restore a previous version if needed.
+                <br />
+                <button style={{ ...s.btnSecondary, marginTop: 14 }} onClick={handleUpdateReset}>
+                  Update Another Document
+                </button>
+              </div>
+            </div>
+          )}
+
+        </div>
+      )}  {/* end Update Existing tab */}
+
     </div>
   )
 }
