@@ -77,8 +77,8 @@ export const serviceSchema = defineType({
       type: "text",
       rows: 2,
       description:
-        "A direct 20-30 word answer to 'what is [service] at All Clutch & Brake?' — this is what AI engines will cite.",
-      validation: (Rule) => Rule.required().max(200),
+        "A direct 40-60 word answer to 'what is [service] at All Clutch & Brake?' — written as a standalone citable sentence for AI engines. Include: service name, location, specialisation, key differentiator, and trust signal.",
+      validation: (Rule) => Rule.required().max(350),
     }),
     defineField({
       name: "body",
