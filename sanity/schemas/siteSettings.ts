@@ -215,6 +215,20 @@ export const siteSettingsSchema = defineType({
       description: "Industry registration or licence number (e.g. Motor Vehicle Repairer Licence). Optional.",
     }),
     defineField({
+      name: "geoLatitude",
+      title: "Latitude",
+      type: "string",
+      group: "business",
+      description: "Decimal latitude of your business location (e.g. -34.9285). Right-click your location in Google Maps and copy the first coordinate. Used in LocalBusiness geo schema.",
+    }),
+    defineField({
+      name: "geoLongitude",
+      title: "Longitude",
+      type: "string",
+      group: "business",
+      description: "Decimal longitude of your business location (e.g. 138.6007). Right-click your location in Google Maps and copy the second coordinate. Used in LocalBusiness geo schema.",
+    }),
+    defineField({
       name: "googleMapsEmbedUrl",
       title: "Google Maps Embed URL",
       type: "url",
