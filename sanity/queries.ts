@@ -40,6 +40,8 @@ export interface SiteSettings {
   priceRange?: string
   foundingDate?: string
   googleMapsEmbedUrl?: string
+  geoLatitude?: string
+  geoLongitude?: string
   socialLinks?: {
     facebook?: string
     instagram?: string
@@ -249,6 +251,7 @@ export const SITE_SETTINGS_QUERY = `
     "logo": logo.asset->url,
     phone, email, address, heroTradingHours, businessHours, structuredHours,
     abn, registrationId, priceRange, foundingDate,
+    geoLatitude, geoLongitude,
     googleMapsEmbedUrl, socialLinks,
     heroHeading, heroAnswerCapsule, heroPrimaryCtaLabel, heroSecondaryCtaLabel,
     heroTagline,

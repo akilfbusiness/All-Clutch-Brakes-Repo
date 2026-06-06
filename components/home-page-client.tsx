@@ -78,14 +78,19 @@ const stagger = {
 }
 
 // ─── ANIMATED COUNTER ──────────────────────────────────────────────────────────
+// Renders the final value on SSR (no "0+" flash for crawlers or no-JS users).
+// On the client, animates from 0 → final value once the element enters the viewport.
 
 function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
-  const count   = useMotionValue(0)
+  const count   = useMotionValue(to)   // initialise at final value so SSR output is correct
   const rounded = useMotionTransform(count, (v) => Math.round(v).toLocaleString() + suffix)
   const ref     = useRef<HTMLSpanElement>(null)
   const inView  = useInView(ref, { once: true })
   useEffect(() => {
-    if (inView) void animate(count, to, { duration: 2.4, ease: "easeOut" })
+    if (inView) {
+      count.set(0)   // reset to 0 on client before animating so the count-up is visible
+      void animate(count, to, { duration: 2.4, ease: "easeOut" })
+    }
   }, [inView, count, to])
   return <motion.span ref={ref}>{rounded}</motion.span>
 }

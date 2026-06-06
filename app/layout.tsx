@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Analytics } from "@vercel/analytics/next"
-import { getSiteSettings } from "@/sanity/queries"
+import { getSiteSettings, getAllServices } from "@/sanity/queries"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import "./globals.css"
@@ -92,10 +92,16 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   let settings: Awaited<ReturnType<typeof getSiteSettings>>
+  let allServices: Awaited<ReturnType<typeof getAllServices>>
   try {
     settings = await getSiteSettings()
   } catch {
     settings = {}
+  }
+  try {
+    allServices = await getAllServices()
+  } catch {
+    allServices = []
   }
 
   const siteUrl = settings?.siteUrl ?? "https://example.com"
@@ -114,12 +120,13 @@ export default async function RootLayout({
 
   // ── WebSite schema ─────────────────────────────────────────────────────────
   // Declares the site as a coherent entity. Enables sitelink searchbox in Google.
+  // Note: description is intentionally omitted — schema.org does not define it
+  // as a valid property on WebSite and its presence triggers a validation warning.
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: businessName,
     url: siteUrl,
-    description: defaultDescription,
     inLanguage: "en-AU",
     potentialAction: {
       "@type": "SearchAction",
@@ -179,6 +186,18 @@ export default async function RootLayout({
         addressCountry: "AU",
       },
     }),
+    // geo — decimal coordinates from Site Settings → Business Details.
+    // Enter once; auto-updates on every render. Get coords from Google Maps
+    // (right-click your location → copy first number = lat, second = lng).
+    ...(settings?.geoLatitude && settings?.geoLongitude
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: settings.geoLatitude,
+            longitude: settings.geoLongitude,
+          },
+        }
+      : {}),
     openingHoursSpecification,
     areaServed: areaServed.length > 0 ? areaServed : ["Australia"],
     ...(priceRange && { priceRange }),
@@ -193,9 +212,23 @@ export default async function RootLayout({
           ],
         }
       : {}),
+    // hasOfferCatalog — dynamically built from all live service documents in Sanity.
+    // When a new service is added or removed in the CMS, this schema updates automatically
+    // on the next page render. No hardcoding required.
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: "Services",
+      name: "Automotive Services",
+      itemListElement: allServices.map((service, i) => ({
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          "@id": `${siteUrl}/services/${service.slug}`,
+          name: service.title,
+          url: `${siteUrl}/services/${service.slug}`,
+          ...(service.answerCapsule && { description: service.answerCapsule }),
+        },
+        position: i + 1,
+      })),
     },
     // sameAs — links entity to known external profiles for Google entity disambiguation.
     // Populated from socialLinks and googleBusinessProfileUrl in Sanity Site Settings.

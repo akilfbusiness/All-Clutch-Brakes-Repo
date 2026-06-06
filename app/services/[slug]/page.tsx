@@ -36,10 +36,10 @@ export async function generateMetadata({
   const description = service.seoDescription ?? service.answerCapsule ?? `Expert ${service.title.toLowerCase()} in Adelaide. All makes and models. Free quotes.`
 
   return {
-    title,
+    title,  // uses %s | businessName template from layout.tsx — do NOT wrap manually
     description,
     alternates: { canonical: `/services/${slug}` },
-    openGraph: { title, description, url: `${siteUrl}/services/${slug}`, type: "website" },
+    openGraph: { title: `${title} | ${businessName}`, description, url: `${siteUrl}/services/${slug}`, type: "website" },
   }
 }
 
