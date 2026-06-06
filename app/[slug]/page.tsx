@@ -9,6 +9,7 @@ import {
   getFeaturedPromotions,
   getActivePromotions,
 } from "@/sanity/queries"
+import type { InternalLink } from "@/sanity/queries"
 import { PageHero } from "@/components/page-hero"
 import { PageSections } from "@/components/page-sections"
 import { Phone, ArrowRight } from "lucide-react"
@@ -142,6 +143,53 @@ export default async function DynamicPage({ params }: Props) {
           <article className="prose prose-lg max-w-4xl mx-auto">
             {/* PortableText rendered via PageSections richText if migrated */}
           </article>
+        </section>
+      )}
+
+      {/* Internal Links — cross-page linking for SEO/GEO/AEO topical authority */}
+      {page.internalLinks && page.internalLinks.length > 0 && (
+        <section className="container py-12 md:py-16" aria-labelledby="page-internal-links-heading">
+          <h2
+            id="page-internal-links-heading"
+            className="text-xl font-bold tracking-tight mb-6 pb-3 border-b border-border"
+          >
+            Related Pages
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 border-t border-l border-border">
+            {page.internalLinks.map((link: InternalLink) => {
+              const typeToPath: Record<string, string> = { service: "/services", post: "/blog", location: "/locations", page: "" }
+              let href: string | null = null
+              let label: string | null = null
+              let description: string | undefined
+              if (link.linkType === "reference" && link.page) {
+                href = `${typeToPath[link.page._type] ?? ""}/${link.page.slug}`
+                label = link.labelOverride || link.page.title
+                description = link.description
+              } else if (link.linkType === "custom" && link.url && link.label) {
+                href = link.url
+                label = link.label
+                description = link.description
+              }
+              if (!href || !label) return null
+              return (
+                <Link
+                  key={link._key}
+                  href={href}
+                  className="group relative border-r border-b border-border p-5 hover:bg-foreground/[0.02] transition-colors"
+                >
+                  <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-accent group-hover:w-full transition-all duration-300" />
+                  <span className="block font-bold text-foreground/80 group-hover:text-foreground transition-colors text-sm leading-snug mb-1">
+                    {label}
+                  </span>
+                  {description && (
+                    <span className="block text-xs text-muted-foreground/70 leading-relaxed line-clamp-2">
+                      {description}
+                    </span>
+                  )}
+                </Link>
+              )
+            })}
+          </div>
         </section>
       )}
 
