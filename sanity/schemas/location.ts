@@ -136,6 +136,50 @@ export const locationSchema = defineType({
       rows: 2,
       validation: (Rule) => Rule.max(155),
     }),
+    defineField({
+      name: "internalLinks",
+      title: "Internal Links / Related Pages",
+      type: "array",
+      description:
+        "Link to any page on the site for internal linking. Use 'Existing Page' to search and select — URL resolves automatically. Use 'Custom Link' for manual URLs.",
+      of: [
+        {
+          type: "object",
+          name: "internalLinkReference",
+          title: "Existing Page (search & select)",
+          fields: [
+            { name: "linkType", type: "string", hidden: true, initialValue: "reference" },
+            {
+              name: "page",
+              title: "Page",
+              type: "reference",
+              to: [{ type: "service" }, { type: "post" }, { type: "location" }, { type: "page" }],
+              validation: Rule => Rule.required(),
+            },
+            { name: "labelOverride", title: "Label Override (optional)", type: "string" },
+            { name: "description", title: "Short Description (optional)", type: "string" },
+          ],
+          preview: {
+            select: { title: "labelOverride", refTitle: "page.title", subtitle: "description" },
+            prepare({ title, refTitle, subtitle }: { title?: string; refTitle?: string; subtitle?: string }) {
+              return { title: title || refTitle || "Linked page", subtitle: subtitle || "Reference link" }
+            },
+          },
+        },
+        {
+          type: "object",
+          name: "internalLinkCustom",
+          title: "Custom Link (manual URL)",
+          fields: [
+            { name: "linkType", type: "string", hidden: true, initialValue: "custom" },
+            { name: "label", title: "Link Label", type: "string", validation: Rule => Rule.required() },
+            { name: "url", title: "URL / Path", type: "string", validation: Rule => Rule.required() },
+            { name: "description", title: "Short Description (optional)", type: "string" },
+          ],
+          preview: { select: { title: "label", subtitle: "url" } },
+        },
+      ],
+    }),
   ],
   preview: {
     select: {

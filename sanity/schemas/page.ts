@@ -620,6 +620,62 @@ export const pageSchema = defineType({
       description: "Optional publish date for display or sorting purposes.",
       group: "settings",
     }),
+    defineField({
+      name: "internalLinks",
+      title: "Internal Links / Related Pages",
+      type: "array",
+      group: "seo",
+      description:
+        "Link to any page on the site for internal linking and topical authority. Use 'Existing Page' to search and select from your services, blog posts, and location pages — the URL resolves automatically. Use 'Custom Link' for any URL you want to enter manually (external pages, /contact, anchor links, etc.).",
+      of: [
+        {
+          type: "object",
+          name: "internalLinkReference",
+          title: "Existing Page (search & select)",
+          fields: [
+            { name: "linkType", type: "string", hidden: true, initialValue: "reference" },
+            {
+              name: "page",
+              title: "Page",
+              type: "reference",
+              description: "Search by title — links to services, blog posts, location pages, and more.",
+              to: [
+                { type: "service" },
+                { type: "post" },
+                { type: "location" },
+                { type: "page" },
+              ],
+              validation: Rule => Rule.required(),
+            },
+            { name: "labelOverride", title: "Label Override (optional)", type: "string", description: "Leave blank to use the page title." },
+            { name: "description", title: "Short Description (optional)", type: "string", description: "One sentence shown under the link. Used by crawlers." },
+          ],
+          preview: {
+            select: { title: "labelOverride", refTitle: "page.title", subtitle: "description" },
+            prepare({ title, refTitle, subtitle }: { title?: string; refTitle?: string; subtitle?: string }) {
+              return { title: title || refTitle || "Linked page", subtitle: subtitle || "Reference link" }
+            },
+          },
+        },
+        {
+          type: "object",
+          name: "internalLinkCustom",
+          title: "Custom Link (manual URL)",
+          fields: [
+            { name: "linkType", type: "string", hidden: true, initialValue: "custom" },
+            { name: "label", title: "Link Label", type: "string", description: "The clickable link text.", validation: Rule => Rule.required() },
+            { name: "url", title: "URL", type: "string", description: "Relative path (e.g. /contact) or full URL (https://...).", validation: Rule => Rule.required() },
+            { name: "description", title: "Short Description (optional)", type: "string" },
+          ],
+          preview: {
+            select: { title: "label", subtitle: "url" },
+            prepare({ title, subtitle }: { title?: string; subtitle?: string }) {
+              return { title: title || "Custom link", subtitle: subtitle || "" }
+            },
+          },
+        },
+      ],
+    }),
   ],
   preview: {
     select: {

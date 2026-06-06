@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { PortableText, type PortableTextComponents } from "@portabletext/react"
 import { getAllPostSlugs, getPostBySlug, getSiteSettings } from "@/sanity/queries"
-import type { Post } from "@/sanity/queries"
+import type { Post, InternalLink } from "@/sanity/queries"
 import { urlFor } from "@/sanity/image"
 import {
   ChevronRight,
@@ -96,6 +96,22 @@ const calloutConfig = {
     labelColor: "text-red-400",
   },
 } as const
+
+// ── Resolve hybrid InternalLink for blog page rendering ───────────────────────
+function resolveBlogLink(link: InternalLink): { href: string; label: string; description?: string } | null {
+  const typeToPath: Record<string, string> = { service: "/services", post: "/blog", location: "/locations", page: "" }
+  if (link.linkType === "reference" && link.page) {
+    return {
+      href: `${typeToPath[link.page._type] ?? ""}/${link.page.slug}`,
+      label: link.labelOverride || link.page.title,
+      description: link.description,
+    }
+  }
+  if (link.linkType === "custom" && link.url && link.label) {
+    return { href: link.url, label: link.label, description: link.description }
+  }
+  return null
+}
 
 // ── YouTube URL → embed ID ─────────────────────────────────────────────────────
 function getYoutubeId(url: string): string | null {
@@ -690,6 +706,41 @@ export default async function BlogPostPage({
                       )}
                     </Link>
                   ))}
+                </div>
+              </section>
+            )}
+
+            {/* Internal Links — cross-type linking for SEO/GEO/AEO topical authority */}
+            {displayPost.internalLinks && displayPost.internalLinks.length > 0 && (
+              <section className="mb-12" aria-labelledby="internal-links-heading">
+                <h2
+                  id="internal-links-heading"
+                  className="text-xl font-bold tracking-tight mb-6 pb-3 border-b border-border"
+                >
+                  Related Pages
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-l border-border">
+                  {displayPost.internalLinks.map((link: InternalLink) => {
+                    const resolved = resolveBlogLink(link)
+                    if (!resolved) return null
+                    return (
+                      <Link
+                        key={link._key}
+                        href={resolved.href}
+                        className="group relative border-r border-b border-border p-5 hover:bg-foreground/[0.02] transition-colors"
+                      >
+                        <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-accent group-hover:w-full transition-all duration-300" />
+                        <span className="block font-bold text-foreground/80 group-hover:text-foreground transition-colors text-sm leading-snug mb-1">
+                          {resolved.label}
+                        </span>
+                        {resolved.description && (
+                          <span className="block text-xs text-muted-foreground/70 leading-relaxed line-clamp-2">
+                            {resolved.description}
+                          </span>
+                        )}
+                      </Link>
+                    )
+                  })}
                 </div>
               </section>
             )}

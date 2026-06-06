@@ -202,32 +202,89 @@ export const serviceSchema = defineType({
       name: "internalLinks",
       title: "Internal Links / Related Pages",
       type: "array",
-      description: "Add links to related pages for internal linking. These appear as a dedicated section on the service page — great for SEO and navigation. Can link to any page type.",
+      description:
+        "Link to any page on the site for internal linking and topical authority. Use 'Existing Page' to search and select from your services, blog posts, and location pages — the URL resolves automatically. Use 'Custom Link' for any URL you want to enter manually (external pages, /contact, anchor links, etc.).",
       of: [
         {
           type: "object",
-          name: "internalLink",
-          title: "Link",
+          name: "internalLinkReference",
+          title: "Existing Page (search & select)",
           fields: [
             {
-              name: "label",
-              title: "Link Label",
+              name: "linkType",
+              title: "Link Type",
               type: "string",
-              description: "The clickable text shown on the page (e.g. 'Transmission Repairs', 'Contact Us')",
-              validation: (Rule) => Rule.required(),
+              hidden: true,
+              initialValue: "reference",
+            },
+            {
+              name: "page",
+              title: "Page",
+              type: "reference",
+              description: "Search by title — links to services, blog posts, location pages, and more.",
+              to: [
+                { type: "service" },
+                { type: "post" },
+                { type: "location" },
+                { type: "page" },
+              ],
+              validation: Rule => Rule.required(),
+            },
+            {
+              name: "labelOverride",
+              title: "Label Override (optional)",
+              type: "string",
+              description: "Leave blank to use the page title. Fill in to override the link text.",
             },
             {
               name: "description",
               title: "Short Description (optional)",
               type: "string",
-              description: "One sentence describing what this page is about",
+              description: "One sentence shown as a subtitle under the link.",
+            },
+          ],
+          preview: {
+            select: {
+              title: "labelOverride",
+              refTitle: "page.title",
+              subtitle: "description",
+            },
+            prepare({ title, refTitle, subtitle }: { title?: string; refTitle?: string; subtitle?: string }) {
+              return { title: title || refTitle || "Linked page", subtitle: subtitle || "Reference link" }
+            },
+          },
+        },
+        {
+          type: "object",
+          name: "internalLinkCustom",
+          title: "Custom Link (manual URL)",
+          fields: [
+            {
+              name: "linkType",
+              title: "Link Type",
+              type: "string",
+              hidden: true,
+              initialValue: "custom",
+            },
+            {
+              name: "label",
+              title: "Link Label",
+              type: "string",
+              description: "The clickable text shown on the page (e.g. 'Transmission Repairs', 'Contact Us')",
+              validation: Rule => Rule.required(),
             },
             {
               name: "url",
               title: "URL / Path",
               type: "string",
               description: "Relative path (e.g. /services/transmission-repairs) or full URL for external links",
-              validation: (Rule) => Rule.required(),
+              validation: Rule => Rule.required(),
+            },
+            {
+              name: "description",
+              title: "Short Description (optional)",
+              type: "string",
+              description: "One sentence describing what this page is about",
             },
           ],
           preview: {

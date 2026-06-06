@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import type { InternalLink } from "@/sanity/queries"
 import { PortableText } from "@portabletext/react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, ArrowRight, Plus, ChevronRight, MapPin, ArrowLeft } from "lucide-react"
@@ -29,7 +30,30 @@ export interface ServicePageClientProps {
   howWeDeliverHeading: string
   deliverPoints: string[]
   pricingTable?: { vehicleType: string; priceRange: string; notes?: string }[]
-  internalLinks?: { label: string; url: string; description?: string }[]
+  internalLinks?: InternalLink[]
+}
+
+// Resolves a hybrid InternalLink to a flat { href, label, description } object
+// for rendering — works for both reference and custom link types.
+function resolveLink(link: InternalLink): { href: string; label: string; description?: string } | null {
+  if (link.linkType === "reference" && link.page) {
+    const typeToPath: Record<string, string> = {
+      service: "/services",
+      post: "/blog",
+      location: "/locations",
+      page: "",
+    }
+    const base = typeToPath[link.page._type] ?? ""
+    return {
+      href: `${base}/${link.page.slug}`,
+      label: link.labelOverride || link.page.title,
+      description: link.description,
+    }
+  }
+  if (link.linkType === "custom" && link.url && link.label) {
+    return { href: link.url, label: link.label, description: link.description }
+  }
+  return null
 }
 
 // ─── ANIMATION PRESETS ────────────────────────────────────────────────────────
@@ -370,26 +394,30 @@ export function ServicePageClient({
                     whileInView="show" viewport={{ once: true }}
                     className="grid sm:grid-cols-2 gap-3"
                   >
-                    {internalLinks.map((link, i) => (
+                    {internalLinks.map((link, i) => {
+                      const resolved = resolveLink(link)
+                      if (!resolved) return null
+                      return (
                       <motion.div key={i} variants={fadeUp}>
                         <Link
-                          href={link.url}
+                          href={resolved.href}
                           className="group flex items-start justify-between gap-4 border border-border hover:border-accent/50 p-5 transition-all duration-300 hover:bg-foreground/[0.02]"
                         >
                           <div className="min-w-0">
                             <span className="block font-bold text-foreground text-sm group-hover:text-accent transition-colors duration-300 mb-1">
-                              {link.label}
+                              {resolved.label}
                             </span>
-                            {link.description && (
+                            {resolved.description && (
                               <span className="block text-xs text-muted-foreground/70 leading-relaxed line-clamp-2">
-                                {link.description}
+                                {resolved.description}
                               </span>
                             )}
                           </div>
                           <ArrowRight className="h-4 w-4 text-accent/40 group-hover:text-accent group-hover:translate-x-1 transition-all duration-300 flex-shrink-0 mt-0.5" />
                         </Link>
                       </motion.div>
-                    ))}
+                      )
+                    })}
                   </motion.div>
                 </motion.div>
               )}

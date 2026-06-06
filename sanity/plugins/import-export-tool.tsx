@@ -102,7 +102,22 @@ const TEMPLATES: Record<DocType, object> = {
       },
     ],
     relatedPosts: [],
-    _instructions_relatedPosts: "Leave as empty array — link related posts manually in Studio after import.",
+    _instructions_relatedPosts:
+      "Leave as empty array — select related blog post cards manually in Studio using the search dropdown. Cannot be populated via JSON import (requires Sanity document references).",
+    internalLinks: [
+      {
+        _key: "link-1",
+        _type: "internalLinkCustom",
+        linkType: "custom",
+        label: "",
+        url: "",
+        description: "",
+        _instructions:
+          "Custom link. label: clickable text (e.g. 'Clutch Replacement'). url: relative path (e.g. /services/clutch-replacement-and-repair-in-adelaide). description: optional one sentence. For reference links to Sanity documents, use Studio — cannot be populated via JSON import.",
+      },
+    ],
+    _instructions_internalLinks:
+      "Links to related pages across the site — services, other posts, locations, or any URL. Each item can be a 'custom' link (label + url, AI-fillable) or a 'reference' link (Sanity document, Studio only). Add as many as relevant — no cap. Leave as [] to hide the section.",
     dataSources: [
       {
         _key: "src-1",
@@ -185,15 +200,17 @@ const TEMPLATES: Record<DocType, object> = {
     internalLinks: [
       {
         _key: "link-1",
+        _type: "internalLinkCustom",
+        linkType: "custom",
         label: "",
         url: "",
         description: "",
         _instructions:
-          "One internal link. label: clickable text (e.g. 'Transmission Repairs'). url: relative path (e.g. /services/transmission-repairs). description: one sentence about the page. Add 2-4 links total.",
+          "Custom link. label: clickable text (e.g. 'Transmission Repairs'). url: relative path (e.g. /services/transmission-repairs). description: optional one sentence. For reference links to Sanity documents use Studio — cannot be populated via JSON import.",
       },
     ],
     _instructions_internalLinks:
-      "Related pages for internal linking — shown as a card grid above the FAQ section. Leave as empty array [] to hide the section.",
+      "Links to related pages — services, blog posts, locations, or any URL. Each item can be 'custom' (label + url, AI-fillable via JSON) or 'reference' (Sanity document search, Studio only). Add as many as relevant. Leave as [] to hide the section.",
     seoTitle: "",
     _instructions_seoTitle: "Max 60 chars. Leave empty to use the service title.",
     seoDescription: "",
@@ -245,6 +262,20 @@ const TEMPLATES: Record<DocType, object> = {
     _instructions_seoTitle: "Max 60 chars. E.g. 'Clutch & Brake Repairs Northern Adelaide | All Clutch & Brake'",
     seoDescription: "",
     _instructions_seoDescription: "Max 155 chars.",
+    internalLinks: [
+      {
+        _key: "link-1",
+        _type: "internalLinkCustom",
+        linkType: "custom",
+        label: "",
+        url: "",
+        description: "",
+        _instructions:
+          "Custom link. label: clickable text (e.g. 'Clutch Replacement'). url: relative path (e.g. /services/clutch-replacement-and-repair-in-adelaide). description: optional one sentence. For Sanity document reference links, add them manually in Studio.",
+      },
+    ],
+    _instructions_internalLinks:
+      "Links to related pages — services, other posts, or any URL. Each item can be a 'custom' link (label + url, AI-fillable) or a 'reference' link (Sanity document, Studio only). Add as many as relevant. Leave as [] to hide the section.",
   },
 
   testimonial: {
@@ -902,22 +933,31 @@ Optional — leave as \`[]\` to hide the pricing section entirely. Add 2-5 rows.
 
 ## internalLinks
 
-Optional — leave as \`[]\` to hide the section. Add 2-4 links. Each \`_key\` must be unique.
+Hybrid field — each item is either a **Custom Link** (AI-fillable via JSON) or a **Reference Link** (Sanity document, Studio only). Add as many as relevant. Leave as \`[]\` to hide the section.
+
+### Custom Link (use in JSON / AI fill)
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | \`_key\` | string | YES | Unique key. E.g. \`"link-1"\`, \`"link-2"\` |
+| \`_type\` | string | YES | Always \`"internalLinkCustom"\` |
+| \`linkType\` | string | YES | Always \`"custom"\` |
 | \`label\` | string | YES | Clickable link text. E.g. \`"Transmission Repairs"\` |
 | \`url\` | string | YES | Relative path or full URL. E.g. \`"/services/transmission-repairs"\` |
 | \`description\` | string | — | One sentence about the linked page |
 
+### Reference Link (Studio only — cannot be JSON-imported)
+
+Select any service, post, location, or page from a search dropdown in Studio. The URL and title resolve automatically.
+
 \`\`\`json
 "internalLinks": [
-  { "_key": "link-1", "label": "Transmission Repairs", "url": "/services/transmission-repairs", "description": "Full gearbox diagnostics and repairs for manual and automatic vehicles." },
-  { "_key": "link-2", "label": "Brake Pad Replacement", "url": "/services/brake-pad-replacement", "description": "Front and rear brake pad replacements for all makes and models." },
-  { "_key": "link-3", "label": "Contact Us", "url": "/contact", "description": "Get a free quote or book your vehicle in today." }
+  { "_key": "link-1", "_type": "internalLinkCustom", "linkType": "custom", "label": "Transmission Repairs", "url": "/services/transmission-repairs", "description": "Full gearbox diagnostics and repairs for manual and automatic vehicles." },
+  { "_key": "link-2", "_type": "internalLinkCustom", "linkType": "custom", "label": "Clutch Replacement Cost Adelaide 2026", "url": "/blog/clutch-replacement-cost-adelaide-2026", "description": "Complete pricing guide for clutch replacements across all vehicle types." },
+  { "_key": "link-3", "_type": "internalLinkCustom", "linkType": "custom", "label": "Contact Us", "url": "/contact", "description": "Get a free quote or book your vehicle in today." }
 ]
 \`\`\`
+
 
 ---
 
@@ -1076,6 +1116,7 @@ Add 5-7 service-specific FAQs. Each \`_key\` must be unique.
 | \`answerCapsule\` | string | YES | 20-30 word answer to "Does All Clutch & Brake service [location]?" — complete standalone sentence |
 | \`body\` | array | YES | Portable Text content — standard blocks only (see below) |
 | \`faqItems\` | array | — | 3-5 location-specific FAQs |
+| \`internalLinks\` | array | — | Links to related pages — services, other posts, or any URL. Leave as \`[]\` to hide the section. |
 | \`seoTitle\` | string | — | Max 60 chars. E.g. \`"Clutch & Brake Repairs Northern Adelaide | All Clutch & Brake"\` |
 | \`seoDescription\` | string | — | Max 155 chars. |
 
@@ -1205,6 +1246,31 @@ Add 3-5 location-specific FAQs. Questions should reference the specific suburb o
     "question": "What clutch and brake services do you provide to northern Adelaide customers?",
     "answer": "We provide clutch replacement, brake pad and rotor replacement, flywheel machining, transmission repairs, and brake fluid replacement for all vehicle makes. We service all northern Adelaide suburbs including Elizabeth, Salisbury, Mawson Lakes, and Tea Tree Gully."
   }
+]
+\`\`\`
+
+---
+
+## internalLinks
+
+Optional — leave as \`[]\` to hide the section. Each item is either a \`custom\` link (AI-fillable, any URL) or a \`reference\` link (Sanity document, Studio only). Add as many as relevant — no cap.
+
+**For JSON/AI import, use \`internalLinkCustom\` items only.** Reference links require a Sanity document \`_ref\` — add those manually in Studio using the search dropdown.
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| \`_key\` | string | YES | Unique key. E.g. \`"link-1"\`, \`"link-2"\` |
+| \`_type\` | string | YES | Always \`"internalLinkCustom"\` for custom links |
+| \`linkType\` | string | YES | Always \`"custom"\` for custom links |
+| \`label\` | string | YES | Clickable link text. E.g. \`"Clutch Replacement"\` |
+| \`url\` | string | YES | Relative path or full URL. E.g. \`"/services/clutch-replacement-and-repair-in-adelaide"\` |
+| \`description\` | string | — | One sentence about the linked page — used by crawlers |
+
+\`\`\`json
+"internalLinks": [
+  { "_key": "link-1", "_type": "internalLinkCustom", "linkType": "custom", "label": "Clutch Replacement", "url": "/services/clutch-replacement-and-repair-in-adelaide", "description": "Complete clutch replacement service for all vehicle makes in Adelaide." },
+  { "_key": "link-2", "_type": "internalLinkCustom", "linkType": "custom", "label": "Brake Pad Replacement", "url": "/services/brake-pad-replacement", "description": "Front and rear brake pad replacements with free rotor inspection." },
+  { "_key": "link-3", "_type": "internalLinkCustom", "linkType": "custom", "label": "Contact Us", "url": "/contact", "description": "Get a free quote or book your vehicle in today." }
 ]
 \`\`\`
 `,
