@@ -5,7 +5,7 @@ import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { MapPin, Phone, ChevronRight, Plus, Wrench, ArrowLeft } from "lucide-react"
 import { PortableText } from "@portabletext/react"
-import type { Location } from "@/sanity/queries"
+import type { Location, InternalLink } from "@/sanity/queries"
 import { PageHeroMedia } from "@/components/page-hero-media"
 
 const SERVICES = [
@@ -16,6 +16,22 @@ const SERVICES = [
   { title: "Hydraulic Repairs", slug: "hydraulic-repairs" },
   { title: "Differential Services", slug: "differential-services" },
 ]
+
+// Resolve hybrid internalLink — handles both reference (Sanity doc) and custom (any URL) types
+function resolveLink(link: InternalLink): { href: string; label: string; description?: string } | null {
+  const typeToPath: Record<string, string> = { service: "/services", post: "/blog", location: "/locations", page: "" }
+  if (link.linkType === "reference" && link.page) {
+    return {
+      href: `${typeToPath[link.page._type] ?? ""}/${link.page.slug}`,
+      label: link.labelOverride || link.page.title,
+      description: link.description,
+    }
+  }
+  if (link.linkType === "custom" && link.url && link.label) {
+    return { href: link.url, label: link.label, description: link.description }
+  }
+  return null
+}
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -214,6 +230,41 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
                     ))}
                   </motion.div>
                 </div>
+              )}
+
+              {/* Internal Links — cross-page linking for SEO/GEO/AEO topical authority */}
+              {location.internalLinks && location.internalLinks.length > 0 && (
+                <section className="mb-10" aria-labelledby="location-internal-links-heading">
+                  <h2
+                    id="location-internal-links-heading"
+                    className="text-xl font-bold tracking-tight mb-6 pb-3 border-b border-border"
+                  >
+                    Related Pages
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-l border-border">
+                    {location.internalLinks.map((link: InternalLink) => {
+                      const resolved = resolveLink(link)
+                      if (!resolved) return null
+                      return (
+                        <Link
+                          key={link._key}
+                          href={resolved.href}
+                          className="group relative border-r border-b border-border p-5 hover:bg-foreground/[0.02] transition-colors"
+                        >
+                          <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-accent group-hover:w-full transition-all duration-300" />
+                          <span className="block font-bold text-foreground/80 group-hover:text-foreground transition-colors text-sm leading-snug mb-1">
+                            {resolved.label}
+                          </span>
+                          {resolved.description && (
+                            <span className="block text-xs text-muted-foreground/70 leading-relaxed line-clamp-2">
+                              {resolved.description}
+                            </span>
+                          )}
+                        </Link>
+                      )
+                    })}
+                  </div>
+                </section>
               )}
 
               <Link

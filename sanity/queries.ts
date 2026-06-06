@@ -14,6 +14,19 @@ export interface QuickAnswer {
   quickAnswer: string
 }
 
+// Hybrid internal link — either a resolved Sanity reference or a manual custom URL.
+// linkType "reference": page is dereferenced to { title, slug, _type }, labelOverride overrides the title.
+// linkType "custom": label and url are set manually.
+export interface InternalLink {
+  _key: string
+  linkType: "reference" | "custom"
+  page?: { title: string; slug: string; _type: string }
+  labelOverride?: string
+  label?: string
+  url?: string
+  description?: string
+}
+
 export interface DataSource {
   label: string
   url: string
@@ -167,6 +180,7 @@ export interface Post {
   body?: unknown[]
   faqItems?: FaqItem[]
   relatedPosts?: Post[]
+  internalLinks?: InternalLink[]
   dataSources?: DataSource[]
   category: string
   tags?: string[]
@@ -210,7 +224,7 @@ export interface Service {
   serviceType?: string
   pricingDescription?: string
   pricingTable?: { vehicleType: string; priceRange: string; notes?: string }[]
-  internalLinks?: { label: string; url: string; description?: string }[]
+  internalLinks?: InternalLink[]
 }
 
 export interface Location {
@@ -219,13 +233,14 @@ export interface Location {
   locationType: "region" | "suburb"
   region?: string
   suburbsIncluded?: string[]
-  answerCapsule: string
+  answerCapsule?: string
   body?: unknown[]
   faqItems?: FaqItem[]
   seoTitle?: string
   seoDescription?: string
   heroImage?: string
   heroVideo?: string
+  internalLinks?: InternalLink[]
 }
 
 export interface NavItem {
@@ -236,6 +251,16 @@ export interface NavItem {
   highlight?: "normal" | "button-primary" | "button-secondary"
 }
 
+export interface Page {
+  _id: string
+  title: string
+  slug: string
+  metaTitle?: string
+  metaDescription?: string
+  noIndex?: boolean
+  internalLinks?: InternalLink[]
+}
+
 export interface SiteNavigation {
   headerItems?: NavItem[]
   headerCtaLabel?: string
@@ -243,7 +268,7 @@ export interface SiteNavigation {
   showPhoneInHeader?: boolean
 }
 
-// ─── SITE SETTINGS ────────────────────────────────────────────────────────────
+// ─── SITE SETTINGS ─────────────────────────────────────────────────────���──────
 
 export const SITE_SETTINGS_QUERY = `
   *[_type == "siteSettings"][0] {
@@ -317,6 +342,22 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 
 // ─── BLOG POSTS ───────────────────────────────────────────────────────────────
 
+// ─── SHARED GROQ PROJECTION ───────────────────────────────────────────────────
+// Resolves hybrid internalLinks — both reference and custom types in one projection.
+// Reference items dereference the linked document to get title, slug, and _type.
+// Custom items return label and url as-is.
+const INTERNAL_LINKS_PROJECTION = `
+  internalLinks[] {
+    _key,
+    linkType,
+    "page": page->{ title, "slug": slug.current, _type },
+    labelOverride,
+    label,
+    url,
+    description
+  }
+`
+
 export const ALL_POSTS_QUERY = `
   *[_type == "post"] | order(publishedAt desc) {
     title, "slug": slug.current, answerCapsule,
@@ -337,6 +378,7 @@ export const POST_BY_SLUG_QUERY = `
     "relatedPosts": relatedPosts[]->{
       title, "slug": slug.current, category, publishedAt, readTimeMinutes, heroImage, answerCapsule
     },
+    ${INTERNAL_LINKS_PROJECTION},
     seoTitle, seoDescription, ogImage
   }
 `
@@ -384,7 +426,7 @@ export const SERVICE_BY_SLUG_QUERY = `
     },
     "serviceAreas": serviceAreas[]->{ title, "slug": slug.current },
     pricingTable,
-    internalLinks,
+    ${INTERNAL_LINKS_PROJECTION},
     seoTitle, seoDescription
   }
 `
@@ -418,7 +460,8 @@ export const LOCATION_BY_SLUG_QUERY = `
     title, "slug": slug.current, locationType, region,
     suburbsIncluded, answerCapsule, body, faqItems, seoTitle, seoDescription,
     "heroImage": heroImage.asset->url,
-    "heroVideo": heroVideo.asset->url
+    "heroVideo": heroVideo.asset->url,
+    ${INTERNAL_LINKS_PROJECTION}
   }
 `
 
@@ -999,7 +1042,8 @@ export const PAGE_BY_SLUG_QUERY = `
     noIndex,
     category,
     showInSitemap,
-    publishedAt
+    publishedAt,
+    ${INTERNAL_LINKS_PROJECTION}
   }
 `
 

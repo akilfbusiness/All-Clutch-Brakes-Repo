@@ -505,16 +505,102 @@ export const postSchema = defineType({
     // ─── RELATED & SOURCES ─────────────────────────────────────────────────────
     defineField({
       name: "relatedPosts",
-      title: "Related Blog Posts",
+      title: "Related Blog Posts (rich cards)",
       type: "array",
-      description: "Link up to 4 related posts. Shown at the bottom of the post for internal linking.",
+      description:
+        "Select related blog posts to display as rich cards (with thumbnail and read time) at the bottom of this post. No limit — add as many as relevant.",
       of: [
         {
           type: "reference",
           to: [{ type: "post" }],
         },
       ],
-      validation: (Rule) => Rule.max(4),
+    }),
+    defineField({
+      name: "internalLinks",
+      title: "Internal Links / Related Pages",
+      type: "array",
+      description:
+        "Link to any page on the site for internal linking and topical authority. Use 'Existing Page' to search and select from your services, blog posts, and location pages — the URL resolves automatically. Use 'Custom Link' for any URL you want to enter manually (external pages, /contact, anchor links, etc.).",
+      of: [
+        {
+          type: "object",
+          name: "internalLinkReference",
+          title: "Existing Page (search & select)",
+          fields: [
+            {
+              name: "linkType",
+              type: "string",
+              hidden: true,
+              initialValue: "reference",
+            },
+            {
+              name: "page",
+              title: "Page",
+              type: "reference",
+              description: "Search by title — links to services, blog posts, location pages, and more.",
+              to: [
+                { type: "service" },
+                { type: "post" },
+                { type: "location" },
+                { type: "page" },
+              ],
+              validation: Rule => Rule.required(),
+            },
+            {
+              name: "labelOverride",
+              title: "Label Override (optional)",
+              type: "string",
+              description: "Leave blank to use the page title. Fill in to override the link text.",
+            },
+            {
+              name: "description",
+              title: "Short Description (optional)",
+              type: "string",
+            },
+          ],
+          preview: {
+            select: { title: "labelOverride", refTitle: "page.title", subtitle: "description" },
+            prepare({ title, refTitle, subtitle }: { title?: string; refTitle?: string; subtitle?: string }) {
+              return { title: title || refTitle || "Linked page", subtitle: subtitle || "Reference link" }
+            },
+          },
+        },
+        {
+          type: "object",
+          name: "internalLinkCustom",
+          title: "Custom Link (manual URL)",
+          fields: [
+            {
+              name: "linkType",
+              type: "string",
+              hidden: true,
+              initialValue: "custom",
+            },
+            {
+              name: "label",
+              title: "Link Label",
+              type: "string",
+              validation: Rule => Rule.required(),
+            },
+            {
+              name: "url",
+              title: "URL / Path",
+              type: "string",
+              description: "Relative path or full URL",
+              validation: Rule => Rule.required(),
+            },
+            {
+              name: "description",
+              title: "Short Description (optional)",
+              type: "string",
+            },
+          ],
+          preview: {
+            select: { title: "label", subtitle: "url" },
+          },
+        },
+      ],
     }),
     defineField({
       name: "dataSources",
