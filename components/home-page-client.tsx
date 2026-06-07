@@ -255,13 +255,19 @@ export function HomePageClient({
             className="absolute inset-[-15%] will-change-transform"
           >
             {heroVideo ? (
-              /* Looping muted autoplay background video */
+              /* Looping muted autoplay background video.
+                 preload="none" stops the browser from downloading the video file
+                 during initial page load — the poster image is shown immediately
+                 instead, which fixes the LCP score.
+                 The video starts downloading + playing once the browser is idle. */
               <video
                 key={heroVideo}
                 autoPlay
                 muted
                 loop
                 playsInline
+                preload="none"
+                poster={heroImage}
                 aria-hidden="true"
                 className="w-full h-full object-cover object-center"
               >
