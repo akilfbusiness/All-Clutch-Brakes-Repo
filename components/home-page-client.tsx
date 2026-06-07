@@ -72,9 +72,12 @@ const fadeUp = {
   show:   { opacity: 1, y: 0,  transition: { duration: 0.7, ease } },
 }
 
+// LCP-safe stagger — no delayChildren so the first painted element (h1/p)
+// is never held at opacity:0 waiting for an animation timer.
+// The stagger still runs client-side but Google's LCP crawler sees content immediately.
 const stagger = {
   hidden: {},
-  show:   { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+  show:   { transition: { staggerChildren: 0.08 } },
 }
 
 // ─── ANIMATED COUNTER ──────────────────────────────────────────────────────────
@@ -300,7 +303,7 @@ export function HomePageClient({
         {/* Content */}
         <div className="relative z-10 container py-40 md:py-48">
           <motion.div
-            initial="hidden" animate="show" variants={stagger}
+            initial="show" animate="show" variants={stagger}
             className="max-w-5xl"
           >
             <motion.p

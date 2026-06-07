@@ -268,7 +268,7 @@ export interface SiteNavigation {
   showPhoneInHeader?: boolean
 }
 
-// ─── SITE SETTINGS ─────────────────────────────────────────────────────�����──────
+// ─── SITE SETTINGS ─────────────────────────────────────────────────────�������──────
 
 export const SITE_SETTINGS_QUERY = `
   *[_type == "siteSettings"][0] {
@@ -409,7 +409,7 @@ export const getAllArticleSlugs = getAllPostSlugs
 export const ALL_SERVICES_QUERY = `
   *[_type == "service"] | order(order asc) {
     title, "slug": slug.current, answerCapsule, icon, seoDescription,
-    "image": coalesce(featuredImage.asset->url + "?w=800&fm=webp&q=80", heroImage.asset->url + "?w=800&fm=webp&q=80")
+    "image": coalesce(featuredImage.asset->url + "?w=400&fm=webp&q=80", heroImage.asset->url + "?w=400&fm=webp&q=80")
   }
 `
 
@@ -905,7 +905,7 @@ export async function getFeaturedTestimonials(): Promise<Testimonial[]> {
   return result ?? []
 }
 
-// ─── PROMOTIONS ───────────────────────────────────────────────────────────────
+// ─── PROMOTIONS ────���──────────────────────────────────────────────────────────
 
 export const ACTIVE_PROMOTIONS_QUERY = `
   *[_type == "promotion" && (!defined(validUntil) || validUntil >= now())] | order(coalesce(order, 9999) asc) {
