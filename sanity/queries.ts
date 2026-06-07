@@ -268,46 +268,46 @@ export interface SiteNavigation {
   showPhoneInHeader?: boolean
 }
 
-// ─── SITE SETTINGS ─────────────────────────────────────────────────────���──────
+// ─── SITE SETTINGS ─────────────────────────────────────────────────────�����──────
 
 export const SITE_SETTINGS_QUERY = `
   *[_type == "siteSettings"][0] {
     businessName, tagline,
-    "logo": logo.asset->url,
+    "logo": logo.asset->url + "?w=400&fm=webp&q=80",
     phone, email, address, heroTradingHours, businessHours, structuredHours,
     abn, registrationId, priceRange, foundingDate,
     geoLatitude, geoLongitude,
     googleMapsEmbedUrl, socialLinks,
     heroHeading, heroAnswerCapsule, heroPrimaryCtaLabel, heroSecondaryCtaLabel,
     heroTagline,
-    "heroImage": heroImage.asset->url,
+    "heroImage": heroImage.asset->url + "?w=1920&fm=webp&q=80",
     "heroVideo": heroVideo.asset->url,
-    "mechanicImage": mechanicImage.asset->url,
-    "workshopImage": workshopImage.asset->url,
+    "mechanicImage": mechanicImage.asset->url + "?w=900&fm=webp&q=80",
+    "workshopImage": workshopImage.asset->url + "?w=900&fm=webp&q=80",
     heroTrustSignals, homeTickerItems, homeStatsItems, homeAboutDescription,
     homeServicesHeading, homeServicesSubheading,
     homeWhyUsHeading, homeWhyUsBody, homeWhyUsPoints,
     homeCtaHeading, homeCtaBody, homeFaqs,
-    "aboutHeroImage": aboutHeroImage.asset->url,
+    "aboutHeroImage": aboutHeroImage.asset->url + "?w=1920&fm=webp&q=80",
     "aboutHeroVideo": aboutHeroVideo.asset->url,
     aboutHeading, aboutAnswerCapsule, aboutMissionHeading, aboutMissionBody,
     aboutWhoWeAreHeading, aboutWhoWeAreBody, aboutValues,
     aboutTeamHeading, aboutTeamBody,
     "aboutTeamMembers": aboutTeamMembers[] {
       name, role, bio,
-      "photo": photo.asset->url
+      "photo": photo.asset->url + "?w=400&fm=webp&q=80"
     },
     aboutCtaHeading, aboutCtaBody, aboutCtaPrimaryLabel, aboutCtaSecondaryLabel,
     aboutSeoTitle, aboutSeoDescription,
-    "contactHeroImage": contactHeroImage.asset->url,
+    "contactHeroImage": contactHeroImage.asset->url + "?w=1920&fm=webp&q=80",
     "contactHeroVideo": contactHeroVideo.asset->url,
-    "staffPageHeroImage": staffPageHeroImage.asset->url,
+    "staffPageHeroImage": staffPageHeroImage.asset->url + "?w=1920&fm=webp&q=80",
     "staffPageHeroVideo": staffPageHeroVideo.asset->url,
     staffPageHeading, staffPageSubheading, staffPageEyebrow,
-    "galleryPageHeroImage": galleryPageHeroImage.asset->url,
+    "galleryPageHeroImage": galleryPageHeroImage.asset->url + "?w=1920&fm=webp&q=80",
     "galleryPageHeroVideo": galleryPageHeroVideo.asset->url,
     galleryPageHeading, galleryPageSubheading, galleryPageEyebrow,
-    "whatWeDoPageHeroImage": whatWeDoPageHeroImage.asset->url,
+    "whatWeDoPageHeroImage": whatWeDoPageHeroImage.asset->url + "?w=1920&fm=webp&q=80",
     "whatWeDoPageHeroVideo": whatWeDoPageHeroVideo.asset->url,
     contactHeading, contactAnswerCapsule, contactInfoHeading,
     contactFormHeading, contactFormSubheading, contactPrivacyNote,
@@ -409,7 +409,7 @@ export const getAllArticleSlugs = getAllPostSlugs
 export const ALL_SERVICES_QUERY = `
   *[_type == "service"] | order(order asc) {
     title, "slug": slug.current, answerCapsule, icon, seoDescription,
-    "image": coalesce(featuredImage.asset->url, heroImage.asset->url)
+    "image": coalesce(featuredImage.asset->url + "?w=800&fm=webp&q=80", heroImage.asset->url + "?w=800&fm=webp&q=80")
   }
 `
 
@@ -417,11 +417,11 @@ export const SERVICE_BY_SLUG_QUERY = `
   *[_type == "service" && slug.current == $slug][0] {
     title, "slug": slug.current, answerCapsule, body,
     whoIsItFor, faqItems, icon, serviceType, pricingDescription,
-    "heroImage": heroImage.asset->url,
+    "heroImage": heroImage.asset->url + "?w=1920&fm=webp&q=80",
     "heroVideo": heroVideo.asset->url,
-    "featuredImage": featuredImage.asset->url,
+    "featuredImage": featuredImage.asset->url + "?w=900&fm=webp&q=80",
     "gallery": gallery[] {
-      "url": asset->url,
+      "url": asset->url + "?w=1200&fm=webp&q=80",
       caption
     },
     "serviceAreas": serviceAreas[]->{ title, "slug": slug.current },
@@ -459,7 +459,7 @@ export const LOCATION_BY_SLUG_QUERY = `
   *[_type == "location" && slug.current == $slug][0] {
     title, "slug": slug.current, locationType, region,
     suburbsIncluded, answerCapsule, body, faqItems, seoTitle, seoDescription,
-    "heroImage": heroImage.asset->url,
+    "heroImage": heroImage.asset->url + "?w=1920&fm=webp&q=80",
     "heroVideo": heroVideo.asset->url,
     ${INTERNAL_LINKS_PROJECTION}
   }
@@ -1010,7 +1010,7 @@ export const PAGE_BY_SLUG_QUERY = `
     heroHeading,
     heroSubheading,
     heroEyebrow,
-    "heroImage": heroImage.asset->url,
+    "heroImage": heroImage.asset->url + "?w=1920&fm=webp&q=80",
     "heroVideo": heroVideo.asset->url,
     heroPrimaryCta,
     heroSecondaryCta,
@@ -1018,18 +1018,18 @@ export const PAGE_BY_SLUG_QUERY = `
       ...,
       _type == "imageTextSection" => {
         ...,
-        "imageUrl": image.asset->url,
+        "imageUrl": image.asset->url + "?w=900&fm=webp&q=80",
         "imageAlt": image.alt
       },
       _type == "fullWidthBannerSection" => {
         ...,
-        "backgroundImageUrl": backgroundImage.asset->url,
+        "backgroundImageUrl": backgroundImage.asset->url + "?w=1920&fm=webp&q=80",
         "backgroundVideoUrl": backgroundVideo.asset->url
       },
       _type == "gallerySection" => {
         ...,
         "images": images[] {
-          "url": asset->url,
+          "url": asset->url + "?w=900&fm=webp&q=80",
           alt,
           caption
         }

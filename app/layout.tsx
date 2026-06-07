@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google"
+import Script from "next/script"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Analytics } from "@vercel/analytics/next"
 import { getSiteSettings, getAllServices } from "@/sanity/queries"
@@ -268,18 +269,26 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
         />
         {/* Google Analytics 4 — Measurement ID: G-BB91T32K88
-            Loads the gtag.js library asynchronously then initialises the data layer.
-            Do not change the measurement ID without updating GA4 dashboard. */}
-        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-BB91T32K88" />
-        <script
+            strategy="lazyOnload" defers loading until the page is fully idle,
+            removing it from the critical path without losing any tracking data. */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-BB91T32K88"
+          strategy="lazyOnload"
+        />
+        <Script
+          id="gtag-init"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BB91T32K88');`,
           }}
         />
         {/* Microsoft Clarity — session recordings and heatmaps
-            Project ID: x0y17oqy9m — do not change this without updating Clarity dashboard */}
-        <script
+            Project ID: x0y17oqy9m — do not change without updating Clarity dashboard
+            strategy="lazyOnload" defers until page is idle — no session data is lost
+            since recordings start when users interact, which is always after idle. */}
+        <Script
+          id="clarity-init"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","x0y17oqy9m");`,
           }}

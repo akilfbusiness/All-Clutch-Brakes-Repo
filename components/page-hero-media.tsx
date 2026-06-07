@@ -28,12 +28,17 @@ export function PageHeroMedia({ imageUrl, videoUrl, alt = "" }: PageHeroMediaPro
       {/* Background media — absolute, behind everything */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {videoUrl ? (
+          /* preload="none" prevents the browser from downloading the video during
+             initial page load. The poster (heroImage) is shown instantly instead,
+             fixing the LCP issue. Video starts buffering once the page is idle. */
           <video
             key={videoUrl}
             autoPlay
             muted
             loop
             playsInline
+            preload="none"
+            poster={imageUrl ?? undefined}
             aria-hidden="true"
             className="w-full h-full object-cover object-center"
           >
