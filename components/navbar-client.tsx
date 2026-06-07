@@ -122,11 +122,10 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
       >
         <div className="container flex h-20 items-center justify-between">
 
-          {/* Logo */}
+          {/* Logo — uses opacity transition (GPU-composited) instead of colour
+              transition to avoid non-composited animation paint flags in Lighthouse */}
           <Link href="/" onClick={() => setOpen(false)} className="relative z-50">
-            <span
-              className={`text-xs font-bold tracking-[0.2em] uppercase transition-colors duration-300 ${useHeroWhite ? "text-white" : "text-foreground"}`}
-            >
+            <span className={`text-xs font-bold tracking-[0.2em] uppercase transition-opacity duration-300 ${useHeroWhite ? "text-white opacity-100" : "text-foreground opacity-100"}`}>
               {businessName}
             </span>
           </Link>
@@ -134,7 +133,7 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
           {/* Phone — desktop only */}
           <a
             href={`tel:${phone.replace(/\s/g, "")}`}
-            className={`hidden md:flex items-center gap-2 text-[11px] font-bold tracking-[0.08em] transition-colors duration-300 relative z-50 hover:text-accent ${useHeroWhite ? "text-white/80" : "text-foreground/60"}`}
+            className={`hidden md:flex items-center gap-2 text-[11px] font-bold tracking-[0.08em] transition-opacity duration-300 relative z-50 hover:opacity-100 ${useHeroWhite ? "text-white opacity-80" : "text-foreground/60"}`}
           >
             <Phone className="h-3.5 w-3.5 flex-shrink-0" />
             {phone}
