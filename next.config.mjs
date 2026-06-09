@@ -21,6 +21,21 @@ const nextConfig = {
       },
     ],
   },
+  // 301 redirects — old URLs that AI systems are citing pointing to 404s
+  async redirects() {
+    return [
+      {
+        source: "/brake-pipes",
+        destination: "/products/brake-pipes",
+        permanent: true,
+      },
+      {
+        source: "/machining-services",
+        destination: "/services/machining-services-adelaide",
+        permanent: true,
+      },
+    ]
+  },
   // Sanity Studio requires these headers for the embedded /studio route
   async headers() {
     return [
