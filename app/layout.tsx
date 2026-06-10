@@ -301,28 +301,9 @@ export default async function RootLayout({
           <Footer settings={settings} />
         </ThemeProvider>
         <Analytics />
-        {/* Convocore chat widget */}
-        <div style={{ width: 0, height: 0 }} id="VG_OVERLAY_CONTAINER" />
-        <Script
-          id="convocore-widget"
-          strategy="lazyOnload"
-          dangerouslySetInnerHTML={{
-            __html: `(function() {
-  window.VG_CONFIG = {
-    ID: "ggrq6BtNBNMIFN0V5ZUb",
-    region: 'na',
-    render: 'bottom-right',
-    stylesheets: [
-      "https://cdn.convocore.ai/vg_live_build/styles.css",
-    ],
-  };
-  var VG_SCRIPT = document.createElement("script");
-  VG_SCRIPT.src = "https://cdn.convocore.ai/vg_live_build/vg_bundle.js";
-  VG_SCRIPT.defer = true;
-  document.body.appendChild(VG_SCRIPT);
-})()`,
-          }}
-        />
+        
+
+
       </body>
     </html>
   )
