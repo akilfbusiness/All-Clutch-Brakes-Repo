@@ -294,22 +294,6 @@ export default async function RootLayout({
           }}
         />
 
-                {/* Convocore chat widget */}
-        <Script
-          id="convocore-config"
-          strategy="lazyOnload"
-          dangerouslySetInnerHTML={{
-            __html: `window.VG_CONFIG={ID:"ggrq6BtNBNMIFN0V5ZUb",region:"na",render:"bottom-right",stylesheets:["https://cdn.convocore.ai/vg_live_build/styles.css"]};`,
-          }}
-        />
-        <Script
-          id="convocore-widget"
-          src="https://cdn.convocore.ai/vg_live_build/vg_bundle.js"
-          strategy="lazyOnload"
-        />
-
-
-
         
       </head>
       <body className={`${_plusJakarta.variable} ${_geistMono.variable} font-sans antialiased`}>
