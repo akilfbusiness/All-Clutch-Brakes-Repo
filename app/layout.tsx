@@ -301,43 +301,33 @@ export default async function RootLayout({
           <Footer settings={settings} />
         </ThemeProvider>
         <Analytics />
-        
-
-
-
-        <script type="text/javascript">
-(function(d, t) {
+        {/* Voiceflow chat widget */}
+        <Script
+          id="voiceflow-widget"
+          strategy="lazyOnload"
+          dangerouslySetInnerHTML={{
+            __html: `(function(d, t) {
   var v = d.createElement(t),
       s = d.getElementsByTagName(t)[0];
-
   v.onload = async function() {
-
     await window.voiceflow.chat.load({
       verify: { projectID: '6a2985562b172ca0c30a6e59' },
       url: 'https://general-runtime.voiceflow.com',
-      voice: {
-        url: 'https://runtime-api.voiceflow.com'
-      }
+      voice: { url: 'https://runtime-api.voiceflow.com' }
     });
-
-    // Show proactive message after 5 seconds
     setTimeout(() => {
       window.voiceflow.chat.proactive.push({
         type: 'text',
-        payload: {
-          message: '👋 Hi there! Chat to me, let me help you out'
-        }
+        payload: { message: '\u{1F44B} Hi there! Chat to me, let me help you out' }
       });
     }, 3000);
-
   };
-
   v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs";
   v.type = "text/javascript";
   s.parentNode.insertBefore(v, s);
-
-})(document, 'script');
-</script>
+})(document, 'script');`,
+          }}
+        />
 
 
       </body>
