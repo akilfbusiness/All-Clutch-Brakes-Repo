@@ -32,6 +32,54 @@ const PROACTIVE_MESSAGES = [
   "Not sure if your car needs attention? Chat with me, it's free.",
 ]
 
+function getPageTitle(): string {
+  if (typeof window === "undefined") return ""
+  // Strip common site name suffixes like " | All Clutch & Brake Service"
+  return document.title.split("|")[0].split("–")[0].split("-")[0].trim()
+}
+
+function getContextualOpener(): string {
+  if (typeof window === "undefined") return ""
+  const path = window.location.pathname.toLowerCase()
+
+  // Hardcoded — clutch (most common service, detailed message)
+  if (path.includes("clutch")) {
+    return "Looks like you're checking out our clutch services. Got a question or not sure if your clutch needs attention? I can help. 🔧"
+  }
+
+  // Hardcoded — brake (most common service, detailed message)
+  if (path.includes("brake")) {
+    return "Checking out our brake services? If your brakes feel off — squealing, spongy, vibrating — I can help you figure out what's going on. 🛑"
+  }
+
+  // Dynamic — any other service page uses the page title
+  if (path.includes("/services/") || path.includes("/service/")) {
+    const title = getPageTitle()
+    const label = title || "this service"
+    return `Looks like you're reading about ${label}. Got a question? I can help. 🔧`
+  }
+
+  // Dynamic — any blog post uses the page title
+  if (path.includes("/blog/") || path.includes("/article/") || path.includes("/post/")) {
+    const title = getPageTitle()
+    const label = title || "this article"
+    return `Looks like you're reading "${label}". Got a question about your car? I'm here — just ask. 💬`
+  }
+
+  // Hardcoded — homepage
+  if (path === "/" || path === "") {
+    return "Hey! I'm Rory, ACB's virtual assistant. Got a clutch or brake issue? Ask me anything — I'll help you sort it. 🔧"
+  }
+
+  // Hardcoded — contact page
+  if (path.includes("contact")) {
+    return "Hey! I'm Rory. If you've got a quick question before reaching out, I can help. Or just call us directly. 📞"
+  }
+
+  // Generic fallback for everything else
+  return "Got a question about your car? I'm Rory — ask me anything and I'll point you in the right direction."
+}
+
 function getSessionId(): string {
   if (typeof window === "undefined") return crypto.randomUUID()
   const key = "rory_session_id"
@@ -117,7 +165,6 @@ export function RoryChatWidget() {
 
   useEffect(() => {
     sessionId.current = getSessionId()
-    // Show proactive bubble after 4 seconds
     const t = setTimeout(() => setProactiveVisible(true), 4000)
     return () => clearTimeout(t)
   }, [])
@@ -133,6 +180,23 @@ export function RoryChatWidget() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages, loading])
+
+  // Context-aware auto-popup: fires once per session after 15 seconds
+  useEffect(() => {
+    const POPUP_KEY = "rory_popup_fired"
+    if (sessionStorage.getItem(POPUP_KEY)) return
+    const opener = getContextualOpener()
+    if (!opener) return
+    const t = setTimeout(() => {
+      sessionStorage.setItem(POPUP_KEY, "1")
+      setMessages((prev) => [
+        ...prev,
+        { id: crypto.randomUUID(), role: "assistant", text: opener },
+      ])
+      setOpen(true)
+    }, 15000)
+    return () => clearTimeout(t)
+  }, [])
 
   async function sendMessage() {
     const text = input.trim()
@@ -396,7 +460,6 @@ export function RoryChatWidget() {
             flexShrink: 0,
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              {/* Avatar */}
               <div style={{
                 width: 42, height: 42,
                 borderRadius: "50%",
@@ -421,7 +484,6 @@ export function RoryChatWidget() {
               </div>
             </div>
 
-            {/* Live call button in header */}
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <a
                 href={PHONE_HREF}
