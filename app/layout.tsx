@@ -7,9 +7,11 @@ import { getSiteSettings, getAllServices } from "@/sanity/queries"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import "./globals.css"
+import { RoryChatWidget } from "@/components/rory-chat-widget"
 
 const _plusJakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans", weight: ["400", "500", "600", "700", "800"] })
 const _geistMono   = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
+
 
 // ─── METADATA ──────────────────────────────────────────────────────────────────
 // metadataBase and all title/description values are pulled from Sanity siteSettings.
@@ -303,7 +305,7 @@ export default async function RootLayout({
         <Analytics />
         
 
-
+ <RoryChatWidget />    {/* ← add this line */}
       </body>
     </html>
   )
