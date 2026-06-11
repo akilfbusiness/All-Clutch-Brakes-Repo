@@ -8,6 +8,7 @@ const WEBHOOK_URL =
 const PHONE_NUMBER = "08 8277 8122"
 const PHONE_HREF = "tel:+61882778122"
 const PHONE_TRIGGER = PHONE_NUMBER
+const CALL_TRACKING_URL = "https://n8n-customer-automations.onrender.com/webhook/66efcdcc-49af-4630-a088-a0d5fc2174e7"
 
 function stripMarkdown(text: string): string {
   return text
@@ -15,6 +16,14 @@ function stripMarkdown(text: string): string {
     .replace(/\*(.*?)\*/g, "$1")
     .replace(/__(.*?)__/g, "$1")
     .replace(/`(.*?)`/g, "$1")
+}
+
+function trackCall(source: "header" | "inline" | "footer", sessionId: string) {
+  fetch(CALL_TRACKING_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ source, sessionId, timestamp: new Date().toISOString() }),
+  }).catch(() => {})
 }
 
 const PROACTIVE_MESSAGES = [
@@ -417,6 +426,7 @@ export function RoryChatWidget() {
               <a
                 href={PHONE_HREF}
                 className="rory-call-btn"
+                onClick={() => trackCall("header", sessionId.current)}
                 style={{
                   display: "flex", alignItems: "center", gap: 6,
                   padding: "7px 14px",
@@ -498,6 +508,7 @@ export function RoryChatWidget() {
                   <a
                     href={PHONE_HREF}
                     className="rory-call-btn rory-msg-in"
+                    onClick={() => trackCall("inline", sessionId.current)}
                     style={{
                       display: "flex", alignItems: "center", gap: 8,
                       padding: "10px 18px",
@@ -603,7 +614,7 @@ export function RoryChatWidget() {
               </button>
             </div>
             <p style={{ textAlign: "center", marginTop: 8, fontSize: 11, color: "#94a3b8" }}>
-              Powered by All Clutch &amp; Brake Service · <a href={PHONE_HREF} style={{ color: "#2563eb", textDecoration: "none", fontWeight: 500 }}>{PHONE_NUMBER}</a>
+              Powered by All Clutch &amp; Brake AI · <a href={PHONE_HREF} onClick={() => trackCall("footer", sessionId.current)} style={{ color: "#2563eb", textDecoration: "none", fontWeight: 500 }}>{PHONE_NUMBER}</a>
             </p>
           </div>
         </div>
