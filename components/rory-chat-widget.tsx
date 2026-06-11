@@ -603,7 +603,7 @@ export function RoryChatWidget() {
               </button>
             </div>
             <p style={{ textAlign: "center", marginTop: 8, fontSize: 11, color: "#94a3b8" }}>
-              Powered by All Clutch &amp; Brake AI · <a href={PHONE_HREF} style={{ color: "#2563eb", textDecoration: "none", fontWeight: 500 }}>{PHONE_NUMBER}</a>
+              Powered by All Clutch &amp; Brake Service · <a href={PHONE_HREF} style={{ color: "#2563eb", textDecoration: "none", fontWeight: 500 }}>{PHONE_NUMBER}</a>
             </p>
           </div>
         </div>
