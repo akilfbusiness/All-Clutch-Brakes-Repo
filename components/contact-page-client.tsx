@@ -3,8 +3,11 @@
 import { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { Phone, Mail, MapPin, Clock, ArrowRight, Plus, ChevronRight } from "lucide-react"
+import { Phone, Mail, MapPin, Clock, ArrowRight, Plus, ChevronRight, CheckCircle, AlertCircle } from "lucide-react"
 import { PageHeroMedia } from "@/components/page-hero-media"
+
+const N8N_WEBHOOK_URL =
+  "https://n8n-customer-automations.onrender.com/webhook-test/e0e17791-3ae9-43b6-b107-6784e57c90ef"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -47,7 +50,37 @@ export function ContactPageClient({
   serviceOptions, googleMapsEmbedUrl, faqs,
 }: ContactPageClientProps) {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">("idle")
   const phone = phones[0] ?? "(08) 8277 8122"
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setFormStatus("submitting")
+
+    const formData = new FormData(e.currentTarget)
+    const payload = {
+      name:    formData.get("name") as string,
+      phone:   formData.get("phone") as string,
+      email:   formData.get("email") as string,
+      suburb:  formData.get("suburb") as string,
+      service: formData.get("service") as string,
+      message: formData.get("message") as string,
+      submittedAt: new Date().toISOString(),
+    }
+
+    try {
+      const res = await fetch(N8N_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      setFormStatus("success")
+      ;(e.target as HTMLFormElement).reset()
+    } catch {
+      setFormStatus("error")
+    }
+  }
 
   const contactRows = [
     {
@@ -268,7 +301,33 @@ export function ContactPageClient({
                   </p>
                 )}
 
-                <form className="space-y-5" aria-label="Contact enquiry form">
+                {formStatus === "success" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                    className="flex items-start gap-3 border border-green-500/30 bg-green-500/5 px-5 py-4 mb-6"
+                  >
+                    <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Enquiry sent!</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">We&apos;ll get back to you as soon as possible.</p>
+                    </div>
+                  </motion.div>
+                )}
+
+                {formStatus === "error" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                    className="flex items-start gap-3 border border-red-500/30 bg-red-500/5 px-5 py-4 mb-6"
+                  >
+                    <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Something went wrong</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">Please try again or call us directly.</p>
+                    </div>
+                  </motion.div>
+                )}
+
+                <form className="space-y-5" aria-label="Contact enquiry form" onSubmit={handleSubmit}>
                   {/* Full Name */}
                   <div>
                     <label htmlFor="name" className="block text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground/70 mb-2">
@@ -348,9 +407,10 @@ export function ContactPageClient({
                   {/* Submit */}
                   <button
                     type="submit"
-                    className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+                    disabled={formStatus === "submitting"}
+                    className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
                   >
-                    Send Enquiry
+                    {formStatus === "submitting" ? "Sending…" : "Send Enquiry"}
                   </button>
 
                   <p className="text-[11px] text-muted-foreground/50 text-center leading-relaxed">
