@@ -7,7 +7,7 @@ import { Phone, Mail, MapPin, Clock, ArrowRight, Plus, ChevronRight, CheckCircle
 import { PageHeroMedia } from "@/components/page-hero-media"
 
 const N8N_WEBHOOK_URL =
-  "https://n8n-customer-automations.onrender.com/webhook-test/e0e17791-3ae9-43b6-b107-6784e57c90ef"
+  "https://n8n-customer-automations.onrender.com/webhook/e0e17791-3ae9-43b6-b107-6784e57c90ef"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
