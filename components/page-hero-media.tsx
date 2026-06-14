@@ -6,6 +6,10 @@
  * falling back to a static image when only `imageUrl` is given.
  * When neither is provided, renders nothing (plain background).
  *
+ * Uses Next.js <Image fill> for static images so Next.js automatically
+ * serves a correctly-sized version per device (mobile gets ~750px, not 1920px),
+ * which is the primary LCP fix for mobile PageSpeed.
+ *
  * Usage:
  *   <section className="relative ...">
  *     <PageHeroMedia imageUrl={heroImage} videoUrl={heroVideo} alt="..." />
@@ -14,13 +18,17 @@
  *   </section>
  */
 
+import Image from "next/image"
+
 interface PageHeroMediaProps {
   imageUrl?: string | null
   videoUrl?: string | null
   alt?: string
+  /** Pass priority={true} for above-the-fold heroes (LCP element). Defaults true. */
+  priority?: boolean
 }
 
-export function PageHeroMedia({ imageUrl, videoUrl, alt = "" }: PageHeroMediaProps) {
+export function PageHeroMedia({ imageUrl, videoUrl, alt = "", priority = true }: PageHeroMediaProps) {
   if (!imageUrl && !videoUrl) return null
 
   return (
@@ -45,12 +53,18 @@ export function PageHeroMedia({ imageUrl, videoUrl, alt = "" }: PageHeroMediaPro
             <source src={videoUrl} type="video/mp4" />
           </video>
         ) : imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          /* Next.js <Image fill> — automatically generates srcset and serves
+             the correct size per device. On mobile (375-430px wide) the browser
+             requests a ~750px image instead of the full 1920px original, cutting
+             the image payload by ~80% and directly improving LCP on mobile. */
+          <Image
             src={imageUrl}
             alt={alt}
-            className="w-full h-full object-cover object-center"
-            aria-hidden={!alt}
+            fill
+            priority={priority}
+            sizes="100vw"
+            quality={80}
+            className="object-cover object-center"
           />
         ) : null}
       </div>

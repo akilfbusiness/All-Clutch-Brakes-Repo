@@ -19,10 +19,16 @@ export const sanityClient = createClient({
 // - The 86400-second (24 hour) fallback ensures pages are refreshed daily as a
 //   safety net if the webhook fails to fire. The webhook handles instant
 //   revalidation on every Sanity publish, so the fallback rarely triggers.
+//
+// ISR Write usage:
+// - Previously set to 60s — caused pages to regenerate every minute regardless
+//   of whether content had changed, burning through the Vercel ISR Write quota.
+// - Now set to 86400s (24hrs) — pages are only regenerated on publish (via
+//   webhook) or once per day as a safety net, reducing writes by ~99%.
 export async function sanityFetch<T>({
   query,
   params = {},
-  revalidate = 60,
+  revalidate = 86400,
   tags = [],
 }: {
   query: string

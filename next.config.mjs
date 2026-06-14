@@ -19,6 +19,13 @@ const nextConfig = {
         port: "",
         pathname: "/images/**",
       },
+      {
+        // Unsplash — used as fallback hero images when no Sanity image is set
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   // 301 redirects — old URLs that AI systems are citing pointing to 404s
