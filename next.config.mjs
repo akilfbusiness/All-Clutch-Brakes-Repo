@@ -8,6 +8,12 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Target modern browsers only — tells SWC not to transpile or polyfill
+  // features already natively supported (Array.at, Object.hasOwn, etc.)
+  // Saves ~14.5KB of unnecessary polyfill JS per Lighthouse audit.
+  experimental: {
+    browsersListForSwc: true,
+  },
   images: {
     // Enable Next.js image optimisation — critical for Core Web Vitals
     unoptimized: false,
