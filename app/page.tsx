@@ -113,10 +113,10 @@ export default async function HomePage() {
   // the payload small. These only show when no Sanity image is configured.
   // The hero poster is the LCP element on mobile — keeping it under 50KB directly
   // improves LCP on slow connections.
-  const heroImage      = settings.heroImage      || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=828&q=60&fm=webp"
+  const heroImage      = settings.heroImage      || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=828&q=40&fm=webp"
   const heroVideo      = settings.heroVideo      || null
-  const mechanicImage  = settings.mechanicImage  || "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=828&q=60&fm=webp"
-  const workshopImage  = settings.workshopImage  || "https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=828&q=60&fm=webp"
+  const mechanicImage  = settings.mechanicImage  || "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=828&q=40&fm=webp"
+  const workshopImage  = settings.workshopImage  || "https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=828&q=40&fm=webp"
   const primaryCta     = settings.heroPrimaryCtaLabel   || "Call Now"
   const secondaryCta   = settings.heroSecondaryCtaLabel || "Our Services"
   const trustSignals   = settings.heroTrustSignals?.length ? settings.heroTrustSignals : ["30+ Years Experience","All Makes & Models","Same Day Service","Free Quotes"]
