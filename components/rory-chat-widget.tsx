@@ -10,6 +10,16 @@ const PHONE_HREF = "tel:+61882778122"
 const PHONE_TRIGGER = PHONE_NUMBER
 const CALL_TRACKING_URL = "https://n8n-customer-automations.onrender.com/webhook/66efcdcc-49af-4630-a088-a0d5fc2174e7"
 
+const WELCOME_MESSAGE =
+  "Hi! I'm Rory, ACB's virtual assistant. What's going on with your car today? I'll help you get it sorted. 🔧"
+
+const QUICK_REPLIES = [
+  { emoji: "🔧", label: "I have a car problem" },
+  { emoji: "📅", label: "I want to book a service" },
+  { emoji: "❓", label: "I have a question" },
+  { emoji: "📞", label: "I'd like to speak to someone" },
+]
+
 function stripMarkdown(text: string): string {
   return text
     .replace(/\*\*(.*?)\*\*/g, "$1")
@@ -32,51 +42,21 @@ const PROACTIVE_MESSAGES = [
   "Not sure if your car needs attention? Chat with me, it's free.",
 ]
 
-function getPageTitle(): string {
-  if (typeof window === "undefined") return ""
-  // Strip common site name suffixes like " | All Clutch & Brake Service"
-  return document.title.split("|")[0].split("–")[0].split("-")[0].trim()
-}
-
 function getContextualOpener(): string {
   if (typeof window === "undefined") return ""
   const path = window.location.pathname.toLowerCase()
-
-  // Hardcoded — clutch (most common service, detailed message)
   if (path.includes("clutch")) {
     return "Looks like you're checking out our clutch services. Got a question or not sure if your clutch needs attention? I can help. 🔧"
   }
-
-  // Hardcoded — brake (most common service, detailed message)
   if (path.includes("brake")) {
     return "Checking out our brake services? If your brakes feel off — squealing, spongy, vibrating — I can help you figure out what's going on. 🛑"
   }
-
-  // Dynamic — any other service page uses the page title
-  if (path.includes("/services/") || path.includes("/service/")) {
-    const title = getPageTitle()
-    const label = title || "this service"
-    return `Looks like you're reading about ${label}. Got a question? I can help. 🔧`
+  if (path.includes("blog") || path.includes("article") || path.includes("post")) {
+    return "Found something useful here? If you've got a question about your car, I'm here — just ask. 💬"
   }
-
-  // Dynamic — any blog post uses the page title
-  if (path.includes("/blog/") || path.includes("/article/") || path.includes("/post/")) {
-    const title = getPageTitle()
-    const label = title || "this article"
-    return `Looks like you're reading "${label}". Got a question about your car? I'm here — just ask. 💬`
-  }
-
-  // Hardcoded — homepage
   if (path === "/" || path === "") {
     return "Hey! I'm Rory, ACB's virtual assistant. Got a clutch or brake issue? Ask me anything — I'll help you sort it. 🔧"
   }
-
-  // Hardcoded — contact page
-  if (path.includes("contact")) {
-    return "Hey! I'm Rory. If you've got a quick question before reaching out, I can help. Or just call us directly. 📞"
-  }
-
-  // Generic fallback for everything else
   return "Got a question about your car? I'm Rory — ask me anything and I'll point you in the right direction."
 }
 
@@ -97,6 +77,30 @@ type Message = {
   text: string
   showCall?: boolean
 }
+
+// Mechanic caricature avatar
+const MechanicAvatar = () => (
+  <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Cap brim */}
+    <rect x="4" y="16" width="34" height="5" rx="2.5" fill="#1e3a8a"/>
+    {/* Cap top */}
+    <path d="M8 17 Q8 6 21 6 Q34 6 34 17Z" fill="#2563eb"/>
+    {/* Head */}
+    <circle cx="21" cy="27" r="13" fill="#fcd9a0"/>
+    {/* Ears */}
+    <circle cx="8" cy="27" r="3" fill="#fcd9a0"/>
+    <circle cx="34" cy="27" r="3" fill="#fcd9a0"/>
+    {/* Eyes */}
+    <circle cx="16" cy="26" r="2" fill="#1e293b"/>
+    <circle cx="26" cy="26" r="2" fill="#1e293b"/>
+    <circle cx="16.7" cy="25.3" r="0.6" fill="white"/>
+    <circle cx="26.7" cy="25.3" r="0.6" fill="white"/>
+    {/* Smile */}
+    <path d="M15 31 Q21 36 27 31" stroke="#c97c3a" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+    {/* Wrench on cap */}
+    <text x="17" y="14" fontSize="6" fill="white" fontWeight="bold">ACB</text>
+  </svg>
+)
 
 const PhoneIcon = ({ size = 16 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -146,22 +150,23 @@ function TypingIndicator() {
 
 export function RoryChatWidget() {
   const [open, setOpen] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      text: "Hi I'm Rory, VA at All Clutch & Brake Service. What's going on with your car today? Let me know and I'll help you get it sorted out",
-    },
-  ])
+  const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(false)
   const [hasUnread, setHasUnread] = useState(false)
   const [proactiveDismissed, setProactiveDismissed] = useState(false)
   const [proactiveVisible, setProactiveVisible] = useState(false)
+  const [quickRepliesUsed, setQuickRepliesUsed] = useState(false)
   const [proactiveMsg] = useState(() => PROACTIVE_MESSAGES[Math.floor(Math.random() * PROACTIVE_MESSAGES.length)])
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const sessionId = useRef<string>("")
+  const openRef = useRef(false)
+
+  // Keep openRef in sync with open state (for event listener closures)
+  useEffect(() => {
+    openRef.current = open
+  }, [open])
 
   useEffect(() => {
     sessionId.current = getSessionId()
@@ -169,7 +174,11 @@ export function RoryChatWidget() {
     return () => clearTimeout(t)
   }, [])
 
+  // When widget opens manually for the first time, set welcome message
   useEffect(() => {
+    if (open && messages.length === 0) {
+      setMessages([{ id: "welcome", role: "assistant", text: WELCOME_MESSAGE }])
+    }
     if (open) {
       setHasUnread(false)
       setProactiveDismissed(true)
@@ -182,6 +191,7 @@ export function RoryChatWidget() {
   }, [messages, loading])
 
   // Context-aware auto-popup: fires once per session after 15 seconds
+  // Replaces messages with ONLY the contextual opener (no welcome message)
   useEffect(() => {
     const POPUP_KEY = "rory_popup_fired"
     if (sessionStorage.getItem(POPUP_KEY)) return
@@ -189,22 +199,35 @@ export function RoryChatWidget() {
     if (!opener) return
     const t = setTimeout(() => {
       sessionStorage.setItem(POPUP_KEY, "1")
-      setMessages((prev) => [
-        ...prev,
-        { id: crypto.randomUUID(), role: "assistant", text: opener },
-      ])
+      setMessages([{ id: crypto.randomUUID(), role: "assistant", text: opener }])
+      setQuickRepliesUsed(false)
       setOpen(true)
     }, 15000)
     return () => clearTimeout(t)
   }, [])
 
-  async function sendMessage() {
-    const text = input.trim()
-    if (!text || loading) return
+  // Exit intent: fires when mouse leaves top of viewport
+  useEffect(() => {
+    const EXIT_KEY = "rory_exit_shown"
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.clientY <= 0 && !openRef.current && !sessionStorage.getItem(EXIT_KEY)) {
+        sessionStorage.setItem(EXIT_KEY, "1")
+        setMessages([{
+          id: crypto.randomUUID(),
+          role: "assistant",
+          text: "Before you go — got a quick question about your car? I'm here to help. 🚗",
+        }])
+        setQuickRepliesUsed(false)
+        setOpen(true)
+      }
+    }
+    document.addEventListener("mouseleave", handleMouseLeave)
+    return () => document.removeEventListener("mouseleave", handleMouseLeave)
+  }, [])
 
+  async function sendMessageText(text: string) {
     const userMsg: Message = { id: crypto.randomUUID(), role: "user", text }
     setMessages((prev) => [...prev, userMsg])
-    setInput("")
     setLoading(true)
 
     try {
@@ -226,7 +249,7 @@ export function RoryChatWidget() {
         showCall: reply.includes(PHONE_TRIGGER),
       }
       setMessages((prev) => [...prev, botMsg])
-      if (!open) setHasUnread(true)
+      if (!openRef.current) setHasUnread(true)
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -242,12 +265,29 @@ export function RoryChatWidget() {
     }
   }
 
+  async function sendMessage() {
+    const text = input.trim()
+    if (!text || loading) return
+    setInput("")
+    setQuickRepliesUsed(true)
+    await sendMessageText(text)
+  }
+
+  function handleQuickReply(label: string) {
+    setQuickRepliesUsed(true)
+    sendMessageText(label)
+  }
+
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
       sendMessage()
     }
   }
+
+  // Show quick replies under the last assistant opener (first message), before any user reply
+  const userHasReplied = messages.some((m) => m.role === "user")
+  const showQuickReplies = !quickRepliesUsed && !userHasReplied && messages.length > 0
 
   return (
     <>
@@ -260,10 +300,6 @@ export function RoryChatWidget() {
           from { opacity: 0; transform: translateY(20px) scale(0.94); }
           to   { opacity: 1; transform: translateY(0) scale(1); }
         }
-        @keyframes roryClose {
-          from { opacity: 1; transform: translateY(0) scale(1); }
-          to   { opacity: 0; transform: translateY(20px) scale(0.94); }
-        }
         @keyframes roryFadeUp {
           from { opacity: 0; transform: translateY(10px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -275,10 +311,6 @@ export function RoryChatWidget() {
         @keyframes roryBadgePop {
           0%, 100% { transform: scale(1); }
           50%       { transform: scale(1.25); }
-        }
-        @keyframes roryShimmer {
-          0%   { background-position: -200% center; }
-          100% { background-position: 200% center; }
         }
         .rory-widget-open  { animation: roryOpen  0.35s cubic-bezier(0.34, 1.4, 0.64, 1) forwards; }
         .rory-msg-in       { animation: roryFadeUp 0.22s ease-out forwards; }
@@ -296,6 +328,26 @@ export function RoryChatWidget() {
           transform: translateY(-1px);
         }
         .rory-call-btn:active { transform: scale(0.97); }
+
+        .rory-quick-btn {
+          background: #fff;
+          border: 1.5px solid #bfdbfe;
+          border-radius: 999px;
+          padding: 7px 14px;
+          font-size: 12.5px;
+          font-weight: 500;
+          color: #1e3a8a;
+          cursor: pointer;
+          transition: background 0.15s, border-color 0.15s, transform 0.1s;
+          white-space: nowrap;
+          font-family: inherit;
+        }
+        .rory-quick-btn:hover {
+          background: #eff6ff;
+          border-color: #2563eb;
+          transform: translateY(-1px);
+        }
+        .rory-quick-btn:active { transform: scale(0.97); }
 
         .rory-send-btn {
           transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
@@ -326,15 +378,9 @@ export function RoryChatWidget() {
       {/* Floating button + teaser */}
       <div style={{ position: "fixed", bottom: 24, right: 24, zIndex: 9999, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
 
-        {/* Proactive bubble — appears after 4s, dismissed on click or when chat opens */}
+        {/* Proactive bubble */}
         {!open && proactiveVisible && !proactiveDismissed && !hasUnread && (
-          <div
-            className="rory-msg-in"
-            style={{
-              display: "flex", alignItems: "flex-end", gap: 8,
-              maxWidth: 260,
-            }}
-          >
+          <div className="rory-msg-in" style={{ display: "flex", alignItems: "flex-end", gap: 8, maxWidth: 260 }}>
             <div
               onClick={() => { setOpen(true); setProactiveDismissed(true) }}
               style={{
@@ -359,7 +405,6 @@ export function RoryChatWidget() {
                   background: "#94a3b8", border: "none",
                   color: "#fff", fontSize: 10, cursor: "pointer",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  lineHeight: 1,
                 }}
               >✕</button>
             </div>
@@ -460,26 +505,27 @@ export function RoryChatWidget() {
             flexShrink: 0,
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              {/* Mechanic avatar */}
               <div style={{
-                width: 42, height: 42,
+                width: 46, height: 46,
                 borderRadius: "50%",
                 background: "rgba(255,255,255,0.15)",
                 border: "2px solid rgba(255,255,255,0.3)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontWeight: 700, fontSize: 16, color: "#fff",
                 position: "relative",
-                backdropFilter: "blur(4px)",
+                overflow: "hidden",
+                flexShrink: 0,
               }}>
-                R
+                <MechanicAvatar />
                 <span style={{
-                  position: "absolute", bottom: -1, right: -1,
+                  position: "absolute", bottom: 1, right: 1,
                   width: 11, height: 11, borderRadius: "50%",
                   background: "#22c55e",
                   border: "2px solid #1e40af",
                 }} />
               </div>
               <div>
-                <p style={{ color: "#fff", fontWeight: 700, fontSize: 15, lineHeight: 1.2, margin: 0 }}>Rory Clutch</p>
+                <p style={{ color: "#fff", fontWeight: 700, fontSize: 15, lineHeight: 1.2, margin: 0 }}>Rory</p>
                 <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, margin: "3px 0 0 0" }}>All Clutch &amp; Brake Service</p>
               </div>
             </div>
@@ -535,7 +581,7 @@ export function RoryChatWidget() {
               background: "#f8faff",
             }}
           >
-            {messages.map((msg) => (
+            {messages.map((msg, idx) => (
               <div
                 key={msg.id}
                 className="rory-msg-in"
@@ -565,6 +611,30 @@ export function RoryChatWidget() {
                 >
                   {msg.text}
                 </div>
+
+                {/* Quick reply buttons — shown under the last opener message before any user reply */}
+                {msg.role === "assistant" && idx === messages.length - 1 && showQuickReplies && (
+                  <div
+                    className="rory-msg-in"
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 7,
+                      marginTop: 4,
+                      maxWidth: "92%",
+                    }}
+                  >
+                    {QUICK_REPLIES.map((qr) => (
+                      <button
+                        key={qr.label}
+                        className="rory-quick-btn"
+                        onClick={() => handleQuickReply(qr.label)}
+                      >
+                        {qr.emoji} {qr.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 {msg.showCall && (
                   <a
