@@ -741,7 +741,7 @@ function Step1({
       )}
 
       <StaggerField index={skipService ? 3 : 4}>
-        <FieldLabel>Briefly describe the issue</FieldLabel>
+        <FieldLabel>Describe the issue</FieldLabel>
         <div>
           {(() => {
             const [focused, setFocused] = useState(false)
@@ -765,7 +765,7 @@ function Step1({
       </StaggerField>
 
       <StaggerField index={skipService ? 4 : 5}>
-        <NextButton onClick={onComplete} disabled={!isValid} accent={accent} label="Get My Free Diagnosis" />
+        <NextButton onClick={onComplete} disabled={!isValid} accent={accent} label="Next" />
       </StaggerField>
     </div>
   )
@@ -1333,7 +1333,7 @@ export function LeadQualificationForm({
               {businessName}
             </p>
             <h2 style={{ fontSize: "1.125rem", fontWeight: 700, color: T.text, margin: 0, lineHeight: 1.3 }}>
-              {step === "s4" ? "Your Vehicle Report" : "Get a Free Diagnosis"}
+              {step === "s4" ? "Your Vehicle Report" : "Send in an Enquiry"}
             </h2>
           </div>
           {/* Status dot */}
