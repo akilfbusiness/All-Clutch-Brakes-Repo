@@ -6,7 +6,7 @@ import Image from "next/image"
 import type { InternalLink } from "@/sanity/queries"
 import { PortableText } from "@portabletext/react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, Plus, ChevronRight, MapPin, ArrowLeft } from "lucide-react"
+import { Phone, ArrowRight, Plus, ChevronRight, MapPin, ArrowLeft } from "lucide-react"
 import { LeadQualificationForm } from "@/components/lead-qualification-form"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
