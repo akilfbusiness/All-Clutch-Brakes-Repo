@@ -1333,7 +1333,7 @@ export function LeadQualificationForm({
               {businessName}
             </p>
             <h2 style={{ fontSize: "1.125rem", fontWeight: 700, color: T.text, margin: 0, lineHeight: 1.3 }}>
-              {step === "s4" ? "Your Vehicle Report" : "Send in an Enquiry"}
+              {step === "s4" ? "Your Vehicle Report" : "Send in an AI-powered Enquiry"}
             </h2>
           </div>
           {/* Status dot */}
