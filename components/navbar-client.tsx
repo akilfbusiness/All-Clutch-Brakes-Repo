@@ -178,7 +178,7 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
         </div>
       </header>
 
-      {/* ── Full-screen overlay menu ──────────────────────────────── */}
+      {/* ── Full-screen overlay menu ───────────────────��──────────── */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -299,7 +299,7 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
               >
                 <a
                   href={`tel:${phone.replace(/\s/g, "")}`}
-                  className="flex items-center gap-2 text-accent text-sm font-bold hover:text-accent/80 transition-colors"
+                  className="inline-flex items-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-6 py-3 transition-colors"
                 >
                   <Phone className="h-4 w-4" />
                   {phone}

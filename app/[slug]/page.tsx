@@ -208,7 +208,7 @@ export default async function DynamicPage({ params }: Props) {
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 bg-background hover:bg-background/90 text-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4" /> {phone}
               </a>
