@@ -203,7 +203,7 @@ export default async function TestimonialsPage() {
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 bg-primary px-8 py-4 font-bold text-primary-foreground transition-colors hover:bg-primary/90"
+                className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 px-8 py-4 font-bold text-white transition-colors"
               >
                 Call {phone}
               </a>

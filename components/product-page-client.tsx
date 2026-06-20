@@ -111,7 +111,7 @@ export function ProductPageClient({ businessName, phone, product }: ProductPageC
               <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
                 <a
                   href={`tel:${phone.replace(/\s/g, "")}`}
-                  className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+                  className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
                 >
                   <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
                 </a>
@@ -323,7 +323,7 @@ export function ProductPageClient({ businessName, phone, product }: ProductPageC
                       <div className="pt-7 space-y-3">
                         <a
                           href={`tel:${phone.replace(/\s/g, "")}`}
-                          className="w-full inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm py-3.5 transition-all duration-300 hover:-translate-y-0.5"
+                          className="w-full inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm py-3.5 transition-all duration-300 hover:-translate-y-0.5"
                         >
                           <Phone className="h-4 w-4" /> Call {phone}
                         </a>
@@ -375,7 +375,7 @@ export function ProductPageClient({ businessName, phone, product }: ProductPageC
               ) : (
                 <a
                   href={`tel:${phone.replace(/\s/g, "")}`}
-                  className="inline-flex items-center justify-center gap-2 bg-background hover:bg-background/90 text-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
+                  className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
                 >
                   <Phone className="h-4 w-4" /> Call {phone}
                 </a>

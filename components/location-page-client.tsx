@@ -298,7 +298,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
                       </Link>
                       <a
                         href={`tel:${phone.replace(/\s/g, "")}`}
-                        className="flex items-center justify-center gap-2 w-full border border-border hover:border-accent text-foreground px-6 py-3 text-sm font-semibold transition-colors"
+                        className="flex items-center justify-center gap-2 w-full bg-[#E63946] hover:bg-[#E63946]/90 text-white px-6 py-3 text-sm font-semibold transition-colors"
                       >
                         <Phone className="h-4 w-4" />
                         {phone}
