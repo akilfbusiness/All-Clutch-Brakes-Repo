@@ -692,7 +692,7 @@ function Step1({
       <StaggerField index={0}>
         <FieldLabel>Full name</FieldLabel>
         <TextInput
-          autoFocus
+           //removed autoFocus here
           value={data.name}
           onChange={(v) => { onChange({ name: v }); onFieldFilled("name", v.trim().length > 0) }}
           onKeyDown={(e) => { if (e.key === "Enter" && isValid) onComplete() }}
