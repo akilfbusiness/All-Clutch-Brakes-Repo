@@ -236,7 +236,7 @@ function FakeLoadingScreen({ accent, transitionKey, onDone }: { accent: string; 
     lines.forEach((line, i) => {
       timers.push(setTimeout(() => setVisible((v) => [...v, i]), line.delay))
     })
-    timers.push(setTimeout(onDone, 20000))
+    timers.push(setTimeout(onDone, 6000))
     return () => timers.forEach(clearTimeout)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -244,7 +244,7 @@ function FakeLoadingScreen({ accent, transitionKey, onDone }: { accent: string; 
   useEffect(() => {
     let frame: number
     let start: number | null = null
-    const duration = 20000
+    const duration = 6000
     const cap = 99
     function tick(ts: number) {
       if (!start) start = ts
