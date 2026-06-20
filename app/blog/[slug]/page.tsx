@@ -21,6 +21,7 @@ import {
   XCircle,
   Youtube,
 } from "lucide-react"
+import { LeadQualificationForm } from "@/components/lead-qualification-form"
 
 export async function generateStaticParams() {
   try {
@@ -758,6 +759,22 @@ export default async function BlogPostPage({
           </div>
         </div>
 
+        {/* ── Lead Qualification Form ───────────────────────────────────────── */}
+        <section className="py-16 bg-background border-t border-border">
+          <div className="container mx-auto px-6 max-w-2xl">
+            <LeadQualificationForm
+              businessName={businessName}
+              phoneNumber={phone}
+              accentColor="#2563EB"
+              services={["Clutch Repairs & Replacement", "Brake Services & Repairs", "Transmission Repairs", "Flywheel Machining", "Brake Caliper & Hydraulic Repairs"]}
+              webhookUrlPartial="https://n8n-customer-automations.onrender.com/webhook/5384017c-e44f-4844-9965-6e8b78f5be0c"
+              webhookUrl1="https://n8n-customer-automations.onrender.com/webhook/1a390a21-4ada-4ffe-a366-0e7fc6afc302"
+              webhookUrl2="https://n8n-customer-automations.onrender.com/webhook/242b5f86-aaef-49a5-aa19-2137188f62c6"
+              webhookUrlCall="https://n8n-customer-automations.onrender.com/webhook/66efcdcc-49af-4630-a088-a0d5fc2174e7"
+            />
+          </div>
+        </section>
+
         {/* ── CTA Strip ─────────────────────────────────────────────────────── */}
         <section className="bg-accent py-16">
           <div className="container mx-auto px-6 text-center">
@@ -777,7 +794,7 @@ export default async function BlogPostPage({
               </Link>
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 border border-accent-foreground/30 hover:border-accent-foreground text-accent-foreground px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
+                className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
                 <Phone className="h-4 w-4" />
                 {phone}
