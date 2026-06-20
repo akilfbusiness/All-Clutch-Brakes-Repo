@@ -741,7 +741,7 @@ function Step1({
       )}
 
       <StaggerField index={skipService ? 3 : 4}>
-        <FieldLabel>Briefly describe the issue</FieldLabel>
+        <FieldLabel>Describe the issue</FieldLabel>
         <div>
           {(() => {
             const [focused, setFocused] = useState(false)
