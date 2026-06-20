@@ -12,6 +12,7 @@ import { useTheme } from "next-themes"
 import { TestimonialsCarousel } from "./testimonials-carousel"
 import { PromotionsBanner } from "./promotions-banner"
 import { CircularGallery } from "./ui/circular-gallery"
+import { LeadQualificationForm } from "./lead-qualification-form"
 import type { Testimonial, Promotion } from "@/sanity/queries"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -682,7 +683,44 @@ export function HomePageClient({
 
 
       {/* ══════════════════════════════════════════════════════════════════════
-          06 · FAQ
+          06 · LEAD QUALIFICATION FORM
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-16 md:py-24 bg-foreground/[0.02] border-t border-border">
+        <div className="container">
+          <div className="max-w-2xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.6, ease }}
+              className="mb-8 text-center"
+            >
+              <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-3">
+                Free Diagnosis
+              </p>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-tight">
+                Get Your Vehicle Assessed
+              </h2>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1, ease }}
+            >
+              <LeadQualificationForm
+                businessName={businessName}
+                phoneNumber={phone}
+                accentColor="#2563EB"
+                services={serviceItems.map((s) => s.title)}
+                webhookUrlPartial="https://n8n-customer-automations.onrender.com/webhook/5384017c-e44f-4844-9965-6e8b78f5be0c"
+                webhookUrl1="https://n8n-customer-automations.onrender.com/webhook/1a390a21-4ada-4ffe-a366-0e7fc6afc302"
+                webhookUrl2="https://n8n-customer-automations.onrender.com/webhook/242b5f86-aaef-49a5-aa19-2137188f62c6"
+                webhookUrlCall="https://n8n-customer-automations.onrender.com/webhook/66efcdcc-49af-4630-a088-a0d5fc2174e7"
+              />
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          07 · FAQ
           Two-column · heading left · animated accordion right
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative py-24 md:py-32 bg-background">
