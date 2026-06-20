@@ -13,6 +13,7 @@ import type { InternalLink } from "@/sanity/queries"
 import { PageHero } from "@/components/page-hero"
 import { PageSections } from "@/components/page-sections"
 import { Phone, ArrowRight } from "lucide-react"
+import { LeadQualificationForm } from "@/components/lead-qualification-form"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -192,6 +193,22 @@ export default async function DynamicPage({ params }: Props) {
           </div>
         </section>
       )}
+
+      {/* Lead Qualification Form */}
+      <section className="py-16 bg-background border-t border-border">
+        <div className="container mx-auto px-6 max-w-2xl">
+          <LeadQualificationForm
+            businessName={businessName}
+            phoneNumber={phone}
+            accentColor="#2563EB"
+            services={["Clutch Repairs & Replacement", "Brake Services & Repairs", "Transmission Repairs", "Flywheel Machining", "Brake Caliper & Hydraulic Repairs"]}
+            webhookUrlPartial="https://n8n-customer-automations.onrender.com/webhook/5384017c-e44f-4844-9965-6e8b78f5be0c"
+            webhookUrl1="https://n8n-customer-automations.onrender.com/webhook/1a390a21-4ada-4ffe-a366-0e7fc6afc302"
+            webhookUrl2="https://n8n-customer-automations.onrender.com/webhook/242b5f86-aaef-49a5-aa19-2137188f62c6"
+            webhookUrlCall="https://n8n-customer-automations.onrender.com/webhook/66efcdcc-49af-4630-a088-a0d5fc2174e7"
+          />
+        </div>
+      </section>
 
       {/* CTA strip — always shown at the bottom */}
       <section className="bg-accent overflow-hidden">

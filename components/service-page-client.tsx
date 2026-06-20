@@ -7,6 +7,7 @@ import type { InternalLink } from "@/sanity/queries"
 import { PortableText } from "@portabletext/react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, ArrowRight, Plus, ChevronRight, MapPin, ArrowLeft } from "lucide-react"
+import { LeadQualificationForm } from "@/components/lead-qualification-form"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -473,32 +474,21 @@ export function ServicePageClient({
             <div>
               <div className="lg:sticky lg:top-28 space-y-5">
 
-                {/* Get a Quote card */}
+                {/* Lead Qualification Form — replaces Get a Quote card */}
                 <motion.div
                   initial={{ opacity: 0, x: 28 }} whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }} transition={{ duration: 0.7, ease }}
-                  className="bg-foreground/[0.04] border border-border p-7 relative overflow-hidden"
                 >
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-accent/[0.06] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                  <p className="text-accent text-[10px] font-bold tracking-[0.4em] uppercase mb-3">Free Quote</p>
-                  <h3 className="text-xl font-bold text-foreground tracking-tight mb-4">Get a Quote</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed mb-6">
-                    Contact us today for expert {service.title.toLowerCase()} at competitive prices. No obligation.
-                  </p>
-                  <div className="space-y-3">
-                    <Link
-                      href="/contact"
-                      className="flex items-center justify-center gap-2 w-full bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm py-3.5 transition-all duration-300 hover:-translate-y-0.5"
-                    >
-                      Request a Quote
-                    </Link>
-                    <a
-                      href={`tel:${phone.replace(/\s/g, "")}`}
-                      className="flex items-center justify-center gap-2 w-full border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm py-3.5 transition-all duration-300"
-                    >
-                      <Phone className="h-4 w-4" /> {phone}
-                    </a>
-                  </div>
+                  <LeadQualificationForm
+                    businessName={businessName}
+                    phoneNumber={phone}
+                    accentColor="#2563EB"
+                    services={[service.title]}
+                    webhookUrlPartial="https://n8n-customer-automations.onrender.com/webhook/5384017c-e44f-4844-9965-6e8b78f5be0c"
+                    webhookUrl1="https://n8n-customer-automations.onrender.com/webhook/1a390a21-4ada-4ffe-a366-0e7fc6afc302"
+                    webhookUrl2="https://n8n-customer-automations.onrender.com/webhook/242b5f86-aaef-49a5-aa19-2137188f62c6"
+                    webhookUrlCall="https://n8n-customer-automations.onrender.com/webhook/66efcdcc-49af-4630-a088-a0d5fc2174e7"
+                  />
                 </motion.div>
 
                 {/* Service areas */}

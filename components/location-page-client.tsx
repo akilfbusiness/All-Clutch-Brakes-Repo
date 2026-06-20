@@ -3,10 +3,11 @@
 import { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { MapPin, Phone, ChevronRight, Plus, Wrench, ArrowLeft } from "lucide-react"
+import { MapPin, ChevronRight, Plus, Wrench, ArrowLeft } from "lucide-react"
 import { PortableText } from "@portabletext/react"
 import type { Location, InternalLink } from "@/sanity/queries"
 import { PageHeroMedia } from "@/components/page-hero-media"
+import { LeadQualificationForm } from "@/components/lead-qualification-form"
 
 const SERVICES = [
   { title: "Clutch Repairs & Replacement", slug: "clutch-repairs" },
@@ -279,33 +280,17 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
             {/* Sidebar */}
             <div className="lg:col-span-1">
               <div className="sticky top-24 space-y-6">
-                {/* Contact card */}
-                <div className="border border-border relative">
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-accent" />
-                  <div className="p-6 pt-8">
-                    <h3 className="text-base font-bold tracking-tight mb-3">
-                      Get Service in {location.title}
-                    </h3>
-                    <p className="text-foreground/60 text-sm mb-6 leading-relaxed">
-                      Contact us today to discuss your clutch, brake, or transmission needs.
-                    </p>
-                    <div className="space-y-3">
-                      <Link
-                        href="/contact"
-                        className="block w-full text-center bg-accent text-accent-foreground px-6 py-3 text-sm font-bold uppercase tracking-widest hover:bg-accent/90 transition-colors"
-                      >
-                        Request a Quote
-                      </Link>
-                      <a
-                        href={`tel:${phone.replace(/\s/g, "")}`}
-                        className="flex items-center justify-center gap-2 w-full bg-[#E63946] hover:bg-[#E63946]/90 text-white px-6 py-3 text-sm font-semibold transition-colors"
-                      >
-                        <Phone className="h-4 w-4" />
-                        {phone}
-                      </a>
-                    </div>
-                  </div>
-                </div>
+                {/* Lead Qualification Form — replaces contact card */}
+                <LeadQualificationForm
+                  businessName={businessName}
+                  phoneNumber={phone}
+                  accentColor="#2563EB"
+                  services={SERVICES.map((s) => s.title)}
+                  webhookUrlPartial="https://n8n-customer-automations.onrender.com/webhook/5384017c-e44f-4844-9965-6e8b78f5be0c"
+                  webhookUrl1="https://n8n-customer-automations.onrender.com/webhook/1a390a21-4ada-4ffe-a366-0e7fc6afc302"
+                  webhookUrl2="https://n8n-customer-automations.onrender.com/webhook/242b5f86-aaef-49a5-aa19-2137188f62c6"
+                  webhookUrlCall="https://n8n-customer-automations.onrender.com/webhook/66efcdcc-49af-4630-a088-a0d5fc2174e7"
+                />
 
                 {/* Other locations */}
                 <div className="border border-border p-6">
