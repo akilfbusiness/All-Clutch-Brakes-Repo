@@ -202,7 +202,7 @@ export function RoryChatWidget() {
       setMessages([{ id: crypto.randomUUID(), role: "assistant", text: opener }])
       setQuickRepliesUsed(false)
       setOpen(true)
-    }, 15000)
+    }, 120000)
     return () => clearTimeout(t)
   }, [])
 
