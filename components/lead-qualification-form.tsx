@@ -1321,10 +1321,7 @@ export function LeadQualificationForm({
           borderRadius: "6px",
           padding: "1.25rem",
           width: "100%",
-          maxWidth: "480px",
-          margin: "0 auto",
           border: `1px solid ${T.border}`,
-          borderRadius: "6px",
           boxShadow: "0 24px 64px rgba(0,0,0,0.55), 0 4px 16px rgba(0,0,0,0.4)",
           color: T.text,
         }}

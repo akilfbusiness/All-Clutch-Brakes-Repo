@@ -295,9 +295,9 @@ export function ContactPageClient({
               initial={{ opacity: 0, x: 28 }} whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.7, ease, delay: 0.1 }}
             >
-              <div className="border border-border p-8 md:p-10 relative overflow-hidden">
-                {/* Top accent line */}
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-accent" />
+              <div className={FORM_MODE === "dynamic" ? "relative overflow-hidden" : "border border-border p-8 md:p-10 relative overflow-hidden"}>
+                {/* Top accent line — only shown on static form, dynamic form has its own header */}
+                {FORM_MODE === "static" && <div className="absolute top-0 left-0 right-0 h-[2px] bg-accent" />}
 
                 {FORM_MODE === "dynamic" ? (
                   <LeadQualificationForm
