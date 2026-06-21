@@ -493,7 +493,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
             >
               <Phone className="h-4 w-4" />
               {phone}
-            </a>
+            </PhoneLink>
           </div>
         </div>
       </section>
