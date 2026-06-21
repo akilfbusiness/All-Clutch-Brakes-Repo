@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { MapPin, ChevronRight, Plus, Wrench, ArrowLeft, Phone } from "lucide-react"
+import { MapPin, ChevronRight, Plus, Wrench, ArrowLeft, Phone, AlertTriangle, Lightbulb, Info } from "lucide-react"
 import { PortableText } from "@portabletext/react"
 import type { Location, InternalLink } from "@/sanity/queries"
 import { PageHeroMedia } from "@/components/page-hero-media"
@@ -39,6 +39,161 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] } },
 }
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.07 } } }
+
+// ── Custom block type renderers ─────────────────────────────────────────────
+
+function TableBlock({ value }: { value: { caption?: string; headers?: string[]; rows?: { _key: string; cells: string[] }[] } }) {
+  if (!value.rows?.length) return null
+  return (
+    <div className="my-8 overflow-x-auto">
+      {value.caption && (
+        <p className="text-xs font-bold uppercase tracking-widest text-foreground/40 mb-3">{value.caption}</p>
+      )}
+      <table className="w-full border-collapse border border-border text-sm">
+        {value.headers && value.headers.length > 0 && (
+          <thead>
+            <tr className="bg-foreground/[0.04]">
+              {value.headers.map((h, i) => (
+                <th key={i} className="border border-border px-4 py-3 text-left font-bold text-foreground text-xs uppercase tracking-wider">
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {value.rows.map((row) => (
+            <tr key={row._key} className="hover:bg-foreground/[0.02] transition-colors">
+              {row.cells.map((cell, i) => (
+                <td key={i} className="border border-border px-4 py-3 text-foreground/70 leading-relaxed">
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function CalloutBlock({ value }: { value: { type?: string; heading?: string; body?: string } }) {
+  const isWarning = value.type === "warning"
+  const isTip = value.type === "tip"
+
+  const Icon = isWarning ? AlertTriangle : isTip ? Lightbulb : Info
+  const borderColor = isWarning ? "border-red-500/40" : isTip ? "border-accent/40" : "border-border"
+  const bgColor = isWarning ? "bg-red-500/[0.06]" : isTip ? "bg-accent/[0.06]" : "bg-foreground/[0.03]"
+  const iconColor = isWarning ? "text-red-400" : isTip ? "text-accent" : "text-foreground/40"
+
+  return (
+    <div className={`my-8 border ${borderColor} ${bgColor} p-5`}>
+      <div className="flex items-start gap-3">
+        <Icon className={`h-5 w-5 mt-0.5 flex-shrink-0 ${iconColor}`} />
+        <div>
+          {value.heading && (
+            <p className="font-bold text-foreground mb-1">{value.heading}</p>
+          )}
+          {value.body && (
+            <p className="text-foreground/70 text-sm leading-relaxed">{value.body}</p>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ComparisonBlock({ value }: { value: { heading?: string; leftLabel?: string; rightLabel?: string; leftPoints?: string[]; rightPoints?: string[] } }) {
+  return (
+    <div className="my-8 border border-border">
+      {value.heading && (
+        <div className="border-b border-border px-5 py-4 bg-foreground/[0.03]">
+          <p className="font-bold text-foreground">{value.heading}</p>
+        </div>
+      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-border">
+        <div className="p-5">
+          {value.leftLabel && (
+            <p className="text-xs font-bold uppercase tracking-widest text-foreground/40 mb-3">{value.leftLabel}</p>
+          )}
+          <ul className="space-y-2">
+            {value.leftPoints?.map((point, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-foreground/70 leading-relaxed">
+                <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-foreground/30 flex-shrink-0" />
+                {point}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="p-5">
+          {value.rightLabel && (
+            <p className="text-xs font-bold uppercase tracking-widest text-accent/60 mb-3">{value.rightLabel}</p>
+          )}
+          <ul className="space-y-2">
+            {value.rightPoints?.map((point, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-foreground/70 leading-relaxed">
+                <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-accent/50 flex-shrink-0" />
+                {point}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function PullQuoteBlock({ value }: { value: { quote?: string; attribution?: string } }) {
+  return (
+    <blockquote className="my-8 border-l-4 border-accent pl-6 py-2">
+      {value.quote && (
+        <p className="text-lg text-foreground/80 leading-relaxed italic mb-3">"{value.quote}"</p>
+      )}
+      {value.attribution && (
+        <cite className="text-xs font-bold uppercase tracking-widest text-foreground/40 not-italic">
+          — {value.attribution}
+        </cite>
+      )}
+    </blockquote>
+  )
+}
+
+function DividerBlock() {
+  return <hr className="my-8 border-border" />
+}
+
+// ── Shared PortableText components config ───────────────────────────────────
+
+const portableTextComponents = {
+  types: {
+    tableBlock: TableBlock,
+    callout: CalloutBlock,
+    comparisonBlock: ComparisonBlock,
+    pullQuote: PullQuoteBlock,
+    divider: DividerBlock,
+  },
+  block: {
+    h2: ({ children }: { children?: React.ReactNode }) => <h2 className="text-2xl font-bold mt-8 mb-3 text-foreground">{children}</h2>,
+    h3: ({ children }: { children?: React.ReactNode }) => <h3 className="text-xl font-bold mt-6 mb-2 text-foreground">{children}</h3>,
+    h4: ({ children }: { children?: React.ReactNode }) => <h4 className="text-lg font-semibold mt-4 mb-2 text-foreground">{children}</h4>,
+    normal: ({ children }: { children?: React.ReactNode }) => <p className="mb-4 text-foreground/70 leading-relaxed">{children}</p>,
+  },
+  marks: {
+    strong: ({ children }: { children?: React.ReactNode }) => <strong className="font-bold text-foreground">{children}</strong>,
+    em: ({ children }: { children?: React.ReactNode }) => <em className="italic">{children}</em>,
+    link: ({ value, children }: { value?: { href?: string }; children?: React.ReactNode }) => (
+      <a href={value?.href} className="text-accent underline hover:text-accent/80">{children}</a>
+    ),
+  },
+  list: {
+    bullet: ({ children }: { children?: React.ReactNode }) => <ul className="list-disc pl-5 mb-4 space-y-1 text-foreground/70">{children}</ul>,
+    number: ({ children }: { children?: React.ReactNode }) => <ol className="list-decimal pl-5 mb-4 space-y-1 text-foreground/70">{children}</ol>,
+  },
+  listItem: {
+    bullet: ({ children }: { children?: React.ReactNode }) => <li className="leading-relaxed">{children}</li>,
+    number: ({ children }: { children?: React.ReactNode }) => <li className="leading-relaxed">{children}</li>,
+  },
+}
 
 interface Props {
   location: Location
@@ -141,29 +296,7 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
                   <div className="max-w-none">
                     <PortableText
                       value={location.body as Parameters<typeof PortableText>[0]["value"]}
-                      components={{
-                        block: {
-                          h2: ({ children }) => <h2 className="text-2xl font-bold mt-8 mb-3 text-foreground">{children}</h2>,
-                          h3: ({ children }) => <h3 className="text-xl font-bold mt-6 mb-2 text-foreground">{children}</h3>,
-                          h4: ({ children }) => <h4 className="text-lg font-semibold mt-4 mb-2 text-foreground">{children}</h4>,
-                          normal: ({ children }) => <p className="mb-4 text-foreground/70 leading-relaxed">{children}</p>,
-                        },
-                        marks: {
-                          strong: ({ children }) => <strong className="font-bold text-foreground">{children}</strong>,
-                          em: ({ children }) => <em className="italic">{children}</em>,
-                          link: ({ value, children }) => (
-                            <a href={value?.href} className="text-accent underline hover:text-accent/80">{children}</a>
-                          ),
-                        },
-                        list: {
-                          bullet: ({ children }) => <ul className="list-disc pl-5 mb-4 space-y-1 text-foreground/70">{children}</ul>,
-                          number: ({ children }) => <ol className="list-decimal pl-5 mb-4 space-y-1 text-foreground/70">{children}</ol>,
-                        },
-                        listItem: {
-                          bullet: ({ children }) => <li className="leading-relaxed">{children}</li>,
-                          number: ({ children }) => <li className="leading-relaxed">{children}</li>,
-                        },
-                      }}
+                      components={portableTextComponents}
                     />
                   </div>
                 </div>
