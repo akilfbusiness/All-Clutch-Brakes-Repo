@@ -221,21 +221,44 @@ const TEMPLATES: Record<DocType, object> = {
     _type: "location",
     title: "",
     _instructions_title:
-      "[REQUIRED] Location name. E.g. 'Northern Adelaide' (for a region) or 'Elizabeth' (for a suburb).",
+      "[REQUIRED] Location name. E.g. 'Northern Adelaide' (region) or 'Norwood' (suburb).",
+    pageHeading: "",
+    _instructions_pageHeading:
+      "Explicit H1 — keyword-rich, different from the location name. E.g. 'Clutch & Brake Repairs Near Norwood | All Clutch & Brake'. Include the suburb name and primary service.",
     slug: { current: "" },
-    _instructions_slug: "[REQUIRED] URL slug. E.g. 'northern-adelaide' → /locations/northern-adelaide",
+    _instructions_slug: "[REQUIRED] URL slug. E.g. 'norwood' → /locations/norwood",
     locationType: "",
     _instructions_locationType:
-      "[REQUIRED] One of: 'region' (covers multiple suburbs) | 'suburb' (individual Tier 1 suburb page)",
+      "[REQUIRED] One of: 'region' (covers multiple suburbs) | 'suburb' (individual spoke page)",
     region: "",
     _instructions_region:
-      "For suburb pages only — which region does this suburb fall under? One of: 'northern-adelaide' | 'southern-adelaide' | 'eastern-adelaide' | 'western-adelaide' | 'cbd-and-inner-suburbs' | 'barossa-and-surrounds' | 'fleurieu-peninsula' | 'eyre-peninsula' | 'limestone-coast' | 'yorke-and-mid-north'",
+      "For suburb pages only. One of: 'northern-adelaide' | 'southern-adelaide' | 'eastern-adelaide' | 'western-adelaide' | 'cbd-and-inner-suburbs' | 'barossa-and-surrounds' | 'fleurieu-peninsula' | 'eyre-peninsula' | 'limestone-coast' | 'yorke-and-mid-north'",
     suburbsIncluded: [],
     _instructions_suburbsIncluded:
-      "For region pages only — array of suburb name strings included in this region. E.g. ['Elizabeth', 'Salisbury', 'Para Hills', 'Mawson Lakes']",
+      "For region pages only — all suburbs in this region. E.g. ['Elizabeth', 'Salisbury', 'Para Hills', 'Mawson Lakes']",
+    suburbsServed: [],
+    _instructions_suburbsServed:
+      "2-4 adjacent suburbs mentioned in the body copy. E.g. ['Kensington', 'Magill', 'St Peters', 'Burnside']. Drives local keyword coverage for nearby searches.",
+    driveTimeMinutes: null,
+    _instructions_driveTimeMinutes:
+      "Approximate drive time in minutes from Unit 1/3 Adelaide Terrace, St Marys SA 5042. Check Google Maps. E.g. 12",
+    updatedAt: "",
+    _instructions_updatedAt:
+      "ISO 8601 datetime. E.g. '2026-06-20T00:00:00Z'. Update whenever this page is edited.",
     answerCapsule: "",
     _instructions_answerCapsule:
-      "[REQUIRED] Direct answer to 'Does All Clutch & Brake service [location]?' — 20-30 words. E.g. 'Yes, All Clutch & Brake services Elizabeth and the northern Adelaide region for clutch repairs, brake service, and transmission work, with free local pickup available.'",
+      "[REQUIRED] Direct 40-60 word answer to 'Does All Clutch & Brake service [suburb]?' — MINIMUM 40 words for AI citation eligibility. Include: suburb name, specific service types (clutch replacement, brake repairs, flywheel machining), address (St Marys SA 5042), and a concrete fact (40+ years experience, free quotes, all makes and models). This is what Google AI, Perplexity, and ChatGPT will cite verbatim.",
+    quickAnswers: [
+      {
+        _key: "qa-1",
+        question: "",
+        quickAnswer: "",
+        _instructions:
+          "3-5 suburb-specific questions with self-contained answers. Include specific data: drive time, route, services, pricing context. E.g. Q: 'How far is All Clutch & Brake from Norwood?' A: 'All Clutch & Brake is approximately 12 minutes from Norwood via Fullarton Road — free quotes, same-day diagnostics, all makes and models.'",
+      },
+    ],
+    _instructions_quickAnswers:
+      "3-5 short Q&A pairs targeting suburb-specific queries. Prime AI snippet targets. Each answer must be self-contained (1-2 sentences with specific data — distance, route, services, price range).",
     body: [
       {
         _key: "block-intro",
@@ -244,24 +267,99 @@ const TEMPLATES: Record<DocType, object> = {
         children: [{ _type: "span", text: "", marks: [] }],
         markDefs: [],
         _instructions:
-          "Location page content. Reference the area, local driving conditions, suburbs served, and why residents should choose All Clutch & Brake.",
+          "Opening paragraph: mention suburb by name, confirm All Clutch & Brake services this area, include address (Unit 1/3 Adelaide Terrace, St Marys SA 5042), and hook the reader with a specific fact or local detail.",
+      },
+      {
+        _key: "block-h2-services",
+        _type: "block",
+        style: "h2",
+        children: [{ _type: "span", text: "Services We Provide to [Suburb] Customers", marks: [] }],
+        markDefs: [],
+      },
+      {
+        _key: "block-services",
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "", marks: [] }],
+        markDefs: [],
+      },
+      {
+        _key: "block-h2-directions",
+        _type: "block",
+        style: "h2",
+        children: [{ _type: "span", text: "Getting to All Clutch & Brake from [Suburb]", marks: [] }],
+        markDefs: [],
+      },
+      {
+        _key: "block-directions",
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "", marks: [] }],
+        markDefs: [],
+        _instructions:
+          "Specific route from suburb to St Marys workshop. Include road names, landmarks, drive time. E.g. 'From Norwood, head south on Fullarton Road for approximately 10 minutes — you'll find us at Unit 1/3 Adelaide Terrace, St Marys SA 5042, just past the corner of Morphett Road.'",
+      },
+      {
+        _key: "block-h2-nearby",
+        _type: "block",
+        style: "h2",
+        children: [{ _type: "span", text: "Suburbs Near [Suburb] We Also Service", marks: [] }],
+        markDefs: [],
+      },
+      {
+        _key: "block-nearby",
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "", marks: [] }],
+        markDefs: [],
+        _instructions:
+          "Mention 2-4 adjacent suburbs from suburbsServed field. Confirm all are welcome. Adds local keyword coverage.",
+      },
+      {
+        _key: "block-h2-problems",
+        _type: "block",
+        style: "h2",
+        children: [{ _type: "span", text: "Common Problems We Fix for [Suburb] Vehicles", marks: [] }],
+        markDefs: [],
+      },
+      {
+        _key: "block-problems",
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "", marks: [] }],
+        markDefs: [],
+      },
+      {
+        _key: "block-h2-why",
+        _type: "block",
+        style: "h2",
+        children: [{ _type: "span", text: "Why [Suburb] Drivers Choose All Clutch & Brake", marks: [] }],
+        markDefs: [],
+      },
+      {
+        _key: "block-why",
+        _type: "block",
+        style: "normal",
+        children: [{ _type: "span", text: "", marks: [] }],
+        markDefs: [],
       },
     ],
     _instructions_body:
-      "Location page content. Supported styles: normal|h2|h3|h4|blockquote. See Schema Guide for block shapes.",
+      "Required H2 structure (in order): Services We Provide | Getting Here from [Suburb] | Suburbs Near [Suburb] | Common Problems We Fix | Why [Suburb] Drivers Choose Us. Add tableBlock for service cost comparison, callout for tips/warnings, comparisonBlock for OEM vs aftermarket, pullQuote for mechanic quotes. See Schema Guide for block shapes.",
     faqItems: [
       {
         _key: "faq-1",
         question: "",
         answer: "",
         _instructions:
-          "3-5 location-specific FAQs. E.g. 'Do you offer mobile service in Elizabeth?' / 'How far is All Clutch & Brake from Mawson Lakes?'",
+          "6-8 suburb-specific FAQs. 40-80 words per answer. Include specific data: drive time, route, service types, pricing context. E.g. 'Do you service vehicles from Norwood?' / 'How far is All Clutch & Brake from Norwood?' / 'What clutch and brake services do you provide to Norwood customers?'",
       },
     ],
-    seoTitle: "",
-    _instructions_seoTitle: "Max 60 chars. E.g. 'Clutch & Brake Repairs Northern Adelaide | All Clutch & Brake'",
-    seoDescription: "",
-    _instructions_seoDescription: "Max 155 chars.",
+    _instructions_faqItems:
+      "6-8 location-specific FAQs. Each answer 40-80 words with specific data. These generate FAQPage schema — the primary AI citation source. Questions must reference the specific suburb by name.",
+    relatedServices: [],
+    _instructions_relatedServices:
+      "STUDIO ONLY — add manually by searching for the 9 core service pages. Cannot be set via JSON import (requires Sanity document _ref). Adds internal link cards pointing to service pages.",
     internalLinks: [
       {
         _key: "link-1",
@@ -271,11 +369,39 @@ const TEMPLATES: Record<DocType, object> = {
         url: "",
         description: "",
         _instructions:
-          "Custom link. label: clickable text (e.g. 'Clutch Replacement'). url: relative path (e.g. /services/clutch-replacement-and-repair-in-adelaide). description: optional one sentence. For Sanity document reference links, add them manually in Studio.",
+          "Custom link. label: clickable text. url: relative path (e.g. /services/clutch-replacement-and-repair-in-adelaide). description: optional one sentence.",
       },
     ],
     _instructions_internalLinks:
-      "Links to related pages — services, other posts, or any URL. Each item can be a 'custom' link (label + url, AI-fillable) or a 'reference' link (Sanity document, Studio only). Add as many as relevant. Leave as [] to hide the section.",
+      "Links to service pages, blog posts, or any URL. Use internalLinkCustom for AI-fillable links. Reference links (Sanity docs) — add in Studio only.",
+    dataSources: [
+      {
+        _key: "source-1",
+        label: "",
+        url: "",
+        _instructions:
+          "Cite any external data used on this page — Google Maps drive times, ABS suburb population data, ACCC consumer rights references, or manufacturer service interval specs.",
+      },
+    ],
+    _instructions_dataSources:
+      "Sources used on this page. At minimum include: Google Maps (drive time verification) and one consumer rights or industry reference.",
+    ctaHeading: "",
+    _instructions_ctaHeading:
+      "Override the default CTA heading for this suburb. E.g. 'Norwood Drivers — Book a Free Clutch Check Today'. Leave empty to use site default.",
+    ctaBody: "",
+    _instructions_ctaBody:
+      "Override the default CTA body text. Leave empty to use site default.",
+    tags: [],
+    _instructions_tags:
+      "Topic tags. E.g. ['clutch', 'brakes', 'flywheel', 'transmission', 'south-adelaide']",
+    geoTags: [],
+    _instructions_geoTags:
+      "All suburbs and regions this page targets. Include the main suburb PLUS all adjacent suburbs from suburbsServed. E.g. ['Norwood', 'Kensington', 'Magill', 'St Peters', 'Eastern Adelaide']",
+    seoTitle: "",
+    _instructions_seoTitle: "Max 60 chars. E.g. 'Clutch & Brake Repairs Norwood SA | All Clutch & Brake'",
+    seoDescription: "",
+    _instructions_seoDescription:
+      "Max 155 chars. Include suburb name, primary service, address. E.g. 'Expert clutch replacement and brake repairs near Norwood SA. Free quotes, all makes and models. All Clutch & Brake — Unit 1/3 Adelaide Terrace, St Marys SA 5042.'",
   },
 
   testimonial: {
@@ -1100,6 +1226,10 @@ Add 5-7 service-specific FAQs. Each \`_key\` must be unique.
 
   location: `# All Clutch & Brake — Location Page Schema Guide
 
+**Business:** All Clutch & Brake
+**Address:** Unit 1/3 Adelaide Terrace, St Marys SA 5042
+**Phone:** 08 8277 8122
+**Operating since:** 1984 (40+ years)
 
 ---
 
@@ -1108,21 +1238,32 @@ Add 5-7 service-specific FAQs. Each \`_key\` must be unique.
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | \`_type\` | string | YES | Always \`"location"\` |
-| \`title\` | string | YES | Location name. E.g. \`"Northern Adelaide"\` or \`"Elizabeth"\` |
-| \`slug.current\` | string | YES | URL slug. E.g. \`"northern-adelaide"\` → /locations/northern-adelaide |
-| \`locationType\` | string | YES | \`"region"\` (covers multiple suburbs) or \`"suburb"\` (single suburb page) |
-| \`region\` | string | — | For suburb pages only — the parent region slug this suburb belongs to |
-| \`suburbsIncluded\` | string[] | — | For region pages only — array of suburb name strings in this region |
-| \`answerCapsule\` | string | YES | 20-30 word answer to "Does All Clutch & Brake service [location]?" — complete standalone sentence |
-| \`body\` | array | YES | Portable Text content — standard blocks only (see below) |
-| \`faqItems\` | array | — | 3-5 location-specific FAQs |
-| \`internalLinks\` | array | — | Links to related pages — services, other posts, or any URL. Leave as \`[]\` to hide the section. |
-| \`seoTitle\` | string | — | Max 60 chars. E.g. \`"Clutch & Brake Repairs Northern Adelaide | All Clutch & Brake"\` |
-| \`seoDescription\` | string | — | Max 155 chars. |
+| \`title\` | string | YES | Location name. E.g. \`"Norwood"\` or \`"Northern Adelaide"\` |
+| \`pageHeading\` | string | — | Explicit H1. E.g. \`"Clutch & Brake Repairs Near Norwood | All Clutch & Brake"\` |
+| \`slug.current\` | string | YES | URL slug. E.g. \`"norwood"\` → /locations/norwood |
+| \`locationType\` | string | YES | \`"region"\` or \`"suburb"\` |
+| \`region\` | string | — | Parent region slug (suburb pages only) |
+| \`suburbsIncluded\` | string[] | — | All suburbs in region (region pages only) |
+| \`suburbsServed\` | string[] | — | 2-4 adjacent suburbs mentioned in body copy |
+| \`driveTimeMinutes\` | number | — | Drive time in minutes from St Marys SA 5042 |
+| \`updatedAt\` | datetime | — | ISO 8601. Update on every edit. |
+| \`answerCapsule\` | string | YES | 40-60 word answer to "Does All Clutch & Brake service [suburb]?" — minimum 40 words for AI citation |
+| \`quickAnswers\` | array | — | 3-5 suburb-specific Q&A pairs for AI snippets |
+| \`body\` | array | YES | Portable Text — rich blocks supported (see below) |
+| \`faqItems\` | array | — | 6-8 suburb-specific FAQs (40-80 words each) |
+| \`relatedServices\` | reference[] | — | Studio only — link to the 9 core service pages |
+| \`internalLinks\` | array | — | Custom links to service pages, blog posts, etc. |
+| \`dataSources\` | array | — | Citations used on this page |
+| \`ctaHeading\` | string | — | Override site default CTA heading |
+| \`ctaBody\` | string | — | Override site default CTA body |
+| \`tags\` | string[] | — | Topic tags. E.g. \`["clutch", "brakes", "south-adelaide"]\` |
+| \`geoTags\` | string[] | — | All suburbs targeted — main suburb + suburbsServed |
+| \`seoTitle\` | string | — | Max 60 chars |
+| \`seoDescription\` | string | — | Max 155 chars. Include suburb + address. |
 
 ---
 
-## region options (for suburb pages — pick the correct parent region)
+## region options
 
 \`northern-adelaide\` \`southern-adelaide\` \`eastern-adelaide\` \`western-adelaide\`
 \`cbd-and-inner-suburbs\` \`barossa-and-surrounds\` \`fleurieu-peninsula\`
@@ -1130,148 +1271,221 @@ Add 5-7 service-specific FAQs. Each \`_key\` must be unique.
 
 ---
 
-### Example — Region Page
+## answerCapsule — GEO/AEO Rules
 
-\`\`\`json
-{
-  "_type": "location",
-  "title": "Northern Adelaide",
-  "slug": { "current": "northern-adelaide" },
-  "locationType": "region",
-  "suburbsIncluded": ["Elizabeth", "Salisbury", "Para Hills", "Mawson Lakes", "Modbury", "Golden Grove", "Tea Tree Gully"],
-  "answerCapsule": "Yes, All Clutch & Brake services the northern Adelaide region including Elizabeth, Salisbury, and Mawson Lakes for clutch repairs, brake service, and transmission work.",
-  "seoTitle": "Clutch & Brake Repairs Northern Adelaide | All Clutch & Brake",
-  "seoDescription": "Expert clutch and brake repairs for northern Adelaide including Elizabeth, Salisbury, and Mawson Lakes. Free quotes. All Clutch & Brake, Edwardstown SA."
-}
-\`\`\`
+**Minimum 40 words.** Under 40 words = not eligible for AI citation.
 
-### Example — Suburb Page
+Must include: suburb name, specific service types, address (Unit 1/3 Adelaide Terrace, St Marys SA 5042), concrete fact (40+ years, free quotes, all makes).
 
-\`\`\`json
-{
-  "_type": "location",
-  "title": "Elizabeth",
-  "slug": { "current": "elizabeth" },
-  "locationType": "suburb",
-  "region": "northern-adelaide",
-  "answerCapsule": "Yes, All Clutch & Brake services Elizabeth for clutch replacement, brake repairs, and transmission work. Free pickup and drop-off available for Elizabeth customers.",
-  "seoTitle": "Clutch & Brake Repairs Elizabeth SA | All Clutch & Brake",
-  "seoDescription": "Clutch replacement and brake repairs for Elizabeth SA. Free quotes, all makes and models. All Clutch & Brake, Edwardstown — servicing Elizabeth for 30+ years."
-}
-\`\`\`
+**Example (52 words):**
+> "Yes, All Clutch & Brake services Norwood for clutch replacement, brake pad and rotor replacement, flywheel machining, and transmission repairs. Our workshop at Unit 1/3 Adelaide Terrace, St Marys SA 5042 is approximately 12 minutes from Norwood via Fullarton Road. Free quotes, all makes and models, operating since 1984."
 
 ---
 
-## body — Portable Text (standard blocks only)
+## Required H2 Structure (all suburb pages)
 
-IMPORTANT: The location body supports standard Portable Text blocks only.
-DO NOT use: \`callout\`, \`tableBlock\`, \`comparisonBlock\`, \`youtubeEmbed\`, \`pullQuote\`, \`divider\`, or \`image\` blocks here — they are not supported.
+1. \`Services We Provide to [Suburb] Customers\`
+2. \`Getting to All Clutch & Brake from [Suburb]\`
+3. \`Suburbs Near [Suburb] We Also Service\`
+4. \`Common Problems We Fix for [Suburb] Vehicles\`
+5. \`Why [Suburb] Drivers Choose All Clutch & Brake\`
 
-Supported: \`normal\`, \`h2\`, \`h3\`, \`h4\`, \`blockquote\`, inline marks (\`strong\`, \`em\`, \`underline\`), and links via markDefs. See the Service Page guide for exact block shapes — the structure is identical.
+---
 
-### Full body Example — Location Page
+## Citation Magnets (minimum 3 of 5 required)
+
+| Magnet | Block Type | Example |
+|---|---|---|
+| Service cost comparison table | \`tableBlock\` | "Clutch Replacement Cost by Vehicle Type" |
+| Comparison block | \`comparisonBlock\` | "OEM vs Aftermarket Clutch Kits" |
+| Expert pull quote | \`pullQuote\` | Mechanic quote attributed to name + title |
+| Warning callout | \`callout\` (type: warning) | "Don't ignore a slipping clutch" |
+| Consumer rights reference | \`dataSources\` | ACCC warranty rights link |
+
+---
+
+## quickAnswers
 
 \`\`\`json
-"body": [
+"quickAnswers": [
   {
-    "_key": "block-intro",
-    "_type": "block",
-    "style": "normal",
-    "children": [{ "_type": "span", "text": "All Clutch & Brake has been servicing vehicles from Elizabeth and the northern Adelaide region for over 30 years. Whether you are dealing with a slipping clutch, worn brake pads, or a transmission issue, our team at Edwardstown provides fast, honest service with fixed-price quotes.", "marks": [] }],
-    "markDefs": []
+    "_key": "qa-1",
+    "question": "How far is All Clutch & Brake from Norwood?",
+    "quickAnswer": "All Clutch & Brake is approximately 12 minutes from Norwood via Fullarton Road — our workshop is at Unit 1/3 Adelaide Terrace, St Marys SA 5042."
   },
   {
-    "_key": "block-h2-1",
-    "_type": "block",
-    "style": "h2",
-    "children": [{ "_type": "span", "text": "Services We Provide to Elizabeth Customers", "marks": [] }],
-    "markDefs": []
+    "_key": "qa-2",
+    "question": "Do you offer free quotes for Norwood customers?",
+    "quickAnswer": "Yes, free quotes available for all customers including Norwood. Call 08 8277 8122 or visit the workshop — no booking required for a diagnostic."
   },
   {
-    "_key": "block-2",
-    "_type": "block",
-    "style": "normal",
-    "children": [
-      { "_type": "span", "text": "We provide ", "marks": [] },
-      { "_type": "span", "text": "clutch replacement", "marks": ["strong"] },
-      { "_type": "span", "text": ", ", "marks": [] },
-      { "_type": "span", "text": "brake pad and rotor service", "marks": ["strong"] },
-      { "_type": "span", "text": ", flywheel machining, and transmission repairs for all makes and models.", "marks": [] }
-    ],
-    "markDefs": []
-  },
-  {
-    "_key": "block-h2-2",
-    "_type": "block",
-    "style": "h2",
-    "children": [{ "_type": "span", "text": "Free Pickup Available", "marks": [] }],
-    "markDefs": []
-  },
-  {
-    "_key": "block-3",
-    "_type": "block",
-    "style": "normal",
-    "children": [
-      { "_type": "span", "text": "We offer free local pickup and drop-off for Elizabeth and surrounding suburbs. ", "marks": [] },
-      { "_type": "span", "text": "Book via our contact page", "marks": ["link-1"] },
-      { "_type": "span", "text": " or call (08) 8277 8122.", "marks": [] }
-    ],
-    "markDefs": [
-      { "_key": "link-1", "_type": "link", "href": "/contact", "blank": false }
-    ]
+    "_key": "qa-3",
+    "question": "What clutch and brake services do you provide near Norwood?",
+    "quickAnswer": "We provide clutch replacement, brake pad and rotor replacement, flywheel machining, and transmission repairs for all vehicle makes and models near Norwood."
   }
 ]
 \`\`\`
 
 ---
 
-## faqItems
+## body — Portable Text (rich blocks now supported)
 
-Add 3-5 location-specific FAQs. Questions should reference the specific suburb or region by name.
+Styles: \`normal\` | \`h2\` | \`h3\` | \`h4\` | \`blockquote\`
+Marks: \`strong\` | \`em\` | \`underline\` | \`strike-through\` | \`code\`
+
+### tableBlock — service cost comparison (citation magnet)
+
+\`\`\`json
+{
+  "_key": "table-1",
+  "_type": "tableBlock",
+  "caption": "Clutch Replacement Cost by Vehicle Type",
+  "headers": ["Vehicle Type", "Cost Range", "Typical Labour Time"],
+  "rows": [
+    { "_key": "row-1", "cells": ["Small car (e.g. Toyota Corolla)", "$800–$1,200", "3–4 hours"] },
+    { "_key": "row-2", "cells": ["Mid-size (e.g. Mazda 3)", "$950–$1,400", "4–5 hours"] },
+    { "_key": "row-3", "cells": ["SUV / 4WD", "$1,200–$2,200", "5–7 hours"] },
+    { "_key": "row-4", "cells": ["European (e.g. VW Golf)", "$1,400–$2,500", "5–8 hours"] }
+  ]
+}
+\`\`\`
+
+### callout — tip, info, warning, danger
+
+\`\`\`json
+{
+  "_key": "callout-1",
+  "_type": "callout",
+  "type": "warning",
+  "heading": "Don't Ignore a Slipping Clutch",
+  "body": "If your clutch is slipping, get it checked before driving further. Delayed replacement can damage the flywheel — turning a $1,000 fix into a $2,500 repair."
+}
+\`\`\`
+
+### comparisonBlock
+
+\`\`\`json
+{
+  "_key": "comp-1",
+  "_type": "comparisonBlock",
+  "heading": "OEM vs Aftermarket Clutch Kits",
+  "leftLabel": "OEM",
+  "rightLabel": "Aftermarket",
+  "leftPoints": ["Exact fit for your vehicle", "Longer lifespan (120,000–160,000 km)", "Higher upfront cost"],
+  "rightPoints": ["Lower cost — suitable for older vehicles", "Varies by brand quality", "Good option for budget-conscious repairs"]
+}
+\`\`\`
+
+### pullQuote — named expert (citation magnet)
+
+\`\`\`json
+{
+  "_key": "quote-1",
+  "_type": "pullQuote",
+  "quote": "Most clutch failures we see from eastern suburb customers come from city driving — short trips and heavy traffic wear the friction plate faster than highway driving.",
+  "attribution": "Tony, Head Mechanic — All Clutch & Brake, St Marys SA"
+}
+\`\`\`
+
+### divider
+
+\`\`\`json
+{ "_key": "div-1", "_type": "divider", "style": "line" }
+\`\`\`
+
+---
+
+## faqItems — 6-8 questions, 40-80 words each
 
 \`\`\`json
 "faqItems": [
   {
     "_key": "faq-1",
-    "question": "Do you service vehicles from Elizabeth?",
-    "answer": "Yes, All Clutch & Brake regularly services customers from Elizabeth and the northern Adelaide region. We offer free pickup and drop-off for customers who cannot drive their vehicle to our Edwardstown workshop."
+    "question": "Do you service vehicles from Norwood?",
+    "answer": "Yes, All Clutch & Brake regularly services customers from Norwood and the eastern Adelaide suburbs. Our workshop at Unit 1/3 Adelaide Terrace, St Marys SA 5042 is approximately 12 minutes from Norwood via Fullarton Road. We provide clutch replacement, brake repairs, flywheel machining, and transmission work for all makes and models."
   },
   {
     "_key": "faq-2",
-    "question": "How far is All Clutch & Brake from Elizabeth?",
-    "answer": "Our Edwardstown workshop is approximately 25 km south of Elizabeth — about 25 minutes by car. We also offer free local pickup so you do not need to arrange your own transport."
+    "question": "How far is All Clutch & Brake from Norwood?",
+    "answer": "Our St Marys workshop is approximately 12 minutes from Norwood by car via Fullarton Road heading south — turn right onto Cross Road, then left onto Adelaide Terrace. Free street parking available outside. We also offer free pickup and drop-off if you cannot drive your vehicle."
   },
   {
     "_key": "faq-3",
-    "question": "What clutch and brake services do you provide to northern Adelaide customers?",
-    "answer": "We provide clutch replacement, brake pad and rotor replacement, flywheel machining, transmission repairs, and brake fluid replacement for all vehicle makes. We service all northern Adelaide suburbs including Elizabeth, Salisbury, Mawson Lakes, and Tea Tree Gully."
+    "question": "What clutch and brake services do you offer near Norwood?",
+    "answer": "We provide clutch replacement (all makes and models), brake pad and rotor replacement, flywheel machining and resurfacing, clutch cable and hydraulic line repairs, and full transmission diagnostics. We service all vehicle types from small hatchbacks to SUVs and European marques. Free quotes — call 08 8277 8122."
+  },
+  {
+    "_key": "faq-4",
+    "question": "How much does clutch replacement cost for Norwood customers?",
+    "answer": "Clutch replacement ranges from approximately $800 for small cars to $2,500 for European or 4WD vehicles. The final cost depends on your make and model, whether the flywheel needs machining, and the clutch kit required. We provide fixed-price quotes before any work begins — no surprises."
+  },
+  {
+    "_key": "faq-5",
+    "question": "Do I need to book an appointment to get a quote?",
+    "answer": "No booking required for a free quote or basic diagnostic. Drive in or call 08 8277 8122 and we can assess your vehicle the same day. For full repairs, we will schedule a time that suits you — most clutch replacements are completed within one business day."
+  },
+  {
+    "_key": "faq-6",
+    "question": "Do you service European cars from Norwood?",
+    "answer": "Yes, All Clutch & Brake specialises in clutch and brake work on European vehicles including Volkswagen, Audi, BMW, Mercedes-Benz, and Peugeot. European clutch kits require specialist knowledge and correct parts — our team has over 40 years of experience working across all makes."
   }
 ]
 \`\`\`
 
 ---
 
-## internalLinks
-
-Optional — leave as \`[]\` to hide the section. Each item is either a \`custom\` link (AI-fillable, any URL) or a \`reference\` link (Sanity document, Studio only). Add as many as relevant — no cap.
-
-**For JSON/AI import, use \`internalLinkCustom\` items only.** Reference links require a Sanity document \`_ref\` — add those manually in Studio using the search dropdown.
-
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| \`_key\` | string | YES | Unique key. E.g. \`"link-1"\`, \`"link-2"\` |
-| \`_type\` | string | YES | Always \`"internalLinkCustom"\` for custom links |
-| \`linkType\` | string | YES | Always \`"custom"\` for custom links |
-| \`label\` | string | YES | Clickable link text. E.g. \`"Clutch Replacement"\` |
-| \`url\` | string | YES | Relative path or full URL. E.g. \`"/services/clutch-replacement-and-repair-in-adelaide"\` |
-| \`description\` | string | — | One sentence about the linked page — used by crawlers |
+## internalLinks — custom links (AI-fillable)
 
 \`\`\`json
 "internalLinks": [
-  { "_key": "link-1", "_type": "internalLinkCustom", "linkType": "custom", "label": "Clutch Replacement", "url": "/services/clutch-replacement-and-repair-in-adelaide", "description": "Complete clutch replacement service for all vehicle makes in Adelaide." },
+  { "_key": "link-1", "_type": "internalLinkCustom", "linkType": "custom", "label": "Clutch Replacement Adelaide", "url": "/services/clutch-replacement-and-repair-in-adelaide", "description": "Complete clutch replacement service for all vehicle makes in Adelaide." },
   { "_key": "link-2", "_type": "internalLinkCustom", "linkType": "custom", "label": "Brake Pad Replacement", "url": "/services/brake-pad-replacement", "description": "Front and rear brake pad replacements with free rotor inspection." },
   { "_key": "link-3", "_type": "internalLinkCustom", "linkType": "custom", "label": "Contact Us", "url": "/contact", "description": "Get a free quote or book your vehicle in today." }
 ]
+\`\`\`
+
+**relatedServices** (the 9 core service pages) must be added manually in Sanity Studio — cannot be set via JSON import.
+
+---
+
+## dataSources — minimum 1 per page
+
+\`\`\`json
+"dataSources": [
+  {
+    "_key": "source-1",
+    "label": "Google Maps — drive time from Norwood to St Marys SA 5042",
+    "url": "https://maps.google.com"
+  },
+  {
+    "_key": "source-2",
+    "label": "Australian Competition and Consumer Commission — consumer guarantee rights for car repairs",
+    "url": "https://www.accc.gov.au/consumers/consumer-rights-guarantees/consumer-guarantees"
+  }
+]
+\`\`\`
+
+---
+
+## Full Example — Suburb Page
+
+\`\`\`json
+{
+  "_type": "location",
+  "title": "Norwood",
+  "pageHeading": "Clutch & Brake Repairs Near Norwood SA | All Clutch & Brake",
+  "slug": { "current": "norwood" },
+  "locationType": "suburb",
+  "region": "eastern-adelaide",
+  "suburbsServed": ["Kensington", "Magill", "St Peters", "Burnside"],
+  "driveTimeMinutes": 12,
+  "updatedAt": "2026-06-20T00:00:00Z",
+  "answerCapsule": "Yes, All Clutch & Brake services Norwood for clutch replacement, brake pad and rotor replacement, flywheel machining, and transmission repairs. Our workshop at Unit 1/3 Adelaide Terrace, St Marys SA 5042 is approximately 12 minutes from Norwood via Fullarton Road. Free quotes, all makes and models, operating since 1984.",
+  "tags": ["clutch", "brakes", "flywheel", "transmission", "eastern-adelaide"],
+  "geoTags": ["Norwood", "Kensington", "Magill", "St Peters", "Burnside", "Eastern Adelaide"],
+  "seoTitle": "Clutch & Brake Repairs Norwood SA | All Clutch & Brake",
+  "seoDescription": "Expert clutch replacement and brake repairs near Norwood SA. Free quotes, all makes and models. All Clutch & Brake — Unit 1/3 Adelaide Terrace, St Marys SA 5042. Call 08 8277 8122."
+}
 \`\`\`
 `,
 
