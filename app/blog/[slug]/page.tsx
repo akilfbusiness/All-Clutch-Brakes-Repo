@@ -22,6 +22,7 @@ import {
   Youtube,
 } from "lucide-react"
 import { LeadQualificationForm } from "@/components/lead-qualification-form"
+import { PhoneLink } from "@/components/phone-link"
 
 export async function generateStaticParams() {
   try {
@@ -792,13 +793,14 @@ export default async function BlogPostPage({
               >
                 Get a Free Quote
               </Link>
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="blog-article-cta"
                 className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
                 <Phone className="h-4 w-4" />
                 {phone}
-              </a>
+              </PhoneLink>
             </div>
           </div>
         </section>

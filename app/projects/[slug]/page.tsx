@@ -3,6 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import { ChevronRight, Phone } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 import { getSiteSettings, getProjectBySlug, getAllProjectSlugs } from "@/sanity/queries"
 import { urlFor } from "@/sanity/image"
 
@@ -183,13 +184,14 @@ export default async function ProjectDetailPage({ params }: Props) {
               Back to all projects
             </Link>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="project-hero"
                 className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
                 <Phone className="h-4 w-4" />
                 Call Now: {phone}
-              </a>
+              </PhoneLink>
               <Link
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 border border-border hover:border-accent text-foreground px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
@@ -216,13 +218,14 @@ export default async function ProjectDetailPage({ params }: Props) {
               >
                 Contact Us
               </Link>
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="project-cta"
                 className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
                 <Phone className="h-4 w-4" />
                 {phone}
-              </a>
+              </PhoneLink>
             </div>
           </div>
         </section>

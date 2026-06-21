@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { getSiteSettings } from "@/sanity/queries"
 import { ChevronRight, Phone, Mail, MapPin } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
@@ -169,9 +170,9 @@ export default async function PrivacyPolicyPage() {
               <address className="not-italic space-y-4">
                 <div className="flex items-center gap-3">
                   <Phone className="h-5 w-5 text-orange-500" />
-                  <a href={`tel:${phone.replace(/\s/g, "")}`} className="text-orange-600 hover:underline">
+                  <PhoneLink phone={phone} label="privacy-policy" className="text-orange-600 hover:underline">
                     {phone}
-                  </a>
+                  </PhoneLink>
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="h-5 w-5 text-orange-500" />

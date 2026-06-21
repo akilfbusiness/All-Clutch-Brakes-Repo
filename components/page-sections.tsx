@@ -10,6 +10,7 @@
  */
 
 import { useState } from "react"
+import { PhoneLink } from "@/components/phone-link"
 import Image from "next/image"
 import Link from "next/link"
 import { PortableText } from "@portabletext/react"
@@ -547,12 +548,13 @@ function ContactFormSection({ section, businessName, phone }: { section: any; bu
           <p className="text-muted-foreground mb-6">For enquiries, please use our contact page or call us directly.</p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             {phone && (
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"
+              <PhoneLink
+                phone={phone}
+                label="page-sections-cta"
+                className="inline-flex items-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300"
               >
                 <Phone className="h-4 w-4" /> {phone}
-              </a>
+              </PhoneLink>
             )}
             <Link
               href="/contact"

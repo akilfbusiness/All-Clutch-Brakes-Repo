@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Phone, ArrowRight, ChevronRight } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 import { getSiteSettings, getPageBySlug } from "@/sanity/queries"
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -67,10 +68,9 @@ export default async function MiscellaneousPage() {
               {heroSubheading}
             </p>
             <div className="flex flex-wrap gap-4">
-              <a href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
+              <PhoneLink phone={phone} label="miscellaneous-hero" className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
-              </a>
+              </PhoneLink>
               <Link href="/contact"
                 className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 Send an Enquiry <ArrowRight className="h-4 w-4" />
@@ -92,10 +92,9 @@ export default async function MiscellaneousPage() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
-              <a href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
+              <PhoneLink phone={phone} label="miscellaneous-cta" className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 <Phone className="h-4 w-4" /> {phone}
-              </a>
+              </PhoneLink>
               <Link href="/contact"
                 className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/30 hover:border-accent-foreground text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300">
                 Send an Enquiry

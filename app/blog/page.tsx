@@ -5,6 +5,7 @@ import { getAllPosts, getSiteSettings } from "@/sanity/queries"
 import type { Post } from "@/sanity/queries"
 import { urlFor } from "@/sanity/image"
 import { ChevronRight, Calendar, User, Clock, Phone, ArrowRight } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
@@ -236,13 +237,14 @@ export default async function BlogPage() {
               >
                 Get in Touch
               </Link>
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="blog-cta"
                 className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
                 <Phone className="h-4 w-4" />
                 {phone}
-              </a>
+              </PhoneLink>
             </div>
           </div>
         </section>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { ChevronRight, Phone } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 import { getSiteSettings, getAllFeaturedItems } from "@/sanity/queries"
 import { FeaturedItemsGrid } from "@/components/featured-items-grid"
 
@@ -103,13 +104,14 @@ export default async function FeaturedProductPage() {
               Call us or send an enquiry and we will get you sorted.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="featured-product-cta"
                 className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
               >
                 <Phone className="h-4 w-4" />
                 Call Now: {phone}
-              </a>
+              </PhoneLink>
               <Link
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 border border-accent-foreground/30 hover:border-accent-foreground text-accent-foreground px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"

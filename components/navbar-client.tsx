@@ -299,13 +299,14 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
                 transition={{ delay: 0.45, duration: 0.5, ease }}
                 className="mt-12 flex flex-wrap items-center gap-6"
               >
-                <a
-                  href={`tel:${phone.replace(/\s/g, "")}`}
+                <PhoneLink
+                  phone={phone}
+                  label="navbar-mobile"
                   className="inline-flex items-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-6 py-3 transition-colors"
                 >
                   <Phone className="h-4 w-4" />
                   {phone}
-                </a>
+                </PhoneLink>
                 <Link
                   href={ctaLink}
                   onClick={() => setOpen(false)}

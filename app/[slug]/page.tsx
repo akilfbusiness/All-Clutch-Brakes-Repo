@@ -14,6 +14,7 @@ import { PageHero } from "@/components/page-hero"
 import { PageSections } from "@/components/page-sections"
 import { Phone, ArrowRight } from "lucide-react"
 import { LeadQualificationForm } from "@/components/lead-qualification-form"
+import { PhoneLink } from "@/components/phone-link"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -223,12 +224,13 @@ export default async function DynamicPage({ params }: Props) {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="standalone-cta"
                 className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4" /> {phone}
-              </a>
+              </PhoneLink>
               <Link
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"
