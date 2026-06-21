@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, ChevronDown, Sun, Moon } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 import { useTheme } from "next-themes"
 
 interface NavItem {
@@ -131,13 +132,14 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
           </Link>
 
           {/* Phone — desktop only */}
-          <a
-            href={`tel:${phone.replace(/\s/g, "")}`}
+          <PhoneLink
+            phone={phone}
+            label="navbar-desktop"
             className={`hidden md:flex items-center gap-2 text-[11px] font-bold tracking-[0.08em] transition-opacity duration-300 relative z-50 hover:opacity-100 ${useHeroWhite ? "text-white opacity-80" : "text-foreground/60"}`}
           >
             <Phone className="h-3.5 w-3.5 flex-shrink-0" />
             {phone}
-          </a>
+          </PhoneLink>
 
           {/* Theme toggle */}
           {mounted && (
@@ -178,7 +180,7 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
         </div>
       </header>
 
-      {/* ── Full-screen overlay menu ───────────────────��──────────── */}
+      {/* ── Full-screen overlay menu ───────────────────���──────────── */}
       <AnimatePresence>
         {open && (
           <motion.div

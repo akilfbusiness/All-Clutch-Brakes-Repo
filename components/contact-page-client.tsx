@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Phone, Mail, MapPin, Clock, ArrowRight, Plus, ChevronRight, CheckCircle, AlertCircle } from "lucide-react"
 import { PageHeroMedia } from "@/components/page-hero-media"
 import { LeadQualificationForm } from "@/components/lead-qualification-form"
+import { PhoneLink } from "@/components/phone-link"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FORM TOGGLE
@@ -96,13 +97,14 @@ export function ContactPageClient({
       icon: Phone,
       label: "Phone",
       content: phones.map((p, i) => (
-        <a
+        <PhoneLink
           key={i}
-          href={`tel:${p.replace(/\s/g, "")}`}
+          phone={p}
+          label="contact-info"
           className="block text-base font-bold text-accent hover:text-accent/80 transition-colors duration-200"
         >
           {p}
-        </a>
+        </PhoneLink>
       )),
     },
     {

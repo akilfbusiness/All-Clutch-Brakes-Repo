@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Phone, Mail, MapPin, Clock } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 import type { SiteSettings } from "@/sanity/queries"
 import { getAllCertifications } from "@/sanity/queries"
 import { CertificationsDisplay } from "./certifications-display"
@@ -64,10 +65,12 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
             </h4>
             <ul className="space-y-3.5">
               <li>
-                <a href={`tel:${phone.replace(/\s/g, "")}`}
+                <PhoneLink
+                  phone={phone}
+                  label="footer-contact"
                   className="flex items-center gap-3 text-sm text-muted-foreground hover:text-accent transition-colors duration-300">
                   <Phone className="h-3.5 w-3.5 text-accent flex-shrink-0" />{phone}
-                </a>
+                </PhoneLink>
               </li>
               <li>
                 <a href={`mailto:${email}`}
@@ -120,10 +123,12 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
                 </li>
               ))}
             </ul>
-            <a href={`tel:${phone.replace(/\s/g, "")}`}
+            <PhoneLink
+              phone={phone}
+              label="footer-call-now"
               className="inline-flex items-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-xs px-6 py-3 mt-2 transition-colors duration-300">
               <Phone className="h-3.5 w-3.5" /> Call Now
-            </a>
+            </PhoneLink>
           </div>
         </div>
       </div>
