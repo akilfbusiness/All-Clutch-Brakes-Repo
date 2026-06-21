@@ -5,6 +5,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { Phone, ChevronRight, ArrowRight } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 import { getSiteSettings, getAllStaff } from "@/sanity/queries"
 import { StaffGrid } from "@/components/staff-grid"
 import { PageHeroMedia } from "@/components/page-hero-media"
@@ -130,12 +131,13 @@ export default async function MeetOurStaffPage() {
               {pageSubheading}
             </p>
             <div className="flex flex-wrap gap-4">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="meet-our-hero"
                 className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
-              </a>
+              </PhoneLink>
               <Link
                 href="/contact"
                 className={`inline-flex items-center gap-2.5 font-bold text-sm px-8 py-4 border transition-all duration-300 hover:-translate-y-0.5 ${heroImage || heroVideo ? "border-white/40 text-white hover:bg-white hover:text-foreground" : "border-border text-foreground hover:border-accent hover:text-accent"}`}
@@ -211,12 +213,13 @@ export default async function MeetOurStaffPage() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="meet-our-cta"
                 className="inline-flex items-center justify-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4" /> {phone}
-              </a>
+              </PhoneLink>
               <Link
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"

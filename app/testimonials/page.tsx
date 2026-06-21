@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { getAllTestimonials, getSiteSettings } from "@/sanity/queries"
-import { Star } from "lucide-react"
+import { Star, Phone } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 import type { Testimonial } from "@/sanity/queries"
 
 export const metadata: Metadata = {
@@ -201,12 +202,13 @@ export default async function TestimonialsPage() {
               Join hundreds of satisfied customers across Adelaide. Get your free quote today.
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="testimonials-cta"
                 className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 px-8 py-4 font-bold text-white transition-colors"
               >
                 Call {phone}
-              </a>
+              </PhoneLink>
               <a
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 border-2 border-primary px-8 py-4 font-bold text-primary transition-all hover:bg-primary hover:text-primary-foreground"

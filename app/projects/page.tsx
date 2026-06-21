@@ -4,6 +4,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Phone, ChevronRight, ArrowRight } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 import { getSiteSettings, getAllProjects } from "@/sanity/queries"
 import { ProjectsGrid } from "@/components/projects-grid"
 
@@ -95,12 +96,13 @@ export default async function ProjectsPage() {
               A showcase of real jobs — clutch, brake, and transmission work across all makes and models. Click any project to see the full details and gallery.
             </p>
             <div className="flex flex-wrap gap-4">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="projects-hero"
                 className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
-              </a>
+              </PhoneLink>
               <Link
                 href="/contact"
                 className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
@@ -149,12 +151,13 @@ export default async function ProjectsPage() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="projects-cta"
                 className="inline-flex items-center justify-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4" /> {phone}
-              </a>
+              </PhoneLink>
               <Link
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"

@@ -4,6 +4,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { Phone, ArrowRight, ChevronRight, Check, MapPin, Award, Shield } from "lucide-react"
 import { PageHeroMedia } from "@/components/page-hero-media"
+import { PhoneLink } from "@/components/phone-link"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -108,12 +109,13 @@ export function AboutPageClient({
               </motion.p>
             )}
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="about-hero"
                 className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
-              </a>
+              </PhoneLink>
               <Link
                 href="/services"
                 className={`inline-flex items-center gap-2.5 font-bold text-sm px-8 py-4 border transition-all duration-300 hover:-translate-y-0.5 ${heroImage || heroVideo ? "border-white/40 text-white hover:bg-white hover:text-foreground" : "border-border text-foreground hover:border-accent hover:text-accent"}`}

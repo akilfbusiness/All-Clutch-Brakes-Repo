@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Phone, Mail, MapPin, Clock, ArrowRight, Plus, ChevronRight, CheckCircle, AlertCircle } from "lucide-react"
 import { PageHeroMedia } from "@/components/page-hero-media"
 import { LeadQualificationForm } from "@/components/lead-qualification-form"
+import { PhoneLink } from "@/components/phone-link"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FORM TOGGLE
@@ -96,13 +97,14 @@ export function ContactPageClient({
       icon: Phone,
       label: "Phone",
       content: phones.map((p, i) => (
-        <a
+        <PhoneLink
           key={i}
-          href={`tel:${p.replace(/\s/g, "")}`}
+          phone={p}
+          label="contact-info"
           className="block text-base font-bold text-accent hover:text-accent/80 transition-colors duration-200"
         >
           {p}
-        </a>
+        </PhoneLink>
       )),
     },
     {
@@ -178,12 +180,13 @@ export function ContactPageClient({
               Expert clutch, brake and transmission repairs in Adelaide. Call us directly or send an enquiry below.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="contact-hero"
                 className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
-              </a>
+              </PhoneLink>
               <a
                 href={`mailto:${email}`}
                 className={`inline-flex items-center gap-2.5 font-bold text-sm px-8 py-4 border transition-all duration-300 hover:-translate-y-0.5 ${heroImage || heroVideo ? "border-white/40 text-white hover:bg-white hover:text-foreground" : "border-border text-foreground hover:border-accent hover:text-accent"}`}
@@ -475,12 +478,13 @@ export function ContactPageClient({
                 <p className="text-sm text-muted-foreground leading-relaxed mb-8">
                   Can't find the answer? Just call us — we're always happy to chat.
                 </p>
-                <a
-                  href={`tel:${phone.replace(/\s/g, "")}`}
+                <PhoneLink
+                  phone={phone}
+                  label="contact-sidebar"
                   className="inline-flex items-center gap-2 text-accent text-sm font-bold hover:gap-3 transition-all duration-300"
                 >
                   <Phone className="h-4 w-4" /> {phone}
-                </a>
+                </PhoneLink>
               </motion.div>
 
               <motion.div

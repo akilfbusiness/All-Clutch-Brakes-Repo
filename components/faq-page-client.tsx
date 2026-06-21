@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, Plus, ChevronRight, ArrowRight } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 
 export interface FaqCategory {
   category: string
@@ -59,10 +60,12 @@ export function FaqPageClient({ businessName, phone, faqCategories }: FaqPageCli
               Answers to the most common questions about clutch, brake, and transmission repairs. Can&apos;t find what you need? Call us directly.
             </p>
             <div className="flex flex-wrap gap-4">
-              <a href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="faq-hero"
                 className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
-              </a>
+              </PhoneLink>
               <Link href="/contact"
                 className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 Send an Enquiry <ArrowRight className="h-4 w-4" />
@@ -98,10 +101,12 @@ export function FaqPageClient({ businessName, phone, faqCategories }: FaqPageCli
               <p className="text-sm text-muted-foreground leading-relaxed mb-6">
                 Still have questions? Call us — we&apos;re always happy to help.
               </p>
-              <a href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="faq-sidebar"
                 className="inline-flex items-center gap-2 text-accent text-sm font-bold hover:gap-3 transition-all duration-300">
                 <Phone className="h-4 w-4" /> {phone}
-              </a>
+              </PhoneLink>
             </div>
 
             {/* Right accordions */}
@@ -179,10 +184,12 @@ export function FaqPageClient({ businessName, phone, faqCategories }: FaqPageCli
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
-              <a href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 bg-background hover:bg-background/90 text-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
+              <PhoneLink
+                phone={phone}
+                label="faq-cta"
+                className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 <Phone className="h-4 w-4" /> {phone}
-              </a>
+              </PhoneLink>
               <Link href="/contact"
                 className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300">
                 Send an Enquiry

@@ -3,6 +3,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Phone, ChevronRight, ArrowRight, Quote } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 import { getSiteSettings, getWhatWeDo } from "@/sanity/queries"
 import { PageHeroMedia } from "@/components/page-hero-media"
 
@@ -82,10 +83,9 @@ export default async function WhatWeDoPage() {
               Adelaide&apos;s specialist clutch and brake workshop — built on decades of honest, expert service.
             </p>
             <div className="flex flex-wrap gap-4">
-              <a href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
+              <PhoneLink phone={phone} label="what-we-do-hero" className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
-              </a>
+              </PhoneLink>
               <Link href="/services"
                 className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 Our Services <ArrowRight className="h-4 w-4" />
@@ -207,10 +207,9 @@ export default async function WhatWeDoPage() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
-              <a href={`tel:${phone.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
+              <PhoneLink phone={phone} label="what-we-do-cta" className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 <Phone className="h-4 w-4" /> {phone}
-              </a>
+              </PhoneLink>
               <Link href="/contact"
                 className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300">
                 Send an Enquiry

@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, ArrowRight, Plus, ChevronRight, Wrench } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -99,12 +100,13 @@ export function ServicesPageClient({
               </motion.p>
             )}
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="services-hero"
                 className="inline-flex items-center gap-2.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
-              </a>
+              </PhoneLink>
               <Link
                 href="/contact"
                 className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
@@ -213,12 +215,13 @@ export function ServicesPageClient({
                 <p className="text-sm text-muted-foreground leading-relaxed mb-8">
                   Can't find the answer you need? Call us — we're always happy to chat.
                 </p>
-                <a
-                  href={`tel:${phone.replace(/\s/g, "")}`}
+                <PhoneLink
+                  phone={phone}
+                  label="services-faq-sidebar"
                   className="inline-flex items-center gap-2 text-accent text-sm font-bold hover:gap-3 transition-all duration-300"
                 >
                   <Phone className="h-4 w-4" /> {phone}
-                </a>
+                </PhoneLink>
               </motion.div>
 
               {/* Accordion */}
@@ -283,12 +286,13 @@ export function ServicesPageClient({
               <p className="mt-3 text-accent-foreground/55 text-sm md:text-base max-w-lg leading-relaxed">{ctaBody}</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="services-cta-banner"
                 className="inline-flex items-center justify-center gap-2.5 bg-background hover:bg-background/90 text-foreground font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4" /> {phone}
-              </a>
+              </PhoneLink>
               <Link
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"

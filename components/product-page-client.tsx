@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, ArrowRight, Check, Plus, ChevronRight, ArrowUpRight } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 import { PageHeroMedia } from "@/components/page-hero-media"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -109,12 +110,13 @@ export function ProductPageClient({ businessName, phone, product }: ProductPageC
                 </motion.p>
               )}
               <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
-                <a
-                  href={`tel:${phone.replace(/\s/g, "")}`}
+                <PhoneLink
+                  phone={phone}
+                  label="product-hero"
                   className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
                 >
                   <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
-                </a>
+                </PhoneLink>
                 <Link
                   href="/contact"
                   className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
@@ -321,12 +323,13 @@ export function ProductPageClient({ businessName, phone, product }: ProductPageC
                       </ul>
 
                       <div className="pt-7 space-y-3">
-                        <a
-                          href={`tel:${phone.replace(/\s/g, "")}`}
+                        <PhoneLink
+                          phone={phone}
+                          label="product-card"
                           className="w-full inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm py-3.5 transition-all duration-300 hover:-translate-y-0.5"
                         >
                           <Phone className="h-4 w-4" /> Call {phone}
-                        </a>
+                        </PhoneLink>
                         <Link
                           href="/contact"
                           className="w-full inline-flex items-center justify-center gap-2 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm py-3.5 transition-all duration-300"
@@ -373,12 +376,13 @@ export function ProductPageClient({ businessName, phone, product }: ProductPageC
                   {product.ctaButtonLabel}
                 </Link>
               ) : (
-                <a
-                  href={`tel:${phone.replace(/\s/g, "")}`}
+                <PhoneLink
+                  phone={phone}
+                  label="product-cta"
                   className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
                 >
                   <Phone className="h-4 w-4" /> Call {phone}
-                </a>
+                </PhoneLink>
               )}
               <Link
                 href="/contact"

@@ -13,6 +13,7 @@ import { TestimonialsCarousel } from "./testimonials-carousel"
 import { PromotionsBanner } from "./promotions-banner"
 import { CircularGallery } from "./ui/circular-gallery"
 import { LeadQualificationForm } from "./lead-qualification-form"
+import { PhoneLink } from "./phone-link"
 import type { Testimonial, Promotion } from "@/sanity/queries"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -332,13 +333,14 @@ export function HomePageClient({
             </motion.p>
 
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="home-hero"
                 className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:gap-4 hover:-translate-y-0.5 active:translate-y-0"
               >
                 <Phone className="h-4 w-4 flex-shrink-0" />
                 {primaryCta}: {phone}
-              </a>
+              </PhoneLink>
               <Link
                 href="/services"
                 className="inline-flex items-center gap-2.5 border border-white/25 hover:border-white/60 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:gap-4 hover:-translate-y-0.5 active:translate-y-0"
@@ -395,10 +397,10 @@ export function HomePageClient({
                 {address.street}, {address.suburb} {address.state} {address.postcode}
               </span>
             )}
-            <a href={`tel:${phone.replace(/\s/g, "")}`} className="flex items-center gap-2 hover:text-white/70 transition-colors">
+            <PhoneLink phone={phone} label="home-hero-bar" className="flex items-center gap-2 hover:text-white/70 transition-colors">
               <Phone className="h-3.5 w-3.5 text-accent flex-shrink-0" />
               {phone}
-            </a>
+            </PhoneLink>
         {(heroTradingHours || hours[0]) && (
           <span className="flex items-center gap-2">
             <Clock className="h-3.5 w-3.5 text-accent flex-shrink-0" />
@@ -512,7 +514,7 @@ export function HomePageClient({
       <Ticker items={tickerItems} reverse />
 
 
-      {/* ══════════════════════════════════════════════════════════════════════
+      {/* ══════════════════════════════════════���═══════════════════════════════
           04 · WHY CHOOSE US
           60/40 split · orange left-border heading · feature rows · mechanic photo
       ══════════════════════════════════════════════════════════════════════ */}
@@ -570,12 +572,13 @@ export function HomePageClient({
               viewport={{ once: true }} transition={{ delay: 0.5 }}
               className="mt-12 flex flex-wrap gap-4"
             >
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="home-about"
                 className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
               >
                 <Phone className="h-4 w-4" /> Call {phone}
-              </a>
+              </PhoneLink>
               <Link
                 href="/contact"
                 className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
@@ -664,12 +667,13 @@ export function HomePageClient({
               {aboutDescription && <p>{aboutDescription}</p>}
             </div>
             <div className="flex flex-wrap gap-4">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="home-dark-strip"
                 className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-colors duration-300"
               >
                 <Phone className="h-4 w-4" /> Call Now
-              </a>
+              </PhoneLink>
               <Link
                 href="/about"
                 className="inline-flex items-center gap-2.5 border border-white/25 hover:border-white/60 text-white font-bold text-sm px-8 py-4 transition-all duration-300"
@@ -744,12 +748,13 @@ export function HomePageClient({
               <p className="text-sm text-muted-foreground leading-relaxed mb-8">
                 Can't find what you're looking for? Call us — we're always happy to answer.
               </p>
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="home-faq-sidebar"
                 className="inline-flex items-center gap-2 text-accent text-sm font-bold hover:gap-3 transition-all duration-300"
               >
                 <Phone className="h-4 w-4" /> {phone}
-              </a>
+              </PhoneLink>
             </motion.div>
 
             {/* Right — Accordion */}
@@ -833,12 +838,13 @@ export function HomePageClient({
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="home-cta-banner"
                 className="inline-flex items-center justify-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-colors duration-300"
               >
                 <Phone className="h-4 w-4" /> {phone}
-              </a>
+              </PhoneLink>
               <Link
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"

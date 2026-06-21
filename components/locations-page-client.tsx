@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, MapPin, ChevronRight, ArrowRight, Plus } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 
 interface Region { title: string; slug: string; answerCapsule?: string | null }
 interface Suburb { title: string; slug: string }
@@ -46,9 +47,9 @@ export function LocationsPageClient({ businessName, phone, pageTitle, pageSubtit
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[0.95] text-foreground mb-8">{pageTitle}</h1>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mb-10">{pageSubtitle}</p>
             <div className="flex flex-wrap gap-4">
-              <a href={`tel:${phone.replace(/\s/g, "")}`} className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
+              <PhoneLink phone={phone} label="locations-hero" className="inline-flex items-center gap-2.5 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 <Phone className="h-4 w-4 flex-shrink-0" /> Call {phone}
-              </a>
+              </PhoneLink>
               <Link href="/contact" className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 Get a Quote <ArrowRight className="h-4 w-4" />
               </Link>
@@ -128,9 +129,9 @@ export function LocationsPageClient({ businessName, phone, pageTitle, pageSubtit
                 <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight leading-tight mb-8">Common Questions</h2>
                 <div className="w-14 h-[2px] bg-accent mb-6" />
                 <p className="text-sm text-muted-foreground leading-relaxed mb-8">Can&apos;t find the answer? Call us.</p>
-                <a href={`tel:${phone.replace(/\s/g, "")}`} className="inline-flex items-center gap-2 text-accent text-sm font-bold hover:gap-3 transition-all duration-300">
+                <PhoneLink phone={phone} label="locations-faq-sidebar" className="inline-flex items-center gap-2 text-accent text-sm font-bold hover:gap-3 transition-all duration-300">
                   <Phone className="h-4 w-4" /> {phone}
-                </a>
+                </PhoneLink>
               </div>
               <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="border-t border-border">
                 {faqs.map((faq, i) => (
@@ -166,9 +167,9 @@ export function LocationsPageClient({ businessName, phone, pageTitle, pageSubtit
               <p className="mt-3 text-accent-foreground/55 text-sm md:text-base max-w-lg leading-relaxed">Contact us and we&apos;ll confirm coverage in your location.</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
-              <a href={`tel:${phone.replace(/\s/g, "")}`} className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
+              <PhoneLink phone={phone} label="locations-cta-banner" className="inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5">
                 <Phone className="h-4 w-4" /> {phone}
-              </a>
+              </PhoneLink>
               <Link href="/contact" className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300">
                 Contact Us
               </Link>

@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { MapPin, ChevronRight, Plus, Wrench, ArrowLeft, Phone, AlertTriangle, Lightbulb, Info } from "lucide-react"
+import { PhoneLink } from "@/components/phone-link"
 import { PortableText } from "@portabletext/react"
 import type { Location, InternalLink } from "@/sanity/queries"
 import { PageHeroMedia } from "@/components/page-hero-media"
@@ -485,13 +486,14 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
             >
               Contact Us
             </Link>
-            <a
-              href={`tel:${phone.replace(/\s/g, "")}`}
+            <PhoneLink
+              phone={phone}
+              label="location-cta"
               className="inline-flex items-center justify-center gap-2 border border-accent-foreground/30 hover:border-accent-foreground text-accent-foreground px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors"
             >
               <Phone className="h-4 w-4" />
               {phone}
-            </a>
+            </PhoneLink>
           </div>
         </div>
       </section>
