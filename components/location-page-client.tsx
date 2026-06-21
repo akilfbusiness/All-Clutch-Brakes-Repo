@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { MapPin, ChevronRight, Plus, Wrench, ArrowLeft } from "lucide-react"
+import { MapPin, ChevronRight, Plus, Wrench, ArrowLeft, Phone } from "lucide-react"
 import { PortableText } from "@portabletext/react"
 import type { Location, InternalLink } from "@/sanity/queries"
 import { PageHeroMedia } from "@/components/page-hero-media"
