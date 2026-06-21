@@ -8,6 +8,7 @@ import { PortableText } from "@portabletext/react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, ArrowRight, Plus, ChevronRight, MapPin, ArrowLeft } from "lucide-react"
 import { LeadQualificationForm } from "@/components/lead-qualification-form"
+import { PhoneLink } from "@/components/phone-link"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -210,12 +211,13 @@ export function ServicePageClient({
               >
                 Enquire About This Service
               </Link>
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="service-hero"
                 className="inline-flex items-center justify-center gap-2.5 border border-white/25 hover:border-white/60 text-white font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Phone className="h-4 w-4 flex-shrink-0" /> {phone}
-              </a>
+              </PhoneLink>
             </motion.div>
           </motion.div>
         </div>
@@ -579,12 +581,13 @@ export function ServicePageClient({
               >
                 Contact Us
               </Link>
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
+              <PhoneLink
+                phone={phone}
+                label="service-cta-banner"
                 className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"
               >
                 <Phone className="h-4 w-4" /> {phone}
-              </a>
+              </PhoneLink>
             </div>
           </motion.div>
         </div>
