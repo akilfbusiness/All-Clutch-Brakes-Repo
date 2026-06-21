@@ -138,8 +138,33 @@ export default function LocationPageClient({ location, phone, businessName }: Pr
                   <h2 className="text-xl font-bold tracking-tight mb-8 border-b border-border pb-4">
                     Services in {location.title}
                   </h2>
-                  <div className="prose prose-invert max-w-none prose-headings:font-bold prose-a:text-accent prose-strong:text-foreground">
-                    <PortableText value={location.body as Parameters<typeof PortableText>[0]["value"]} />
+                  <div className="max-w-none">
+                    <PortableText
+                      value={location.body as Parameters<typeof PortableText>[0]["value"]}
+                      components={{
+                        block: {
+                          h2: ({ children }) => <h2 className="text-2xl font-bold mt-8 mb-3 text-foreground">{children}</h2>,
+                          h3: ({ children }) => <h3 className="text-xl font-bold mt-6 mb-2 text-foreground">{children}</h3>,
+                          h4: ({ children }) => <h4 className="text-lg font-semibold mt-4 mb-2 text-foreground">{children}</h4>,
+                          normal: ({ children }) => <p className="mb-4 text-foreground/70 leading-relaxed">{children}</p>,
+                        },
+                        marks: {
+                          strong: ({ children }) => <strong className="font-bold text-foreground">{children}</strong>,
+                          em: ({ children }) => <em className="italic">{children}</em>,
+                          link: ({ value, children }) => (
+                            <a href={value?.href} className="text-accent underline hover:text-accent/80">{children}</a>
+                          ),
+                        },
+                        list: {
+                          bullet: ({ children }) => <ul className="list-disc pl-5 mb-4 space-y-1 text-foreground/70">{children}</ul>,
+                          number: ({ children }) => <ol className="list-decimal pl-5 mb-4 space-y-1 text-foreground/70">{children}</ol>,
+                        },
+                        listItem: {
+                          bullet: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                          number: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                        },
+                      }}
+                    />
                   </div>
                 </div>
               )}
