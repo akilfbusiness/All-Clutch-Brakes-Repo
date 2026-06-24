@@ -109,13 +109,82 @@ export async function POST(req: NextRequest) {
       revalidateTag("posts")
       break
 
+    // Testimonials — used on home page and testimonials page
+    case "testimonial":
+      revalidateTag("testimonials")
+      break
+
+    // Promotions — used on home page and promotions banner
+    case "promotion":
+      revalidateTag("promotions")
+      break
+
+    // Projects
+    case "project":
+      revalidateTag("projects")
+      if (slugValue) revalidateTag(`project-${slugValue}`)
+      break
+
+    // Product pages
+    case "productPage":
+      revalidateTag("productPages")
+      if (slugValue) revalidateTag(`productPage-${slugValue}`)
+      break
+
+    // Free-form pages (custom CMS pages rendered via app/[slug]/page.tsx)
+    case "page":
+      revalidateTag("pages")
+      if (slugValue) revalidateTag(`page-${slugValue}`)
+      break
+
+    // What We Do page
+    case "whatWeDo":
+      revalidateTag("whatWeDo")
+      break
+
+    // Staff members
+    case "staff":
+      revalidateTag("staff")
+      break
+
+    // Brands
+    case "brand":
+      revalidateTag("brands")
+      break
+
+    // Gallery images
+    case "galleryImage":
+      revalidateTag("gallery")
+      break
+
+    // Certifications & affiliations
+    case "certification":
+      revalidateTag("certifications")
+      break
+
+    // Featured items
+    case "featuredItem":
+      revalidateTag("featuredItems")
+      break
+
     default:
-      // Unknown type — revalidate everything as a safe fallback
+      // Unknown type — revalidate all tags as a safe fallback
       revalidateTag("posts")
       revalidateTag("services")
       revalidateTag("locations")
       revalidateTag("site-settings")
       revalidateTag("navigation")
+      revalidateTag("testimonials")
+      revalidateTag("promotions")
+      revalidateTag("projects")
+      revalidateTag("productPages")
+      revalidateTag("pages")
+      revalidateTag("whatWeDo")
+      revalidateTag("staff")
+      revalidateTag("brands")
+      revalidateTag("gallery")
+      revalidateTag("certifications")
+      revalidateTag("featuredItems")
       break
   }
 
