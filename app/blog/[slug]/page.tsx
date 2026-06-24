@@ -511,7 +511,7 @@ export default async function BlogPostPage({
                   id="faq-heading-hero"
                   className="text-xl font-bold tracking-tight mb-6 pb-3 border-b border-border"
                 >
-                  Frequently Asked Questions
+                  Got Questions? We've Got Answers
                 </h2>
                 <div className="space-y-3">
                   {displayPost.faqItems.map((item, index) => (

@@ -701,7 +701,7 @@ export function HomePageClient({
                 Free Diagnosis
               </p>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-tight">
-                Send Our Team An Enquiry
+                Tell Us What's Wrong
               </h2>
             </motion.div>
             <motion.div
