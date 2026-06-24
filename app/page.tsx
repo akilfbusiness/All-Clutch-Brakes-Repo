@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
-import { getSiteSettings, getAllServices, getFeaturedTestimonials, getFeaturedPromotions } from "@/sanity/queries"
+import { getSiteSettings, getAllServices, getFeaturedTestimonials, getFeaturedPromotions, getHomepageGalleryImages } from "@/sanity/queries"
+import type { HomepageGalleryImage } from "@/sanity/queries"
 import { HomePageClient } from "@/components/home-page-client"
 
 // ─── DEFAULT CONTENT ──────────────────────────────────────────────────────────
@@ -82,18 +83,21 @@ export default async function HomePage() {
   let services: Awaited<ReturnType<typeof getAllServices>>
   let testimonials: Awaited<ReturnType<typeof getFeaturedTestimonials>>
   let promotions: Awaited<ReturnType<typeof getFeaturedPromotions>>
+  let galleryImages: HomepageGalleryImage[]
   try {
-    ;[settings, services, testimonials, promotions] = await Promise.all([
+    ;[settings, services, testimonials, promotions, galleryImages] = await Promise.all([
       getSiteSettings(),
       getAllServices(),
       getFeaturedTestimonials(),
       getFeaturedPromotions(),
+      getHomepageGalleryImages(),
     ])
   } catch {
     settings = {}
     services = []
     testimonials = []
     promotions = []
+    galleryImages = []
   }
 
   const businessName = settings.businessName || "All Clutch & Brake Service"
@@ -188,6 +192,7 @@ export default async function HomePage() {
         serviceItems={serviceItems}
         testimonials={testimonials}
         promotions={promotions}
+        galleryImages={galleryImages}
       />
     </>
   )

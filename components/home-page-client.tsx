@@ -18,7 +18,8 @@ import { ProblemSection } from "./problem-section"
 import { HowItWorksSection } from "./how-it-works-section"
 import { ReviewsWallSection } from "./reviews-wall-section"
 import { RiskReversalSection } from "./risk-reversal-section"
-import type { Testimonial, Promotion } from "@/sanity/queries"
+import type { Testimonial, Promotion, HomepageGalleryImage } from "@/sanity/queries"
+import { GalleryPreviewSection } from "./gallery-preview-section"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -67,6 +68,7 @@ export interface HomePageClientProps {
   serviceItems: ServiceItem[]
   testimonials: Testimonial[]
   promotions: Promotion[]
+  galleryImages: HomepageGalleryImage[]
 }
 
 // ─── ANIMATION PRESETS ────────────────────────────────────────────────────────
@@ -208,7 +210,7 @@ export function HomePageClient({
   servicesHeading, servicesSubheading,
   whyUsHeading, whyUsPoints, ctaHeading, ctaBody,
   inspectionCardBody, aboutDescription, faqs, serviceItems,
-  testimonials, promotions,
+  testimonials, promotions, galleryImages,
 }: HomePageClientProps) {
 
   const [openService,  setOpenService]  = useState<number | null>(null)
@@ -752,7 +754,13 @@ export function HomePageClient({
 
 
       {/* ══════════════════════════════════════════════════════════════════════
-          09 · FAQ
+          09 · GALLERY PREVIEW
+          2-col mobile · 3-col desktop · lightbox on tap · See All → /gallery
+      ══════════════════════════════════════════════════════════════════════ */}
+      <GalleryPreviewSection images={galleryImages} />
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          10 · FAQ
           Two-column · heading left · animated accordion right
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative py-24 md:py-32 bg-background">
