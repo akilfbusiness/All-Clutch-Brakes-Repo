@@ -897,13 +897,13 @@ export async function getAllPageSlugs(): Promise<{ slug: string }[]> {
 
 export const ALL_TESTIMONIALS_QUERY = `
   *[_type == "testimonial"] | order(coalesce(order, 9999) asc, serviceDate desc) {
-    _id, customerName, suburb, vehicleType, rating, testimonialText, serviceDate, featured, order
+    _id, customerName, suburb, vehicleType, rating, "testimonialText": testimonial, serviceDate, featured, order
   }
 `
 
 export const FEATURED_TESTIMONIALS_QUERY = `
   *[_type == "testimonial" && featured == true] | order(coalesce(order, 9999) asc, serviceDate desc) [0...6] {
-    _id, customerName, suburb, vehicleType, rating, testimonialText, serviceDate, featured, order
+    _id, customerName, suburb, vehicleType, rating, "testimonialText": testimonial, serviceDate, featured, order
   }
 `
 
@@ -927,10 +927,10 @@ export async function getFeaturedTestimonials(): Promise<Testimonial[]> {
 export const HOMEPAGE_TESTIMONIALS_QUERY = `
 {
   "pinned": *[_type == "testimonial" && showOnHomepage == true] | order(coalesce(order, 9999) asc, _createdAt desc) [0...6] {
-    _id, customerName, suburb, vehicleType, rating, testimonialText, serviceDate, showOnHomepage, order
+    _id, customerName, suburb, vehicleType, rating, "testimonialText": testimonial, serviceDate, showOnHomepage, order
   },
   "fallback": *[_type == "testimonial"] | order(_createdAt desc) [0...6] {
-    _id, customerName, suburb, vehicleType, rating, testimonialText, serviceDate, showOnHomepage, order
+    _id, customerName, suburb, vehicleType, rating, "testimonialText": testimonial, serviceDate, showOnHomepage, order
   }
 }
 `

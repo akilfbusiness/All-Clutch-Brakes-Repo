@@ -9,7 +9,6 @@ import {
 } from "framer-motion"
 import { Phone, Plus, ArrowRight, MapPin, Clock, Wrench } from "lucide-react"
 import { useTheme } from "next-themes"
-import { TestimonialsCarousel } from "./testimonials-carousel"
 import { PromotionsBanner } from "./promotions-banner"
 import { CircularGallery } from "./ui/circular-gallery"
 import { LeadQualificationForm } from "./lead-qualification-form"
@@ -673,7 +672,7 @@ export function HomePageClient({
         reviewCount={reviewCount}
       />
 
-      {/* ══════════════════════════════════════════════════════════════════════
+      {/* ═══════════════��══════════════════════════════════════════════════════
           06 · FREE DIAGNOSIS FORM
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="py-16 md:py-24 bg-foreground/[0.02] border-t border-border">
@@ -886,14 +885,6 @@ export function HomePageClient({
         </div>
       </section>
 
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          07 · TESTIMONIALS
-          Customer reviews carousel
-      ══════════════════════════════════════════════════════════════════════ */}
-      {testimonials && testimonials.length > 0 && (
-        <TestimonialsCarousel testimonials={testimonials} />
-      )}
 
       {/* ══════════════════════════════════════════════════════════════════════
           09 · CTA STRIP
