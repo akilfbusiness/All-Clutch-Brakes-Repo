@@ -185,12 +185,14 @@ export const LOCATION_BY_SLUG_QUERY = `*[_type == "location" && slug.current == 
 export async function fetchSettings() {
   return await sanityFetch<any>({
     query: SITE_SETTINGS_QUERY,
+    tags: ["site-settings"],
   })
 }
 
 export async function fetchPosts() {
   return await sanityFetch<any[]>({
     query: POSTS_QUERY,
+    tags: ["posts"],
   })
 }
 
@@ -198,12 +200,14 @@ export async function fetchPostBySlug(slug: string) {
   return await sanityFetch<any>({
     query: POST_BY_SLUG_QUERY,
     params: { slug },
+    tags: ["posts", `post-${slug}`],
   })
 }
 
 export async function fetchServices() {
   return await sanityFetch<any[]>({
     query: SERVICES_QUERY,
+    tags: ["services"],
   })
 }
 
@@ -211,12 +215,14 @@ export async function fetchServiceBySlug(slug: string) {
   return await sanityFetch<any>({
     query: SERVICE_BY_SLUG_QUERY,
     params: { slug },
+    tags: ["services", `service-${slug}`],
   })
 }
 
 export async function fetchLocations() {
   return await sanityFetch<any[]>({
     query: LOCATIONS_QUERY,
+    tags: ["locations"],
   })
 }
 
@@ -224,5 +230,6 @@ export async function fetchLocationBySlug(slug: string) {
   return await sanityFetch<any>({
     query: LOCATION_BY_SLUG_QUERY,
     params: { slug },
+    tags: ["locations", `location-${slug}`],
   })
 }
