@@ -69,6 +69,24 @@ export interface HomePageClientProps {
   testimonials: Testimonial[]
   promotions: Promotion[]
   galleryImages: HomepageGalleryImage[]
+  homepageTestimonials: Testimonial[]
+  // Problem Section
+  problemEyebrow: string
+  problemHeadline: string
+  problemBody: string
+  // How It Works
+  howItWorksHeadline: string
+  howItWorksSteps: { number: string; headline: string; body: string }[]
+  howItWorksPrimaryCtaLabel: string
+  howItWorksSecondaryCtaLabel: string
+  // Risk Reversal
+  riskReversalEyebrow: string
+  riskReversalHeadline: string
+  riskReversalBody: string
+  riskReversalCtaLabel: string
+  // Reviews Wall
+  ratingValue: string
+  reviewCount: string
 }
 
 // ─── ANIMATION PRESETS ────────────────────────────────────────────────────────
@@ -210,7 +228,11 @@ export function HomePageClient({
   servicesHeading, servicesSubheading,
   whyUsHeading, whyUsPoints, ctaHeading, ctaBody,
   inspectionCardBody, aboutDescription, faqs, serviceItems,
-  testimonials, promotions, galleryImages,
+  testimonials, promotions, galleryImages, homepageTestimonials,
+  problemEyebrow, problemHeadline, problemBody,
+  howItWorksHeadline, howItWorksSteps, howItWorksPrimaryCtaLabel, howItWorksSecondaryCtaLabel,
+  riskReversalEyebrow, riskReversalHeadline, riskReversalBody, riskReversalCtaLabel,
+  ratingValue, reviewCount,
 }: HomePageClientProps) {
 
   const [openService,  setOpenService]  = useState<number | null>(null)
@@ -464,13 +486,23 @@ export function HomePageClient({
           03 · PROBLEM SECTION
           Dark full-bleed · urgency · pain points
       ══════════════════════════════════════════════════════════════════════ */}
-      <ProblemSection />
+      <ProblemSection
+        eyebrow={problemEyebrow}
+        headline={problemHeadline}
+        body={problemBody}
+      />
 
       {/* ══════════════════════════════════════════════════════════════════════
           04 · HOW IT WORKS
           White bg · 3-step layout · dual CTA
       ══════════════════════════════════════════════════════════════════════ */}
-      <HowItWorksSection phone={phone} />
+      <HowItWorksSection
+        phone={phone}
+        headline={howItWorksHeadline}
+        steps={howItWorksSteps}
+        primaryCtaLabel={howItWorksPrimaryCtaLabel}
+        secondaryCtaLabel={howItWorksSecondaryCtaLabel}
+      />
 
       {/* ══════════════════════════════════════════════════════════════════════
           05 · SERVICES
@@ -635,7 +667,11 @@ export function HomePageClient({
           05 · REVIEWS WALL
           Static 6-card grid · light grey bg · placeholder reviews
       ══════════════════════════════════════════════════════════════════════ */}
-      <ReviewsWallSection />
+      <ReviewsWallSection
+        testimonials={homepageTestimonials}
+        ratingValue={ratingValue}
+        reviewCount={reviewCount}
+      />
 
       {/* ══════════════════════════════════════════════════════════════════════
           06 · FREE DIAGNOSIS FORM
@@ -678,7 +714,13 @@ export function HomePageClient({
           07 · RISK REVERSAL
           Dark bg · guarantee · call CTA
       ══════════════════════════════════════════════════════════════════════ */}
-      <RiskReversalSection phone={phone} />
+      <RiskReversalSection
+        phone={phone}
+        eyebrow={riskReversalEyebrow}
+        headline={riskReversalHeadline}
+        body={riskReversalBody}
+        ctaLabel={riskReversalCtaLabel}
+      />
 
       {/* ══════════════════════════════════════════════════════════════════════
           08 · ABOUT

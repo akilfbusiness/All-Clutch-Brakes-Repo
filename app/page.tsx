@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
-import { getSiteSettings, getAllServices, getFeaturedTestimonials, getFeaturedPromotions, getHomepageGalleryImages } from "@/sanity/queries"
-import type { HomepageGalleryImage } from "@/sanity/queries"
+import { getSiteSettings, getAllServices, getFeaturedTestimonials, getFeaturedPromotions, getHomepageGalleryImages, getHomepageTestimonials } from "@/sanity/queries"
+import type { HomepageGalleryImage, Testimonial } from "@/sanity/queries"
 import { HomePageClient } from "@/components/home-page-client"
 
 // ─── DEFAULT CONTENT ──────────────────────────────────────────────────────────
@@ -84,13 +84,15 @@ export default async function HomePage() {
   let testimonials: Awaited<ReturnType<typeof getFeaturedTestimonials>>
   let promotions: Awaited<ReturnType<typeof getFeaturedPromotions>>
   let galleryImages: HomepageGalleryImage[]
+  let homepageTestimonials: Testimonial[]
   try {
-    ;[settings, services, testimonials, promotions, galleryImages] = await Promise.all([
+    ;[settings, services, testimonials, promotions, galleryImages, homepageTestimonials] = await Promise.all([
       getSiteSettings(),
       getAllServices(),
       getFeaturedTestimonials(),
       getFeaturedPromotions(),
       getHomepageGalleryImages(),
+      getHomepageTestimonials(),
     ])
   } catch {
     settings = {}
@@ -98,6 +100,7 @@ export default async function HomePage() {
     testimonials = []
     promotions = []
     galleryImages = []
+    homepageTestimonials = []
   }
 
   const businessName = settings.businessName || "All Clutch & Brake Service"
@@ -143,6 +146,27 @@ export default async function HomePage() {
   const aboutDescription      = settings.homeAboutDescription      || "Based in St Marys and serving all of Adelaide — no apprentices working unsupervised, no hidden fees, no surprises. Just honest, qualified tradework backed by over three decades of experience."
 
   const faqs = settings.homeFaqs?.length ? settings.homeFaqs : DEFAULT_FAQS
+
+  // Problem Section
+  const problemEyebrow  = settings.problemEyebrow  || "Sound familiar?"
+  const problemHeadline = settings.problemHeadline || "Clutch slipping? Brakes grinding? You need it fixed [today] — not next week."
+  const problemBody     = settings.problemBody     || "Most drivers put it off. They hope the noise goes away, or assume every shop has a week-long wait. Neither is true — and both cost you more in the end."
+
+  // How It Works
+  const howItWorksHeadline        = settings.howItWorksHeadline        || "Getting Fixed Is Simple"
+  const howItWorksSteps           = settings.howItWorksSteps           || []
+  const howItWorksPrimaryCtaLabel = settings.howItWorksPrimaryCtaLabel || "Call Us Today"
+  const howItWorksSecondaryCtaLabel = settings.howItWorksSecondaryCtaLabel || "Send Us an Enquiry"
+
+  // Risk Reversal
+  const riskReversalEyebrow  = settings.riskReversalEyebrow  || "Our Guarantee"
+  const riskReversalHeadline = settings.riskReversalHeadline || "Not Happy? We'll Make It Right. No Arguments."
+  const riskReversalBody     = settings.riskReversalBody     || "We quote before we start and we only proceed with your approval. If something isn't right after the job, call us and we fix it — that's the deal."
+  const riskReversalCtaLabel = settings.riskReversalCtaLabel || "Call Us Today"
+
+  // Reviews Wall
+  const ratingValue = settings.aggregateRating?.ratingValue || "4.9"
+  const reviewCount = settings.aggregateRating?.reviewCount || "106+"
 
   const serviceItems = services.length > 0
     ? services.map((s) => ({ title: s.title, slug: s.slug, description: s.answerCapsule, image: (s as any).image ?? null }))
@@ -193,6 +217,20 @@ export default async function HomePage() {
         testimonials={testimonials}
         promotions={promotions}
         galleryImages={galleryImages}
+        homepageTestimonials={homepageTestimonials}
+        problemEyebrow={problemEyebrow}
+        problemHeadline={problemHeadline}
+        problemBody={problemBody}
+        howItWorksHeadline={howItWorksHeadline}
+        howItWorksSteps={howItWorksSteps}
+        howItWorksPrimaryCtaLabel={howItWorksPrimaryCtaLabel}
+        howItWorksSecondaryCtaLabel={howItWorksSecondaryCtaLabel}
+        riskReversalEyebrow={riskReversalEyebrow}
+        riskReversalHeadline={riskReversalHeadline}
+        riskReversalBody={riskReversalBody}
+        riskReversalCtaLabel={riskReversalCtaLabel}
+        ratingValue={ratingValue}
+        reviewCount={reviewCount}
       />
     </>
   )

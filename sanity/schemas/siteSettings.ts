@@ -983,6 +983,102 @@ export const siteSettingsSchema = defineType({
         },
       ],
     }),
+    // ─── PROBLEM SECTION ───────────────────────────────────────────────────────
+    defineField({
+      name: "problemEyebrow",
+      title: "Problem Section — Eyebrow Label",
+      type: "string",
+      group: "homepage",
+      description: "Small uppercase label above the headline. e.g. 'Sound Familiar?'",
+    }),
+    defineField({
+      name: "problemHeadline",
+      title: "Problem Section — Headline",
+      type: "string",
+      group: "homepage",
+      description: "Main urgency headline. Use [blue] around any word to highlight it in blue, e.g. 'fixed [today] — not next week.'",
+    }),
+    defineField({
+      name: "problemBody",
+      title: "Problem Section — Body Paragraph",
+      type: "text",
+      group: "homepage",
+      rows: 3,
+      description: "Supporting sentence below the headline.",
+    }),
+
+    // ─── HOW IT WORKS SECTION ──────────────────────────────────────────────────
+    defineField({
+      name: "howItWorksHeadline",
+      title: "How It Works — Section Headline",
+      type: "string",
+      group: "homepage",
+      description: "e.g. 'Getting Fixed Is Simple'",
+    }),
+    defineField({
+      name: "howItWorksSteps",
+      title: "How It Works — Steps",
+      type: "array",
+      group: "homepage",
+      description: "The 3 steps. Each has a step number, headline, and body line.",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "number", title: "Step Number (e.g. 01)", type: "string", validation: (Rule: any) => Rule.required() },
+            { name: "headline", title: "Step Headline", type: "string", validation: (Rule: any) => Rule.required() },
+            { name: "body", title: "Step Body", type: "text", rows: 2, validation: (Rule: any) => Rule.required() },
+          ],
+          preview: { select: { title: "number", subtitle: "headline" } },
+        },
+      ],
+    }),
+    defineField({
+      name: "howItWorksPrimaryCtaLabel",
+      title: "How It Works — Primary CTA Label",
+      type: "string",
+      group: "homepage",
+      description: "Label for the call button. e.g. 'Call Us Today'",
+    }),
+    defineField({
+      name: "howItWorksSecondaryCtaLabel",
+      title: "How It Works — Secondary CTA Label",
+      type: "string",
+      group: "homepage",
+      description: "Label for the enquiry button. e.g. 'Send Us an Enquiry'",
+    }),
+
+    // ─── RISK REVERSAL SECTION ─────────────────────────────────────────────────
+    defineField({
+      name: "riskReversalEyebrow",
+      title: "Risk Reversal — Eyebrow Label",
+      type: "string",
+      group: "homepage",
+      description: "e.g. 'Our Guarantee'",
+    }),
+    defineField({
+      name: "riskReversalHeadline",
+      title: "Risk Reversal — Headline",
+      type: "string",
+      group: "homepage",
+      description: "e.g. 'Not Happy? We\\'ll Make It Right. No Arguments.'",
+    }),
+    defineField({
+      name: "riskReversalBody",
+      title: "Risk Reversal — Body Paragraph",
+      type: "text",
+      group: "homepage",
+      rows: 3,
+      description: "Supporting copy below the headline.",
+    }),
+    defineField({
+      name: "riskReversalCtaLabel",
+      title: "Risk Reversal — CTA Button Label",
+      type: "string",
+      group: "homepage",
+      description: "e.g. 'Call Us Today'",
+    }),
+
     defineField({
       name: "homeInspectionCardHeading",
       title: "Free Inspection Card Heading",
