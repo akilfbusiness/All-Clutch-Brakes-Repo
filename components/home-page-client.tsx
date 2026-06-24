@@ -15,6 +15,7 @@ import { CircularGallery } from "./ui/circular-gallery"
 import { LeadQualificationForm } from "./lead-qualification-form"
 import { PhoneLink } from "./phone-link"
 import { ProblemSection } from "./problem-section"
+import { HowItWorksSection } from "./how-it-works-section"
 import type { Testimonial, Promotion } from "@/sanity/queries"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -462,7 +463,13 @@ export function HomePageClient({
       <ProblemSection />
 
       {/* ══════════════════════════════════════════════════════════════════════
-          04 · SERVICES
+          04 · HOW IT WORKS
+          White bg · 3-step layout · dual CTA
+      ══════════════════════════════════════════════════════════════════════ */}
+      <HowItWorksSection phone={phone} />
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          05 · SERVICES
           Dark navy section · image-top cards · stagger entrance
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative py-24 md:py-32 bg-background dark:bg-[oklch(0.11_0.015_245)] overflow-hidden">
@@ -515,7 +522,7 @@ export function HomePageClient({
       </section>
 
 
-      {/* ══════════════════════════════════════════════════════════════════════
+      {/* ═���════════════════════════════════════════════════════════════════════
           TICKER STRIP 2
       ══════════════════════════════════════════════════════════════════════ */}
       <Ticker items={tickerItems} reverse />
