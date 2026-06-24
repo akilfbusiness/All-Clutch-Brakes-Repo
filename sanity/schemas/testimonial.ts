@@ -41,7 +41,7 @@ export const testimonialSchema = defineType({
       type: "text",
       rows: 4,
       description: "The customer's review or feedback. Keep it authentic and specific.",
-      validation: (Rule) => Rule.required().max(500),
+      validation: (Rule) => Rule.required().max(2000),
     }),
     defineField({
       name: "serviceProvided",
