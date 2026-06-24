@@ -219,7 +219,7 @@ export function HomePageClient({
 
   // Split headline into two tone lines
   const words = heroHeading.split(" ")
-  const half  = Math.ceil(words.length / 2)
+  const half  = Math.min(8, Math.ceil(words.length / 2) + 1)
   const line1 = words.slice(0, half).join(" ")
   const line2 = words.slice(half).join(" ")
 
