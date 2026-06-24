@@ -629,7 +629,13 @@ export function HomePageClient({
 
 
       {/* ══════════════════════════════════════════════════════════════════════
-          05 · ABOUT
+          05 · REVIEWS WALL
+          Static 6-card grid · light grey bg · placeholder reviews
+      ══════════════════════════════════════════════════════════════════════ */}
+      <ReviewsWallSection />
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          06 · ABOUT
           Full-width background image · stacked stats left · about card right
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden">
@@ -831,12 +837,6 @@ export function HomePageClient({
       {testimonials && testimonials.length > 0 && (
         <TestimonialsCarousel testimonials={testimonials} />
       )}
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          08 · REVIEWS WALL
-          Static 6-card grid · light grey bg · placeholder reviews
-      ══════════════════════════════════════════════════════════════════════ */}
-      <ReviewsWallSection />
 
       {/* ══════════════════════════════════════════════════════════════════════
           09 · CTA STRIP
