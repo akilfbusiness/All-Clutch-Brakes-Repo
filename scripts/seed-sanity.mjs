@@ -49,7 +49,7 @@ const siteSettings = {
   heroPrimaryCtaLabel: "Call Now",
   heroSecondaryCtaLabel: "Our Services",
   heroTrustSignals: [
-    "30+ Years Experience",
+    "40+ Years Experience",
     "All Makes & Models",
     "Same Day Service Available",
     "Free Quotes",

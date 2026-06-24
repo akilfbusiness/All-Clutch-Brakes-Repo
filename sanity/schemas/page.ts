@@ -179,7 +179,7 @@ const statsSection = defineArrayMember({
       of: [{
         type: "object",
         fields: [
-          { name: "value", title: "Display Value (e.g. '30+', 'Since 1984')", type: "string", validation: (Rule: any) => Rule.required() },
+          { name: "value", title: "Display Value (e.g. '40+', 'Since 1984')", type: "string", validation: (Rule: any) => Rule.required() },
           { name: "label", title: "Label (e.g. 'Years in Business')", type: "string", validation: (Rule: any) => Rule.required() },
           { name: "subtitle", title: "Subtitle (optional)", type: "string" },
         ],

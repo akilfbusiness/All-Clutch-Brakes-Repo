@@ -6,14 +6,14 @@ import { HomePageClient } from "@/components/home-page-client"
 // Shown when Sanity has no data yet. Edit via Sanity Studio → Site Settings.
 
 const DEFAULT_TICKER_ITEMS = [
-  "Clutch Replacement", "Brake Repairs", "30+ Years Experience",
+  "Clutch Replacement", "Brake Repairs", "40+ Years Experience",
   "Same Day Service", "Free Quotes", "All Makes & Models",
   "Adelaide Specialists", "Fixed Pricing", "No Surprises",
   "Qualified Tradespeople", "Transmission Service", "Brake Machining",
 ]
 
 const DEFAULT_STATS_ITEMS = [
-  { displayValue: "30+",      label: "Years in Business",    subtitle: "Serving Adelaide since 1994"    },
+  { displayValue: "40+",      label: "Years in Business",    subtitle: "Serving Adelaide since 1994"    },
   { displayValue: "All",      label: "Makes & Models",       subtitle: "European, Japanese, 4WD & more" },
   { displayValue: "Same\nDay", label: "Service Available",   subtitle: "Most jobs completed same day"   },
   { displayValue: "Free",     label: "Quotes & Inspections", subtitle: "No obligation, no charge, ever" },
@@ -119,7 +119,7 @@ export default async function HomePage() {
   const workshopImage  = settings.workshopImage  || "https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=828&q=40&fm=webp"
   const primaryCta     = settings.heroPrimaryCtaLabel   || "Call Now"
   const secondaryCta   = settings.heroSecondaryCtaLabel || "Our Services"
-  const trustSignals   = settings.heroTrustSignals?.length ? settings.heroTrustSignals : ["30+ Years Experience","All Makes & Models","Same Day Service","Free Quotes"]
+  const trustSignals   = settings.heroTrustSignals?.length ? settings.heroTrustSignals : ["40+ Years Experience","All Makes & Models","Same Day Service","Free Quotes"]
 
   const tickerItems = settings.homeTickerItems?.length ? settings.homeTickerItems : DEFAULT_TICKER_ITEMS
 
