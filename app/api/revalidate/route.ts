@@ -19,7 +19,6 @@ import { type NextRequest, NextResponse } from "next/server"
 async function verifySignature(req: NextRequest, body: string): Promise<boolean> {
   const secret = process.env.SANITY_WEBHOOK_SECRET
   if (!secret) {
-    // Allow in development without a secret
     if (process.env.NODE_ENV === "development") return true
     return false
   }
@@ -27,19 +26,29 @@ async function verifySignature(req: NextRequest, body: string): Promise<boolean>
   const signature = req.headers.get("sanity-webhook-signature")
   if (!signature) return false
 
+  // Sanity header format: "t=<timestamp>,v1=<hex_hmac_sha256>"
+  const parts = Object.fromEntries(signature.split(",").map((p) => p.split("=")))
+  const hexSignature = parts["v1"]
+  const timestamp = parts["t"]
+  if (!hexSignature || !timestamp) return false
+
   const encoder = new TextEncoder()
   const key = await crypto.subtle.importKey(
     "raw",
     encoder.encode(secret),
     { name: "HMAC", hash: "SHA-256" },
     false,
-    ["verify"]
+    ["sign"]
   )
 
-  const [, signatureBase64] = signature.split(",")
-  const signatureBuffer = Buffer.from(signatureBase64, "base64")
+  // Sanity signs: "<timestamp>.<body>"
+  const payload = `${timestamp}.${body}`
+  const expectedBuffer = await crypto.subtle.sign("HMAC", key, encoder.encode(payload))
+  const expectedHex = Array.from(new Uint8Array(expectedBuffer))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")
 
-  return crypto.subtle.verify("HMAC", key, signatureBuffer, encoder.encode(body))
+  return expectedHex === hexSignature
 }
 
 export async function POST(req: NextRequest) {
