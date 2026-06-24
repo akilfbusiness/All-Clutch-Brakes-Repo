@@ -164,7 +164,7 @@ export default async function TestimonialsPage() {
               </div>
               <div className="h-12 w-px bg-border" />
               <div>
-                <p className="mb-1 text-3xl font-bold">30+</p>
+                <p className="mb-1 text-3xl font-bold">40+</p>
                 <p className="text-sm text-muted-foreground">Years Experience</p>
               </div>
             </div>
