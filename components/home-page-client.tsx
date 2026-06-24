@@ -317,10 +317,10 @@ export function HomePageClient({
 
             {/* Two-tone headline */}
             <motion.h1 variants={fadeUp} className="leading-[1.0] tracking-tight mb-8">
-              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white">
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-bold text-white">
                 {line1}
               </span>
-              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-accent">
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-bold text-accent">
                 {line2}
               </span>
             </motion.h1>
