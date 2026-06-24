@@ -58,6 +58,13 @@ export const testimonialSchema = defineType({
       initialValue: false,
     }),
     defineField({
+      name: "showOnHomepage",
+      title: "Show on Reviews Wall (Home Page)",
+      type: "boolean",
+      description: "Pin this testimonial to the Reviews Wall section on the home page. Only 6 can be shown — if fewer than 6 are pinned, the most recent reviews fill the remaining slots automatically.",
+      initialValue: false,
+    }),
+    defineField({
       name: "date",
       title: "Review Date",
       type: "date",

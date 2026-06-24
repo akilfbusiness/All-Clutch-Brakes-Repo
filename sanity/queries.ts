@@ -82,6 +82,20 @@ export interface SiteSettings {
   homeCtaHeading?: string
   homeCtaBody?: string
   homeFaqs?: FaqItem[]
+  // Problem Section
+  problemEyebrow?: string
+  problemHeadline?: string
+  problemBody?: string
+  // How It Works
+  howItWorksHeadline?: string
+  howItWorksSteps?: { number: string; headline: string; body: string }[]
+  howItWorksPrimaryCtaLabel?: string
+  howItWorksSecondaryCtaLabel?: string
+  // Risk Reversal
+  riskReversalEyebrow?: string
+  riskReversalHeadline?: string
+  riskReversalBody?: string
+  riskReversalCtaLabel?: string
   aboutHeroImage?: string
   aboutHeroVideo?: string
   aboutHeading?: string
@@ -323,6 +337,9 @@ export const SITE_SETTINGS_QUERY = `
     servicesAllSubheading, servicesCtaHeading, servicesCtaBody,
     servicesHowWeDeliverHeading, servicesHowWeDeliverPoints,
     servicesFaqs,
+    problemEyebrow, problemHeadline, problemBody,
+    howItWorksHeadline, howItWorksSteps, howItWorksPrimaryCtaLabel, howItWorksSecondaryCtaLabel,
+    riskReversalEyebrow, riskReversalHeadline, riskReversalBody, riskReversalCtaLabel,
     homeInspectionCardHeading, homeInspectionCardBody,
     locationsPageHeading, locationsPageAnswerCapsule, locationsFaqs,
     footerTagline, footerCopyrightText, footerLinks, footerBrandLabel,
@@ -758,6 +775,7 @@ export interface Testimonial {
   testimonialText: string
   serviceDate?: string
   featured?: boolean
+  showOnHomepage?: boolean
   order?: number
 }
 
@@ -903,6 +921,31 @@ export async function getFeaturedTestimonials(): Promise<Testimonial[]> {
     tags: ["testimonials"],
   })
   return result ?? []
+}
+
+// Homepage Reviews Wall: up to 6 showOnHomepage testimonials, fallback to newest
+export const HOMEPAGE_TESTIMONIALS_QUERY = `
+{
+  "pinned": *[_type == "testimonial" && showOnHomepage == true] | order(coalesce(order, 9999) asc, _createdAt desc) [0...6] {
+    _id, customerName, suburb, vehicleType, rating, testimonialText, serviceDate, showOnHomepage, order
+  },
+  "fallback": *[_type == "testimonial"] | order(_createdAt desc) [0...6] {
+    _id, customerName, suburb, vehicleType, rating, testimonialText, serviceDate, showOnHomepage, order
+  }
+}
+`
+
+export async function getHomepageTestimonials(): Promise<Testimonial[]> {
+  const result = await sanityFetch<{ pinned: Testimonial[]; fallback: Testimonial[] }>({
+    query: HOMEPAGE_TESTIMONIALS_QUERY,
+    tags: ["testimonials"],
+  })
+  if (!result) return []
+  const { pinned, fallback } = result
+  if (pinned.length >= 6) return pinned.slice(0, 6)
+  const pinnedIds = new Set(pinned.map((t) => t._id))
+  const extra = fallback.filter((t) => !pinnedIds.has(t._id))
+  return [...pinned, ...extra].slice(0, 6)
 }
 
 // ─── PROMOTIONS ──���─���──────────────────────────────────────────────────────────
