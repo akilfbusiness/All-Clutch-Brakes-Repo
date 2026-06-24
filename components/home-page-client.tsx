@@ -14,6 +14,7 @@ import { PromotionsBanner } from "./promotions-banner"
 import { CircularGallery } from "./ui/circular-gallery"
 import { LeadQualificationForm } from "./lead-qualification-form"
 import { PhoneLink } from "./phone-link"
+import { ProblemSection } from "./problem-section"
 import type { Testimonial, Promotion } from "@/sanity/queries"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -455,7 +456,13 @@ export function HomePageClient({
 
 
       {/* ══════════════════════════════════════════════════════════════════════
-          03 · SERVICES
+          03 · PROBLEM SECTION
+          Dark full-bleed · urgency · pain points
+      ══════════════════════════════════════════════════════════════════════ */}
+      <ProblemSection phone={phone} />
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          04 · SERVICES
           Dark navy section · image-top cards · stagger entrance
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative py-24 md:py-32 bg-background dark:bg-[oklch(0.11_0.015_245)] overflow-hidden">
