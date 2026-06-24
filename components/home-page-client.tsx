@@ -459,7 +459,7 @@ export function HomePageClient({
           03 · PROBLEM SECTION
           Dark full-bleed · urgency · pain points
       ══════════════════════════════════════════════════════════════════════ */}
-      <ProblemSection phone={phone} />
+      <ProblemSection />
 
       {/* ══════════════════════════════════════════════════════════════════════
           04 · SERVICES
