@@ -16,6 +16,7 @@ import { LeadQualificationForm } from "./lead-qualification-form"
 import { PhoneLink } from "./phone-link"
 import { ProblemSection } from "./problem-section"
 import { HowItWorksSection } from "./how-it-works-section"
+import { ReviewsWallSection } from "./reviews-wall-section"
 import type { Testimonial, Promotion } from "@/sanity/queries"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -831,9 +832,14 @@ export function HomePageClient({
         <TestimonialsCarousel testimonials={testimonials} />
       )}
 
+      {/* ══════════════════════════════════════════════════════════════════════
+          08 · REVIEWS WALL
+          Static 6-card grid · light grey bg · placeholder reviews
+      ══════════════════════════════════════════════════════════════════════ */}
+      <ReviewsWallSection />
 
       {/* ══════════════════════════════════════════════════════════════════════
-          08 · CTA STRIP
+          09 · CTA STRIP
           Full-width accent bar · heading left · buttons right
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="bg-accent overflow-hidden">
