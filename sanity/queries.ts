@@ -268,7 +268,7 @@ export interface SiteNavigation {
   showPhoneInHeader?: boolean
 }
 
-// ─── SITE SETTINGS ─────────────────────────────────────────────────────���������──────
+// ─── SITE SETTINGS ─────────────────────────────────────────────────────�����������──────
 
 export const SITE_SETTINGS_QUERY = `
   *[_type == "siteSettings"][0] {
@@ -998,6 +998,43 @@ export async function getFeaturedGalleryImages(): Promise<GalleryImage[]> {
     tags: ["gallery"],
   })
   return result ?? []
+}
+
+// Homepage gallery: up to 6 showOnHomepage images, falling back to newest if < 6 marked
+export const HOMEPAGE_GALLERY_QUERY = `
+{
+  "featured": *[_type == "galleryImage" && showOnHomepage == true] | order(coalesce(displayOrder, 9999) asc, _createdAt desc) [0...6] {
+    _id, title, altText, caption, category,
+    "image": image.asset->url + "?w=800&fm=webp&q=75"
+  },
+  "fallback": *[_type == "galleryImage"] | order(_createdAt asc) [0...6] {
+    _id, title, altText, caption, category,
+    "image": image.asset->url + "?w=800&fm=webp&q=75"
+  }
+}
+`
+
+export interface HomepageGalleryImage {
+  _id: string
+  title: string
+  altText?: string
+  caption?: string
+  category?: string
+  image?: string
+}
+
+export async function getHomepageGalleryImages(): Promise<HomepageGalleryImage[]> {
+  const result = await sanityFetch<{ featured: HomepageGalleryImage[]; fallback: HomepageGalleryImage[] }>({
+    query: HOMEPAGE_GALLERY_QUERY,
+    tags: ["gallery"],
+  })
+  if (!result) return []
+  const { featured, fallback } = result
+  if (featured.length >= 6) return featured.slice(0, 6)
+  // Fill remaining slots from fallback (excluding already-featured ids)
+  const featuredIds = new Set(featured.map((i) => i._id))
+  const extra = fallback.filter((i) => !featuredIds.has(i._id))
+  return [...featured, ...extra].slice(0, 6)
 }
 
 // ─── PAGES ──────────────────���─────────────────────────────────────────────────

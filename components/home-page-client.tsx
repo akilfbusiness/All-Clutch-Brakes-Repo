@@ -14,7 +14,12 @@ import { PromotionsBanner } from "./promotions-banner"
 import { CircularGallery } from "./ui/circular-gallery"
 import { LeadQualificationForm } from "./lead-qualification-form"
 import { PhoneLink } from "./phone-link"
-import type { Testimonial, Promotion } from "@/sanity/queries"
+import { ProblemSection } from "./problem-section"
+import { HowItWorksSection } from "./how-it-works-section"
+import { ReviewsWallSection } from "./reviews-wall-section"
+import { RiskReversalSection } from "./risk-reversal-section"
+import type { Testimonial, Promotion, HomepageGalleryImage } from "@/sanity/queries"
+import { GalleryPreviewSection } from "./gallery-preview-section"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -63,6 +68,7 @@ export interface HomePageClientProps {
   serviceItems: ServiceItem[]
   testimonials: Testimonial[]
   promotions: Promotion[]
+  galleryImages: HomepageGalleryImage[]
 }
 
 // ─── ANIMATION PRESETS ────────────────────────────────────────────────────────
@@ -204,7 +210,7 @@ export function HomePageClient({
   servicesHeading, servicesSubheading,
   whyUsHeading, whyUsPoints, ctaHeading, ctaBody,
   inspectionCardBody, aboutDescription, faqs, serviceItems,
-  testimonials, promotions,
+  testimonials, promotions, galleryImages,
 }: HomePageClientProps) {
 
   const [openService,  setOpenService]  = useState<number | null>(null)
@@ -455,7 +461,19 @@ export function HomePageClient({
 
 
       {/* ══════════════════════════════════════════════════════════════════════
-          03 · SERVICES
+          03 · PROBLEM SECTION
+          Dark full-bleed · urgency · pain points
+      ══════════════════════════════════════════════════════════════════════ */}
+      <ProblemSection />
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          04 · HOW IT WORKS
+          White bg · 3-step layout · dual CTA
+      ══════════════════════════════════════════════════════════════════════ */}
+      <HowItWorksSection phone={phone} />
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          05 · SERVICES
           Dark navy section · image-top cards · stagger entrance
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative py-24 md:py-32 bg-background dark:bg-[oklch(0.11_0.015_245)] overflow-hidden">
@@ -508,7 +526,7 @@ export function HomePageClient({
       </section>
 
 
-      {/* ══════════════════════════════════════════════════════════════════════
+      {/* ═���════════════════════════════════════════════════════════════════════
           TICKER STRIP 2
       ══════════════════════════════════════════════════════════════════════ */}
       <Ticker items={tickerItems} reverse />
@@ -614,7 +632,56 @@ export function HomePageClient({
 
 
       {/* ══════════════════════════════════════════════════════════════════════
-          05 · ABOUT
+          05 · REVIEWS WALL
+          Static 6-card grid · light grey bg · placeholder reviews
+      ══════════════════════════════════════════════════════════════════════ */}
+      <ReviewsWallSection />
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          06 · FREE DIAGNOSIS FORM
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-16 md:py-24 bg-foreground/[0.02] border-t border-border">
+        <div className="container">
+          <div className="max-w-2xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.6, ease }}
+              className="mb-8 text-center"
+            >
+              <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-3">
+                Free Diagnosis
+              </p>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-tight">
+                Tell Us What&apos;s Wrong
+              </h2>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1, ease }}
+            >
+              <LeadQualificationForm
+                businessName={businessName}
+                phoneNumber={phone}
+                accentColor="#2563EB"
+                services={serviceItems.map((s) => s.title)}
+                webhookUrlPartial="https://n8n-customer-automations.onrender.com/webhook/5384017c-e44f-4844-9965-6e8b78f5be0c"
+                webhookUrl1="https://n8n-customer-automations.onrender.com/webhook/1a390a21-4ada-4ffe-a366-0e7fc6afc302"
+                webhookUrl2="https://n8n-customer-automations.onrender.com/webhook/242b5f86-aaef-49a5-aa19-2137188f62c6"
+                webhookUrlCall="https://n8n-customer-automations.onrender.com/webhook/66efcdcc-49af-4630-a088-a0d5fc2174e7"
+              />
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          07 · RISK REVERSAL
+          Dark bg · guarantee · call CTA
+      ══════════════════════════════════════════════════════════════════════ */}
+      <RiskReversalSection phone={phone} />
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          08 · ABOUT
           Full-width background image · stacked stats left · about card right
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden">
@@ -687,44 +754,13 @@ export function HomePageClient({
 
 
       {/* ══════════════════════════════════════════════════════════════════════
-          06 · LEAD QUALIFICATION FORM
+          09 · GALLERY PREVIEW
+          2-col mobile · 3-col desktop · lightbox on tap · See All → /gallery
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="py-16 md:py-24 bg-foreground/[0.02] border-t border-border">
-        <div className="container">
-          <div className="max-w-2xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.6, ease }}
-              className="mb-8 text-center"
-            >
-              <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-3">
-                Free Diagnosis
-              </p>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-tight">
-                Tell Us What's Wrong
-              </h2>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1, ease }}
-            >
-              <LeadQualificationForm
-                businessName={businessName}
-                phoneNumber={phone}
-                accentColor="#2563EB"
-                services={serviceItems.map((s) => s.title)}
-                webhookUrlPartial="https://n8n-customer-automations.onrender.com/webhook/5384017c-e44f-4844-9965-6e8b78f5be0c"
-                webhookUrl1="https://n8n-customer-automations.onrender.com/webhook/1a390a21-4ada-4ffe-a366-0e7fc6afc302"
-                webhookUrl2="https://n8n-customer-automations.onrender.com/webhook/242b5f86-aaef-49a5-aa19-2137188f62c6"
-                webhookUrlCall="https://n8n-customer-automations.onrender.com/webhook/66efcdcc-49af-4630-a088-a0d5fc2174e7"
-              />
-            </motion.div>
-          </div>
-        </div>
-      </section>
+      <GalleryPreviewSection images={galleryImages} />
 
       {/* ══════════════════════════════════════════════════════════════════════
-          07 · FAQ
+          10 · FAQ
           Two-column · heading left · animated accordion right
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative py-24 md:py-32 bg-background">
@@ -817,9 +853,8 @@ export function HomePageClient({
         <TestimonialsCarousel testimonials={testimonials} />
       )}
 
-
       {/* ══════════════════════════════════════════════════════════════════════
-          08 · CTA STRIP
+          09 · CTA STRIP
           Full-width accent bar · heading left · buttons right
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="bg-accent overflow-hidden">
