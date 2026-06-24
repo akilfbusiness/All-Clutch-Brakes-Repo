@@ -395,7 +395,7 @@ export const siteSettingsSchema = defineType({
         {
           type: "object",
           fields: [
-            { name: "displayValue", title: "Display Value (e.g. '30+', 'All', 'Same Day')", type: "string", validation: (Rule) => Rule.required() },
+            { name: "displayValue", title: "Display Value (e.g. '40+', 'All', 'Same Day')", type: "string", validation: (Rule) => Rule.required() },
             { name: "label",        title: "Label (e.g. 'Years in Business')",              type: "string", validation: (Rule) => Rule.required() },
             { name: "subtitle",     title: "Subtitle (e.g. 'Serving Adelaide since 1994')", type: "string" },
           ],

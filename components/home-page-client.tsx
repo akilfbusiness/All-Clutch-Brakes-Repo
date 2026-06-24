@@ -103,7 +103,7 @@ function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
 // ─── TICKER ───────────────────────────────────────────────────────────────────
 
 const DEFAULT_TICKER_ITEMS = [
-  "Clutch Replacement", "Brake Repairs", "30+ Years Experience",
+  "Clutch Replacement", "Brake Repairs", "40+ Years Experience",
   "Same Day Service", "Free Quotes", "All Makes & Models",
   "Adelaide Specialists", "Fixed Pricing", "No Surprises",
   "Qualified Tradespeople", "Transmission Service", "Brake Machining",
@@ -605,7 +605,7 @@ export function HomePageClient({
             <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-transparent lg:flex" />
             {/* Badge */}
             <div className="absolute bottom-8 left-8 bg-black/80 backdrop-blur-sm border border-border/60 px-6 py-4">
-              <p className="text-accent font-bold text-3xl leading-none">30+</p>
+              <p className="text-accent font-bold text-3xl leading-none">40+</p>
               <p className="text-white/60 text-[10px] uppercase tracking-widest mt-1.5">Years Experience</p>
             </div>
           </motion.div>
