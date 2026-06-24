@@ -15,43 +15,11 @@
 
 import { revalidateTag } from "next/cache"
 import { type NextRequest, NextResponse } from "next/server"
-
-async function verifySignature(req: NextRequest, body: string): Promise<boolean> {
-  const secret = process.env.SANITY_WEBHOOK_SECRET
-  if (!secret) {
-    if (process.env.NODE_ENV === "development") return true
-    return false
-  }
-
-  const signature = req.headers.get("sanity-webhook-signature")
-  if (!signature) return false
-
-  // Sanity header format: "t=<timestamp>,v1=<hex_hmac_sha256>"
-  const parts = Object.fromEntries(signature.split(",").map((p) => p.split("=")))
-  const hexSignature = parts["v1"]
-  const timestamp = parts["t"]
-  if (!hexSignature || !timestamp) return false
-
-  const encoder = new TextEncoder()
-  const key = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
-  )
-
-  // Sanity signs: "<timestamp>.<body>"
-  const payload = `${timestamp}.${body}`
-  const expectedBuffer = await crypto.subtle.sign("HMAC", key, encoder.encode(payload))
-  const expectedHex = Array.from(new Uint8Array(expectedBuffer))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("")
-
-  return expectedHex === hexSignature
-}
+import { isValidSignature, SIGNATURE_HEADER_NAME } from "@sanity/webhook"
 
 export async function POST(req: NextRequest) {
+  const secret = process.env.SANITY_WEBHOOK_SECRET
+
   let body: string
   try {
     body = await req.text()
@@ -59,9 +27,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Could not read request body" }, { status: 400 })
   }
 
-  const isValid = await verifySignature(req, body)
-  if (!isValid) {
-    return NextResponse.json({ message: "Invalid signature" }, { status: 401 })
+  // Verify Sanity webhook signature using the official package
+  if (secret) {
+    const signature = req.headers.get(SIGNATURE_HEADER_NAME) ?? ""
+    const valid = await isValidSignature(body, signature, secret)
+    if (!valid) {
+      return NextResponse.json({ message: "Invalid signature" }, { status: 401 })
+    }
+  } else if (process.env.NODE_ENV !== "development") {
+    // In production, always require a secret
+    return NextResponse.json({ message: "Webhook secret not configured" }, { status: 500 })
   }
 
   let payload: { _type?: string; slug?: { current?: string } }
