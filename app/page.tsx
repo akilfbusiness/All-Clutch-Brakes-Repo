@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
-import { getSiteSettings, getAllServices, getFeaturedTestimonials, getFeaturedPromotions, getHomepageGalleryImages, getHomepageTestimonials } from "@/sanity/queries"
-import type { HomepageGalleryImage, Testimonial } from "@/sanity/queries"
+import { getSiteSettings, getAllServices, getFeaturedTestimonials, getFeaturedPromotions, getHomepageGalleryImages, getHomepageTestimonials, getAllBrands, getAllProjects } from "@/sanity/queries"
+import type { HomepageGalleryImage, Testimonial, Brand, Project } from "@/sanity/queries"
 import { HomePageClient } from "@/components/home-page-client"
 
 // ─── DEFAULT CONTENT ──────────────────────────────────────────────────────────
@@ -85,14 +85,18 @@ export default async function HomePage() {
   let promotions: Awaited<ReturnType<typeof getFeaturedPromotions>>
   let galleryImages: HomepageGalleryImage[]
   let homepageTestimonials: Testimonial[]
+  let brands: Brand[]
+  let projects: Project[]
   try {
-    ;[settings, services, testimonials, promotions, galleryImages, homepageTestimonials] = await Promise.all([
+    ;[settings, services, testimonials, promotions, galleryImages, homepageTestimonials, brands, projects] = await Promise.all([
       getSiteSettings(),
       getAllServices(),
       getFeaturedTestimonials(),
       getFeaturedPromotions(),
       getHomepageGalleryImages(),
       getHomepageTestimonials(),
+      getAllBrands(),
+      getAllProjects(),
     ])
   } catch {
     settings = {}
@@ -101,6 +105,8 @@ export default async function HomePage() {
     promotions = []
     galleryImages = []
     homepageTestimonials = []
+    brands = []
+    projects = []
   }
 
   const businessName = settings.businessName || "All Clutch & Brake Service"
@@ -231,6 +237,8 @@ export default async function HomePage() {
         riskReversalCtaLabel={riskReversalCtaLabel}
         ratingValue={ratingValue}
         reviewCount={reviewCount}
+        brands={brands}
+        projects={projects}
       />
     </>
   )

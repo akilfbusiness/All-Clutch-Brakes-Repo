@@ -25,15 +25,24 @@ export function RiskReversalSection({
     <section className="bg-[#0a0a0a] py-20 md:py-28 px-6">
       <div className="max-w-3xl mx-auto text-center">
 
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, ease }}
-          className="text-[#2A6DD9] text-[10px] font-bold tracking-[0.45em] uppercase mb-6"
-        >
-          {eyebrow}
-        </motion.p>
+        {/* Eyebrow */}
+        {eyebrow && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease }}
+            className="flex flex-col items-center gap-3 mb-6"
+          >
+            <div className="flex items-center gap-2">
+              <div className="h-px w-8 bg-accent/50" />
+              <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent">
+                {eyebrow}
+              </span>
+              <div className="h-px w-8 bg-accent/50" />
+            </div>
+          </motion.div>
+        )}
 
         <motion.h2
           initial={{ opacity: 0, y: 20 }}

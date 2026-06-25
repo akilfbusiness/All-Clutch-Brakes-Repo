@@ -4,9 +4,8 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { Phone, ChevronDown, Sun, Moon } from "lucide-react"
+import { Phone, ChevronDown } from "lucide-react"
 import { PhoneLink } from "@/components/phone-link"
-import { useTheme } from "next-themes"
 
 interface NavItem {
   label: string
@@ -37,15 +36,9 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
   const [open,        setOpen]        = useState(false)
   const [scrolled,    setScrolled]    = useState(false)
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
-  const [mounted,        setMounted]        = useState(false)
   const [isDarkHeroPage, setIsDarkHeroPage] = useState(false)
-  const { theme, setTheme } = useTheme()
   const pathname = usePathname()
   const useHeroWhite = isDarkHeroPage && !scrolled && !open
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   // Pages that always have a full-bleed dark hero image behind the transparent nav
   useEffect(() => {
@@ -141,19 +134,6 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
             {phone}
           </PhoneLink>
 
-          {/* Theme toggle */}
-          {mounted && (
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              aria-label="Toggle theme"
-              className="relative z-50 hidden md:flex w-9 h-9 items-center justify-center transition-colors"
-            >
-              {theme === "dark"
-                ? <Sun className={`h-4 w-4 ${useHeroWhite ? "text-white/70" : "text-foreground/60"}`} />
-                : <Moon className={`h-4 w-4 ${useHeroWhite ? "text-white/70" : "text-foreground/60"}`} />
-              }
-            </button>
-          )}
 
           {/* Hamburger button */}
           <button
@@ -188,9 +168,9 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
             animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
             exit={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
             transition={{ duration: 0.55, ease }}
-            className="fixed inset-0 z-40 bg-background flex flex-col overflow-auto"
+            className="fixed inset-0 z-40 bg-background flex flex-col overflow-y-auto"
           >
-            <div className="container flex-1 flex flex-col justify-center py-32 min-h-screen">
+            <div className="container flex-1 flex flex-col pt-28 pb-32">
 
               {/* Nav links — Autovera style large list */}
               <nav className="border-t border-border">
@@ -292,25 +272,25 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
                 })}
               </nav>
 
-              {/* Bottom CTA row */}
+              {/* Bottom CTA row — sticky so always visible as accordion grows */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.45, duration: 0.5, ease }}
-                className="mt-12 flex flex-wrap items-center gap-6"
+                className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border/40 px-4 sm:px-6 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] flex items-center gap-3"
               >
                 <PhoneLink
                   phone={phone}
                   label="navbar-mobile"
-                  className="inline-flex items-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-6 py-3 transition-colors"
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-[#E63946] hover:bg-[#E63946]/90 text-white font-bold text-sm px-4 h-12 transition-colors"
                 >
-                  <Phone className="h-4 w-4" />
+                  <Phone className="h-4 w-4 flex-shrink-0" />
                   {phone}
                 </PhoneLink>
                 <Link
                   href={ctaLink}
                   onClick={() => setOpen(false)}
-                  className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-8 py-4 transition-colors"
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm px-4 h-12 transition-colors"
                 >
                   {ctaLabel}
                 </Link>

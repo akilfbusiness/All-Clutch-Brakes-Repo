@@ -37,9 +37,6 @@ export function GalleryPreviewSection({ images }: GalleryPreviewSectionProps) {
             transition={{ duration: 0.6, ease }}
             className="text-center mb-10 md:mb-14"
           >
-            <p className="text-[#2A6DD9] text-[10px] font-bold tracking-[0.45em] uppercase mb-3">
-              Our Work
-            </p>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-tight text-balance">
               See What We Do
             </h2>
@@ -58,7 +55,7 @@ export function GalleryPreviewSection({ images }: GalleryPreviewSectionProps) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.07, ease }}
                 onClick={() => openLightbox(index)}
-                className="relative aspect-square overflow-hidden rounded-sm group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2A6DD9]"
+                className="relative aspect-square overflow-hidden rounded-sm group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 aria-label={`View image: ${img.altText || img.title}`}
               >
                 {img.image ? (

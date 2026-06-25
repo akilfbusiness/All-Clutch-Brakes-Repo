@@ -58,62 +58,43 @@ export function LocationsPageClient({ businessName, phone, pageTitle, pageSubtit
         </div>
       </section>
 
-      {/* REGIONS GRID */}
-      <section className="py-20 md:py-28 bg-background border-b border-border">
-        <div className="container">
-          <div className="flex items-center justify-between mb-14">
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">Service Regions</h2>
-            <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent/70 border border-accent/20 px-3 py-1">
-              {displayRegions.length} Regions
-            </span>
-          </div>
-
-          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-40px" }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-border">
-            {displayRegions.map((region, i) => (
-              <motion.article key={region.slug} variants={fadeUp}
-                className="group relative border-r border-b border-border overflow-hidden">
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-accent scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-                <div className="absolute inset-0 bg-accent/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative z-10 p-7 md:p-9">
-                  <span aria-hidden className="absolute top-4 right-5 text-[64px] font-bold leading-none text-foreground/[0.06] select-none pointer-events-none">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="w-10 h-10 rounded-full border border-accent/30 bg-accent/8 flex items-center justify-center mb-6 group-hover:bg-accent group-hover:border-accent transition-all duration-300">
-                    <MapPin className="h-4 w-4 text-accent group-hover:text-black transition-colors duration-300" />
-                  </div>
-                  <h3 className="text-lg font-bold text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight mb-3">
-                    <Link href={`/locations/${region.slug}`} className="before:absolute before:inset-0">
-                      {region.title}
-                    </Link>
-                  </h3>
-                  {region.answerCapsule && (
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-5">{region.answerCapsule}</p>
-                  )}
-                  <span className="inline-flex items-center gap-1.5 text-accent text-xs font-bold group-hover:gap-3 transition-all duration-300">
-                    View Services <ArrowRight className="h-3 w-3" />
-                  </span>
-                </div>
-              </motion.article>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* SUBURBS */}
+      {/* SERVICE AREAS GRID */}
       {suburbs.length > 0 && (
         <section className="py-20 md:py-28 bg-background border-b border-border">
           <div className="container">
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-10">Key Service Areas</h2>
-            <div className="flex flex-wrap gap-3">
-              {suburbs.map((suburb) => (
-                <Link key={suburb.slug} href={`/locations/${suburb.slug}`}
-                  className="group inline-flex items-center gap-2 border border-border hover:border-accent text-muted-foreground hover:text-accent font-bold text-sm px-4 py-2.5 transition-all duration-300">
-                  <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
-                  {suburb.title}
-                </Link>
-              ))}
+            <div className="flex items-center justify-between mb-14">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">Service Areas</h2>
+              <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent/70 border border-accent/20 px-3 py-1">
+                {suburbs.length} Areas
+              </span>
             </div>
+
+            <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-40px" }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-border">
+              {suburbs.map((suburb, i) => (
+                <motion.article key={suburb.slug} variants={fadeUp}
+                  className="group relative border-r border-b border-border overflow-hidden">
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-accent scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                  <div className="absolute inset-0 bg-accent/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative z-10 p-7 md:p-9">
+                    <span aria-hidden className="absolute top-4 right-5 text-[64px] font-bold leading-none text-foreground/[0.06] select-none pointer-events-none">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div className="w-10 h-10 rounded-full border border-accent/30 bg-accent/8 flex items-center justify-center mb-6 group-hover:bg-accent group-hover:border-accent transition-all duration-300">
+                      <MapPin className="h-4 w-4 text-accent group-hover:text-black transition-colors duration-300" />
+                    </div>
+                    <h3 className="text-lg font-bold text-foreground group-hover:text-accent transition-colors duration-300 tracking-tight mb-5">
+                      <Link href={`/locations/${suburb.slug}`} className="before:absolute before:inset-0">
+                        {suburb.title}
+                      </Link>
+                    </h3>
+                    <span className="inline-flex items-center gap-1.5 text-accent text-xs font-bold group-hover:gap-3 transition-all duration-300">
+                      View Services <ArrowRight className="h-3 w-3" />
+                    </span>
+                  </div>
+                </motion.article>
+              ))}
+            </motion.div>
           </div>
         </section>
       )}

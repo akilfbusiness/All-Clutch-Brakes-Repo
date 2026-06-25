@@ -467,6 +467,7 @@ export default async function BlogPostPage({
             Article
           </span>
           <div className="container mx-auto px-6 relative">
+          <div className="max-w-3xl mx-auto">
 
             {/* 1. Breadcrumb */}
             <nav aria-label="Breadcrumb" className="mb-8">
@@ -558,6 +559,7 @@ export default async function BlogPostPage({
                 ))}
               </div>
             )}
+          </div>
           </div>
         </section>
 

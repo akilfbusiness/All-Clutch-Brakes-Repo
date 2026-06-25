@@ -9,7 +9,7 @@ import { Footer } from "@/components/footer"
 import "./globals.css"
 import { RoryChatWidget } from "@/components/rory-chat-widget"
 
-const _plusJakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans", weight: ["400", "500", "600", "700", "800"] })
+const _plusJakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans", weight: ["400", "500", "600", "700", "800"], style: ["normal", "italic"] })
 const _geistMono   = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
 
@@ -319,7 +319,7 @@ export default async function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} forcedTheme="light">
           <Header settings={settings} />
           <main>{children}</main>
           <Footer settings={settings} />
