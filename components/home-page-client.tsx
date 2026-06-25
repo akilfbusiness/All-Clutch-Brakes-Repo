@@ -7,7 +7,7 @@ import {
   useScroll, useTransform,
   useInView, useMotionValue, useTransform as useMotionTransform, animate,
 } from "framer-motion"
-import { Phone, Plus, ArrowRight, MapPin, Clock, Wrench } from "lucide-react"
+import { Phone, Plus, ArrowRight, MapPin, Clock, Wrench, Check } from "lucide-react"
 import { useTheme } from "next-themes"
 import { PromotionsBanner } from "./promotions-banner"
 import { CircularGallery } from "./ui/circular-gallery"
@@ -19,6 +19,9 @@ import { ReviewsWallSection } from "./reviews-wall-section"
 import { RiskReversalSection } from "./risk-reversal-section"
 import type { Testimonial, Promotion, HomepageGalleryImage } from "@/sanity/queries"
 import { GalleryPreviewSection } from "./gallery-preview-section"
+import { BrandsSection } from "./brands-section"
+import { ProjectsPreviewSection } from "./projects-preview-section"
+import type { Brand, Project } from "@/sanity/queries"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -86,6 +89,9 @@ export interface HomePageClientProps {
   // Reviews Wall
   ratingValue: string
   reviewCount: string
+  // New sections
+  brands: Brand[]
+  projects: Project[]
 }
 
 // ─── ANIMATION PRESETS ────────────────────────────────────────────────────────
@@ -159,19 +165,6 @@ function Ticker({ items, reverse = false }: { items?: string[]; reverse?: boolea
   )
 }
 
-// ─── SECTION NUMBER WATERMARK ─────────────────────────────────────────────────
-
-function SectionNum({ n }: { n: string }) {
-  return (
-    <span
-      aria-hidden
-      className="absolute top-6 right-6 md:right-10 text-[100px] md:text-[160px] font-bold leading-none text-foreground/[0.03] select-none pointer-events-none"
-    >
-      {n}
-    </span>
-  )
-}
-
 // ─── FAQ ROW ─────────────────────────────────────────────────────────────────
 
 function FaqRow({
@@ -232,6 +225,7 @@ export function HomePageClient({
   howItWorksHeadline, howItWorksSteps, howItWorksPrimaryCtaLabel, howItWorksSecondaryCtaLabel,
   riskReversalEyebrow, riskReversalHeadline, riskReversalBody, riskReversalCtaLabel,
   ratingValue, reviewCount,
+  brands, projects,
 }: HomePageClientProps) {
 
   const [openService,  setOpenService]  = useState<number | null>(null)
@@ -318,8 +312,10 @@ export function HomePageClient({
             )}
         </motion.div>
 
-        {/* Directional overlay — light at top so image shows, dark at bottom for text contrast */}
+        {/* Vertical scrim — dark at bottom for text contrast, fades toward top */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/15" />
+        {/* Horizontal scrim — darkens left where text lives, transparent toward right where video breathes */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
 
         {/* Cursor-following glow */}
         <div
@@ -335,26 +331,26 @@ export function HomePageClient({
             initial="show" animate="show" variants={stagger}
             className="max-w-5xl"
           >
-            <motion.p
-              variants={fadeUp}
-              className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-8"
-            >
-              {heroTagline}
-            </motion.p>
+            {/* Hero eyebrow */}
+            <motion.div variants={fadeUp} className="mb-6">
+              <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent">
+                Clutch · Brake · Repairs · Adelaide
+              </span>
+            </motion.div>
 
             {/* Two-tone headline */}
             <motion.h1 variants={fadeUp} className="leading-[1.0] tracking-tight mb-8">
-              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-bold text-white">
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-extrabold text-white">
                 {line1}
               </span>
-              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-bold text-accent">
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-extrabold text-accent">
                 {line2}
               </span>
             </motion.h1>
 
             <motion.p
               variants={fadeUp}
-              className="text-base md:text-lg text-white/55 max-w-xl leading-relaxed mb-12"
+              className="text-base md:text-lg text-white/80 max-w-xl leading-relaxed mb-12"
             >
               {heroAnswer}
             </motion.p>
@@ -376,16 +372,16 @@ export function HomePageClient({
               </Link>
             </motion.div>
 
-            {/* Trust signal pills */}
+            {/* Trust signals — 2-col grid, white text, blue check. Risk reducers should read like confident statements. */}
             {trustSignals.length > 0 && (
-              <motion.div variants={fadeUp} className="flex flex-wrap gap-2 pt-2">
+              <motion.div
+                variants={fadeUp}
+                className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5 mt-8"
+              >
                 {trustSignals.map((signal, i) => (
-                  <span
-                    key={i}
-                    className="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.2em] uppercase text-white/50 border border-white/10 bg-white/[0.04] backdrop-blur-sm px-3 py-1.5"
-                  >
-                    <span className="w-1 h-1 rounded-full bg-accent flex-shrink-0" />
-                    {signal}
+                  <span key={i} className="flex items-center gap-2.5">
+                    <Check className="h-4 w-4 text-accent flex-shrink-0 stroke-[2.5]" aria-hidden="true" />
+                    <span className="text-sm font-medium text-white leading-snug">{signal}</span>
                   </span>
                 ))}
               </motion.div>
@@ -407,7 +403,7 @@ export function HomePageClient({
               className="absolute top-0 w-full h-1/2 bg-gradient-to-b from-transparent via-accent to-transparent"
             />
           </div>
-          <span className="text-[9px] font-bold tracking-[0.4em] uppercase text-white/25">Scroll</span>
+          <span aria-hidden="true" className="sr-only">Scroll</span>
         </motion.div>
 
         {/* Info strip at bottom of hero */}
@@ -452,7 +448,6 @@ export function HomePageClient({
           Giant full-bleed columns · animated counters · cinematic scale
       ═════════════════════════════════════════════════════════════════════�� */}
       <section className="relative border-b border-border overflow-hidden" style={{ backgroundColor: 'var(--accent)' }}>
-        <SectionNum n="02" />
         <motion.div
           variants={stagger} initial="hidden"
           whileInView="show" viewport={{ once: true, margin: "-60px" }}
@@ -511,7 +506,6 @@ export function HomePageClient({
         {/* Subtle grid texture */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(oklch(0.94 0 0) 1px, transparent 1px), linear-gradient(90deg, oklch(0.94 0 0) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
 
-        <SectionNum n="03" />
         <div className="container relative z-10">
 
           {/* Header */}
@@ -521,9 +515,11 @@ export function HomePageClient({
             className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16"
           >
             <div>
-              <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-4">
-                What We Do
-              </p>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="h-px w-8 bg-accent/40" />
+                <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent">What We Do</span>
+                <div className="h-px w-8 bg-accent/40" />
+              </div>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-none text-foreground dark:text-white">
                 {servicesHeading}
               </h2>
@@ -572,15 +568,18 @@ export function HomePageClient({
 
           {/* Left */}
           <div className="relative py-24 md:py-32 px-6 md:px-10 lg:px-16 xl:px-20">
-            <SectionNum n="04" />
 
             <motion.div
               initial={{ opacity: 0, x: -28 }} whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.7, ease }}
             >
-              <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-6">
-                Our Promise
-              </p>
+              {/* Eyebrow */}
+              <div className="flex items-center gap-2 mb-6">
+                <div className="h-px w-8 bg-accent/40" />
+                <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent">Our Promise</span>
+                <div className="h-px w-8 bg-accent/40" />
+              </div>
+
               {/* Autovera-style orange left-border heading */}
               <div className="border-l-[3px] border-accent pl-6 mb-16">
                 <h2 className="text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-tight text-foreground">
@@ -663,7 +662,13 @@ export function HomePageClient({
 
 
       {/* ══════════════════════════════════════════════════════════════════════
-          05 · REVIEWS WALL
+          05 · GALLERY PREVIEW
+          2-col mobile · 3-col desktop · lightbox on tap · See All → /gallery
+      ══════════════════════════════════════════════════════════════════════ */}
+      <GalleryPreviewSection images={galleryImages} />
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          06 · REVIEWS WALL
           Static 6-card grid · light grey bg · placeholder reviews
       ══════════════════════════════════════════════════════════════════════ */}
       <ReviewsWallSection
@@ -675,7 +680,18 @@ export function HomePageClient({
       {/* ═══════════════��══════════════════════════════════════════════════════
           06 · FREE DIAGNOSIS FORM
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="py-16 md:py-24 bg-foreground/[0.02] border-t border-border">
+      <section className="relative overflow-hidden bg-white pt-[76px] pb-16 md:pt-[120px] md:pb-24">
+
+        {/* Tilt divider — grey #F5F5F5 → white, mirrors Reviews fan (same angle, grey bleeds down into white) */}
+        <div aria-hidden="true" className="absolute top-0 left-0 right-0 leading-[0]">
+          <svg viewBox="0 0 1440 80" preserveAspectRatio="none" className="w-full h-[60px] md:h-[80px]" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0,0 1440,0 1440,36 0,60" fill="#F5F5F5" />
+            <polygon points="0,60 1440,36 1440,46 0,68" fill="#909090" fillOpacity="0.07" />
+            <polygon points="0,68 1440,46 1440,58 0,76" fill="#909090" fillOpacity="0.13" />
+            <polygon points="0,76 1440,58 1440,68 0,80" fill="#909090" fillOpacity="0.22" />
+          </svg>
+        </div>
+
         <div className="container">
           <div className="max-w-2xl mx-auto">
             <motion.div
@@ -683,9 +699,11 @@ export function HomePageClient({
               viewport={{ once: true }} transition={{ duration: 0.6, ease }}
               className="mb-8 text-center"
             >
-              <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-3">
-                Free Diagnosis
-              </p>
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className="h-px w-8 bg-accent/40" />
+                <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent">Free Diagnosis</span>
+                <div className="h-px w-8 bg-accent/40" />
+              </div>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-tight">
                 Tell Us What&apos;s Wrong
               </h2>
@@ -708,18 +726,6 @@ export function HomePageClient({
           </div>
         </div>
       </section>
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          07 · RISK REVERSAL
-          Dark bg · guarantee · call CTA
-      ══════════════════════════════════════════════════════════════════════ */}
-      <RiskReversalSection
-        phone={phone}
-        eyebrow={riskReversalEyebrow}
-        headline={riskReversalHeadline}
-        body={riskReversalBody}
-        ctaLabel={riskReversalCtaLabel}
-      />
 
       {/* ══════════════════════════════════════════════════════════════════════
           08 · ABOUT
@@ -764,9 +770,6 @@ export function HomePageClient({
             viewport={{ once: true }} transition={{ duration: 0.8, ease, delay: 0.15 }}
             className="flex flex-col justify-center py-24 md:py-32 px-6 md:px-10 lg:px-16 xl:px-20"
           >
-            <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-6">
-              Our Story
-            </p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight mb-8">
               Adelaide&apos;s Most Trusted Clutch &amp; Brake Specialists.
             </h2>
@@ -795,17 +798,29 @@ export function HomePageClient({
 
 
       {/* ══════════════════════════════════════════════════════════════════════
-          09 · GALLERY PREVIEW
-          2-col mobile · 3-col desktop · lightbox on tap · See All → /gallery
+          09 · RISK REVERSAL
+          Dark bg · guarantee · call CTA
       ══════════════════════════════════════════════════════════════════════ */}
-      <GalleryPreviewSection images={galleryImages} />
+      <RiskReversalSection
+        phone={phone}
+        eyebrow={riskReversalEyebrow}
+        headline={riskReversalHeadline}
+        body={riskReversalBody}
+        ctaLabel={riskReversalCtaLabel}
+      />
+
+      {/* ── Brands ──────────────────────────────────────────────────────────── */}
+      <BrandsSection brands={brands} />
+
+      {/* ── Projects Preview ────────────────────────────────────────────────── */}
+      <ProjectsPreviewSection projects={projects} />
 
       {/* ══════════════════════════════════════════════════════════════════════
           10 · FAQ
           Two-column · heading left · animated accordion right
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="relative py-24 md:py-32 bg-background">
-        <SectionNum n="06" />
+      <section className="relative overflow-hidden pt-16 pb-24 md:pt-24 md:pb-32 bg-background">
+
         <div className="container">
           <div className="grid lg:grid-cols-[2fr_3fr] gap-16 lg:gap-24">
 
@@ -815,9 +830,6 @@ export function HomePageClient({
               viewport={{ once: true }} transition={{ duration: 0.6, ease }}
               className="lg:sticky lg:top-32 lg:self-start"
             >
-              <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-6">
-                Got Questions?
-              </p>
               <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight leading-tight mb-8">
                 Frequently Asked Questions
               </h2>

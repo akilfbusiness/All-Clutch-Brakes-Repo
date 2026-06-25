@@ -146,10 +146,13 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
       <div className="relative z-10 border-t border-border/50">
         <div className="container flex flex-wrap justify-between items-center gap-4 py-5">
           <p className="text-xs text-muted-foreground/50">{copyright}</p>
-          <Link href="/privacy-policy"
+          <a
+            href="https://computergeeksaustralia.com.au/"
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-xs text-muted-foreground/50 hover:text-accent transition-colors duration-300">
-            Privacy Policy
-          </Link>
+            Created by Monarc Labs
+          </a>
         </div>
       </div>
     </footer>
