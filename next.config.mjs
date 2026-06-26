@@ -12,7 +12,15 @@ const nextConfig = {
   // features already natively supported (Array.at, Object.hasOwn, etc.)
   // Saves ~14.5KB of unnecessary polyfill JS per Lighthouse audit.
   experimental: {
+    // Target modern browsers only — tells SWC not to transpile or polyfill
+    // features already natively supported (Array.at, Object.hasOwn, etc.)
+    // Works with the "browserslist" field in package.json. Saves ~14.5 KB.
     browsersListForSwc: true,
+
+    // Inline critical-path CSS and defer the rest.
+    // Requires the `critters` package (dev dependency). Eliminates the
+    // render-blocking stylesheet penalty flagged by Lighthouse.
+    optimizeCss: true,
   },
   images: {
     // Enable Next.js image optimisation — critical for Core Web Vitals

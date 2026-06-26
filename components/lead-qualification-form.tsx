@@ -228,8 +228,12 @@ function ProgressBar({ pct, accent, stepLabel }: { pct: number; accent: string; 
 function FakeLoadingScreen({ accent, transitionKey, onDone }: { accent: string; transitionKey: string; onDone: () => void }) {
   const lines = LOADING_LINES[transitionKey] ?? LOADING_LINES["s1_to_s2"]
   const [visible, setVisible] = useState<number[]>([])
-  const [scanPos, setScanPos] = useState(0)
+  // scanPct 0–99 drives both the progress bar and scan line position
   const [scanPct, setScanPct] = useState(0)
+  // scanPos 0–96 drives the horizontal position (0–96% of container width)
+  const [scanPos, setScanPos] = useState(0)
+  // ref to the scanner container so we can read its pixel width for composited translateX
+  const scannerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = []
@@ -240,7 +244,7 @@ function FakeLoadingScreen({ accent, transitionKey, onDone }: { accent: string; 
     return () => timers.forEach(clearTimeout)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Crawl to 85% in 3s then hold — never shows 100% until webhook returns
+  // Animate scan position — only updates state values, composited transforms applied via inline style
   useEffect(() => {
     let frame: number
     let start: number | null = null
@@ -264,6 +268,7 @@ function FakeLoadingScreen({ accent, transitionKey, onDone }: { accent: string; 
 
       {/* Diagnostic scanner graphic */}
       <div
+        ref={scannerRef}
         style={{
           position: "relative",
           height: "100px",
@@ -283,33 +288,43 @@ function FakeLoadingScreen({ accent, transitionKey, onDone }: { accent: string; 
           <div key={p} style={{ position: "absolute", left: `${p}%`, top: 0, bottom: 0, width: "1px", background: `${T.border}55` }} />
         ))}
 
-        {/* Glow sweep behind scan line */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            left: `${scanPos}%`,
-            width: "80px",
-            background: `linear-gradient(90deg, transparent, ${accent}18, transparent)`,
-            transform: "translateX(-50%)",
-            pointerEvents: "none",
-          }}
-        />
-
-        {/* Scan line */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            left: `${scanPos}%`,
-            width: "2px",
-            background: `linear-gradient(180deg, transparent, ${accent}, ${accent}, transparent)`,
-            boxShadow: `0 0 16px 3px ${accent}88`,
-            transition: "left 0.04s linear",
-          }}
-        />
+        {/* Glow sweep & scan line — use transform:translateX (GPU-composited)
+            instead of animating `left` to avoid Lighthouse non-composited warning.
+            The pixel offset is derived from the container's offsetWidth via ref. */}
+        {(() => {
+          const w = scannerRef.current?.offsetWidth ?? 300
+          const px = (scanPos / 100) * w
+          return (
+            <>
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  width: "80px",
+                  background: `linear-gradient(90deg, transparent, ${accent}18, transparent)`,
+                  transform: `translateX(${px - 40}px)`,
+                  willChange: "transform",
+                  pointerEvents: "none",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  width: "2px",
+                  background: `linear-gradient(180deg, transparent, ${accent}, ${accent}, transparent)`,
+                  boxShadow: `0 0 16px 3px ${accent}88`,
+                  transform: `translateX(${px}px)`,
+                  willChange: "transform",
+                }}
+              />
+            </>
+          )
+        })()}
 
         {/* Top-left label */}
         <div style={{ position: "absolute", top: "10px", left: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
@@ -327,8 +342,9 @@ function FakeLoadingScreen({ accent, transitionKey, onDone }: { accent: string; 
           <span style={{ fontSize: "0.75rem", fontWeight: 700, color: URGENT, marginLeft: "2px" }}>%</span>
         </div>
 
-        {/* Bottom progress fill */}
-        <div style={{ position: "absolute", bottom: 0, left: 0, height: "2px", width: `${scanPct}%`, background: accent, transition: "width 0.08s linear", boxShadow: `0 0 6px ${accent}` }} />
+        {/* Bottom progress fill — scaleX on a full-width element is GPU-composited;
+            avoids non-composited animation warning from animating `width` directly. */}
+        <div style={{ position: "absolute", bottom: 0, left: 0, height: "2px", width: "100%", background: accent, transformOrigin: "left center", transform: `scaleX(${scanPct / 100})`, willChange: "transform", boxShadow: `0 0 6px ${accent}` }} />
       </div>
 
       {/* Status lines */}
@@ -545,27 +561,35 @@ function ServiceDropdown({ options, selected, onSelect, accent }: {
 }) {
   const [focused, setFocused] = useState(false)
   return (
-    <select
-      value={selected}
-      onChange={(e) => onSelect(e.target.value)}
-      onFocus={() => setFocused(true)}
-      onBlur={() => setFocused(false)}
-      style={{
-        ...getInputStyle(accent, focused),
-        cursor: "pointer",
-        appearance: "none",
-        WebkitAppearance: "none",
-        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7585' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "right 0.875rem center",
-        paddingRight: "2.25rem",
-      }}
-    >
-      <option value="" disabled>Select a service...</option>
-      {options.map((opt) => (
-        <option key={opt} value={opt} style={{ background: "#161A1F", color: "#F0F2F5" }}>{opt}</option>
-      ))}
-    </select>
+    <>
+      {/* Visually-hidden label satisfies WCAG 1.3.1 and Lighthouse "select elements
+          do not have associated label elements" audit without changing the visual UI. */}
+      <label htmlFor="lqf-service-dropdown" style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", border: 0 }}>
+        Select a service
+      </label>
+      <select
+        id="lqf-service-dropdown"
+        value={selected}
+        onChange={(e) => onSelect(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        style={{
+          ...getInputStyle(accent, focused),
+          cursor: "pointer",
+          appearance: "none",
+          WebkitAppearance: "none",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7585' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "right 0.875rem center",
+          paddingRight: "2.25rem",
+        }}
+      >
+        <option value="" disabled>Select a service...</option>
+        {options.map((opt) => (
+          <option key={opt} value={opt} style={{ background: "#161A1F", color: "#F0F2F5" }}>{opt}</option>
+        ))}
+      </select>
+    </>
   )
 }
 

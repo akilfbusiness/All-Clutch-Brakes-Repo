@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import {
   motion, AnimatePresence,
@@ -300,15 +301,21 @@ export function HomePageClient({
                 <source src={heroVideo} type="video/mp4" />
               </video>
             ) : (
-              /* Ken Burns zoom fallback image */
-              <motion.img
-                src={heroImage}
-                alt="Mechanic working on vehicle"
-                initial={{ scale: 1.0 }}
-                animate={{ scale: 1.12 }}
-                transition={{ duration: 12, ease: "linear" }}
-                className="w-full h-full object-cover object-center"
-              />
+              /* Ken Burns zoom — Next.js <Image> with priority so the browser
+                 preloads this as the LCP element. The ken-burns CSS class
+                 handles the slow zoom via a GPU-composited CSS animation so
+                 it does not trigger non-composited animation warnings. */
+              <div className="relative w-full h-full ken-burns">
+                <Image
+                  src={heroImage}
+                  alt="Mechanic working on vehicle"
+                  fill
+                  priority
+                  sizes="100vw"
+                  quality={75}
+                  className="object-cover object-center"
+                />
+              </div>
             )}
         </motion.div>
 
@@ -664,7 +671,7 @@ export function HomePageClient({
       {/* ══════════════════════════════════════════════════════════════════════
           05 · GALLERY PREVIEW
           2-col mobile · 3-col desktop · lightbox on tap · See All → /gallery
-      ══════════════════════════════════════════════════════════════════════ */}
+      ════════════════════════���═════════════════════════════════════════════ */}
       <GalleryPreviewSection images={galleryImages} />
 
       {/* ══════════════════════════════════════════════════════════════════════

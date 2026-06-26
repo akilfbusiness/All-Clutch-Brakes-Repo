@@ -198,11 +198,16 @@ export function ReviewsWallSection({
                     {review.customerName}
                   </p>
                   {review.vehicleType && (
-                    <p className="text-xs text-gray-400 mt-0.5 truncate">{review.vehicleType}</p>
+                    /* text-gray-500 = #6b7280, ~4.6:1 contrast on white — passes WCAG AA */
+                    <p className="text-xs text-gray-500 mt-0.5 truncate">{review.vehicleType}</p>
                   )}
                 </div>
+                {/* role="img" makes aria-label valid on this span — it represents
+                    the Google review platform badge, which is meaningful to AT users. */}
+                {/* text-gray-500 = #6b7280, ~4.6:1 on white — passes WCAG AA for small bold text */}
                 <span
-                  className="text-[10px] font-bold tracking-[0.15em] uppercase text-gray-300 shrink-0 ml-4"
+                  role="img"
+                  className="text-[10px] font-bold tracking-[0.15em] uppercase text-gray-500 shrink-0 ml-4"
                   aria-label="Google Review"
                 >
                   Google
