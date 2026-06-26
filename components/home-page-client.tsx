@@ -295,7 +295,7 @@ export function HomePageClient({
                 preload="none"
                 poster={heroImage}
                 aria-hidden="true"
-                className="w-full h-full object-cover object-center"
+                className="w-full h-full object-cover object-[center_35%] md:object-center"
               >
                 <source src={heroVideo} type="video/mp4" />
               </video>
@@ -312,10 +312,11 @@ export function HomePageClient({
             )}
         </motion.div>
 
-        {/* Vertical scrim — dark at bottom for text contrast, fades toward top */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/15" />
+        {/* Vertical scrim — dark at bottom for text contrast, fades toward top.
+            On mobile the overlay is slightly lighter so the video subject stays visible. */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/10 md:from-black/85 md:via-black/45 md:to-black/15" />
         {/* Horizontal scrim — darkens left where text lives, transparent toward right where video breathes */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent md:from-black/55 md:via-black/25" />
 
         {/* Cursor-following glow */}
         <div
@@ -664,7 +665,7 @@ export function HomePageClient({
       {/* ══════════════════════════════════════════════════════════════════════
           05 · GALLERY PREVIEW
           2-col mobile · 3-col desktop · lightbox on tap · See All → /gallery
-      ══════════════════════════════════════════════════════════════════════ */}
+      ════════════════════════���═════════════════════════════════════════════ */}
       <GalleryPreviewSection images={galleryImages} />
 
       {/* ══════════════════════════════════════════════════════════════════════

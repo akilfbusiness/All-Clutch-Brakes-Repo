@@ -48,7 +48,7 @@ export function PageHeroMedia({ imageUrl, videoUrl, alt = "", priority = true }:
             preload="none"
             poster={imageUrl ?? undefined}
             aria-hidden="true"
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover object-[center_35%] md:object-center"
           >
             <source src={videoUrl} type="video/mp4" />
           </video>
