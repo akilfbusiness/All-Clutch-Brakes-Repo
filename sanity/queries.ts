@@ -66,8 +66,6 @@ export interface SiteSettings {
   heroTagline?: string
   heroImage?: string
   heroVideo?: string
-  heroVideoMobile?: string
-  heroImageMobile?: string
   mechanicImage?: string
   workshopImage?: string
   heroPrimaryCtaLabel?: string
@@ -298,8 +296,6 @@ export const SITE_SETTINGS_QUERY = `
     heroTagline,
     "heroImage": heroImage.asset->url + "?w=828&fm=webp&q=65",
     "heroVideo": heroVideo.asset->url,
-    "heroVideoMobile": heroVideoMobile.asset->url,
-    "heroImageMobile": heroImageMobile.asset->url + "?w=828&fm=webp&q=80",
     "mechanicImage": mechanicImage.asset->url + "?w=828&fm=webp&q=65",
     "workshopImage": workshopImage.asset->url + "?w=828&fm=webp&q=65",
     heroTrustSignals, homeTickerItems, homeStatsItems, homeAboutDescription,

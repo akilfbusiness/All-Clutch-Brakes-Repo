@@ -126,10 +126,8 @@ export default async function HomePage() {
   // the payload small. These only show when no Sanity image is configured.
   // The hero poster is the LCP element on mobile — keeping it under 50KB directly
   // improves LCP on slow connections.
-  const heroImage       = settings.heroImage      || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=828&q=40&fm=webp"
-  const heroVideo       = settings.heroVideo      || null
-  const heroVideoMobile = settings.heroVideoMobile || null
-  const heroImageMobile = settings.heroImageMobile || null
+  const heroImage      = settings.heroImage      || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=828&q=40&fm=webp"
+  const heroVideo      = settings.heroVideo      || null
   const mechanicImage  = settings.mechanicImage  || "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=828&q=40&fm=webp"
   const workshopImage  = settings.workshopImage  || "https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=828&q=40&fm=webp"
   const primaryCta     = settings.heroPrimaryCtaLabel   || "Call Now"
@@ -204,8 +202,6 @@ export default async function HomePage() {
         heroTagline={heroTagline}
         heroImage={heroImage}
         heroVideo={heroVideo}
-        heroVideoMobile={heroVideoMobile}
-        heroImageMobile={heroImageMobile}
         mechanicImage={mechanicImage}
         workshopImage={workshopImage}
         primaryCta={primaryCta}
