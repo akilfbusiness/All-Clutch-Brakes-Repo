@@ -28,7 +28,7 @@ export function BrandsSection({ brands }: Props) {
   const marqueeItems = [...items, ...items]
 
   return (
-    <section className="relative bg-white pt-[88px] pb-14 md:pt-[120px] md:pb-20 overflow-hidden" aria-labelledby="brands-heading">
+    <section className="relative bg-white pt-[88px] pb-14 md:pt-[120px] md:pb-20 overflow-hidden -mt-px" aria-labelledby="brands-heading">
       <style>{`
         @keyframes brands-marquee {
           from { transform: translateX(0) }
