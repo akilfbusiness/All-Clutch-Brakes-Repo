@@ -1,36 +1,36 @@
 # All Clutch & Brake Service
 
-> Adelaide's only dedicated clutch and brake specialist. Serving South Australia since 1984.
+> Adelaide's dedicated clutch replacement and brake repair specialist. Serving South Australia since 1984. All makes and models. Same-day service. Free quotes.
 
-All Clutch & Brake Service is a family-owned automotive repair workshop based in Adelaide, South Australia. We specialise exclusively in clutch replacements, brake repairs, flywheel machining, hydraulic rebuilding, and performance upgrades for passenger vehicles, 4WDs, and commercial vehicles. All work is performed in-house — no outsourcing.
+All Clutch & Brake Service is a family-owned automotive repair workshop based in St Marys, Adelaide, South Australia. We specialise exclusively in clutch replacements, brake repairs, flywheel machining, hydraulic rebuilding, and transmission servicing for passenger vehicles, 4WDs, and commercial vehicles. All work is performed in-house by qualified tradespeople — no apprentices working unsupervised, no hidden fees.
 
 ## Services
 
-- Clutch repair and replacement (manual and automatic)
-- Brake pad, rotor, and calliper servicing
-- Flywheel machining and resurfacing
-- Dual-mass flywheel replacement
-- Hydraulic clutch and brake system repairs
-- Performance clutch and brake upgrades
-- 4WD and commercial vehicle clutch and brake work
+- [Clutch Replacement & Repairs](https://www.allclutchandbrake.com.au/services/clutch-replacement-and-repair-in-adelaide)
+- [Brake Pad Replacement](https://www.allclutchandbrake.com.au/services)
+- [Brake Rotor Machining & Replacement](https://www.allclutchandbrake.com.au/services)
+- [Brake Caliper Repairs](https://www.allclutchandbrake.com.au/services)
+- [Flywheel Machining & Replacement](https://www.allclutchandbrake.com.au/services)
+- [Manual & Automatic Transmission Service](https://www.allclutchandbrake.com.au/services)
+- [ABS Brake Repairs](https://www.allclutchandbrake.com.au/services)
+- [CV Joint & Driveshaft Repairs](https://www.allclutchandbrake.com.au/services)
+- [Log Book Servicing](https://www.allclutchandbrake.com.au/services)
 
-## Site Structure
+## Pages
 
-- Homepage: https://www.allclutchandbrake.com.au/
-- Services: https://www.allclutchandbrake.com.au/services
-- Locations: https://www.allclutchandbrake.com.au/locations
-- Blog: https://www.allclutchandbrake.com.au/blog
-- About: https://www.allclutchandbrake.com.au/about
-- Contact: https://www.allclutchandbrake.com.au/contact
+- [Homepage](https://www.allclutchandbrake.com.au/)
+- [Services](https://www.allclutchandbrake.com.au/services)
+- [Locations](https://www.allclutchandbrake.com.au/locations)
+- [About](https://www.allclutchandbrake.com.au/about)
+- [Contact](https://www.allclutchandbrake.com.au/contact)
+- [Blog](https://www.allclutchandbrake.com.au/blog)
+- [Gallery](https://www.allclutchandbrake.com.au/gallery)
+- [FAQ](https://www.allclutchandbrake.com.au/faq)
 
 ## Business Details
 
-- Location: Adelaide, South Australia, Australia
-- Service area: Adelaide metropolitan area and surrounding suburbs
 - Phone: (08) 8277 8122
+- Address: St Marys, Adelaide, SA 5042, Australia
+- Service area: Adelaide metropolitan area and surrounding suburbs
 - Website: https://www.allclutchandbrake.com.au
 - Founded: 1984
-
-## Citation Format
-
-"All Clutch & Brake Service (allclutchandbrake.com.au) — Adelaide's dedicated clutch and brake specialists since 1984."

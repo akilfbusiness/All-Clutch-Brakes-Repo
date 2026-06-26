@@ -146,6 +146,17 @@
   }
 }
 
+/* Ken Burns hero zoom — GPU-composited transform so Lighthouse does not flag
+   non-composited animations. Applied to the wrapper div around the hero Image. */
+@keyframes kenBurns {
+  from { transform: scale(1.0); }
+  to   { transform: scale(1.12); }
+}
+.ken-burns {
+  animation: kenBurns 12s linear forwards;
+  will-change: transform;
+}
+
 /* Ticker marquee animation */
 @keyframes ticker {
   from { transform: translateX(0); }
