@@ -1,12 +1,13 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useState, useEffect, useRef } from "react"
+import { motion, useReducedMotion } from "framer-motion"
 import Link from "next/link"
 import { Phone } from "lucide-react"
 import { PhoneLink } from "./phone-link"
 
-// ease-out-expo — impeccable: "ease out with exponential curves"
 const ease = [0.16, 1, 0.3, 1] as const
+const STEP_DURATION = 5000
 
 const DEFAULT_STEPS = [
   {
@@ -41,13 +42,6 @@ interface HowItWorksSectionProps {
   secondaryCtaLabel?: string
 }
 
-// Static per-step class strings — full names required for Tailwind JIT scanning
-const STEP_CLASSES = [
-  "pt-8 pb-10 md:pt-10 md:pb-0",
-  "pt-8 pb-10 md:pt-10 md:pb-0 border-t border-border md:border-t-0",
-  "pt-8 pb-10 md:pt-10 md:pb-0 border-t border-border md:border-t-0",
-]
-
 export function HowItWorksSection({
   phone,
   eyebrow = "How It Works",
@@ -57,46 +51,60 @@ export function HowItWorksSection({
   secondaryCtaLabel = "Send Us an Enquiry",
 }: HowItWorksSectionProps) {
   const activeSteps = steps && steps.length > 0 ? steps : DEFAULT_STEPS
+  const [active, setActive] = useState(0)
+  const [progress, setProgress] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const rafRef = useRef<number>(0)
+  const startRef = useRef<number>(Date.now())
+  const reduce = useReducedMotion()
+
+  useEffect(() => {
+    // Respect prefers-reduced-motion — pause auto-advance
+    if (paused || reduce) return
+    startRef.current = Date.now()
+    setProgress(0)
+
+    const tick = () => {
+      const elapsed = Date.now() - startRef.current
+      const pct = Math.min((elapsed / STEP_DURATION) * 100, 100)
+      setProgress(pct)
+      if (pct < 100) {
+        rafRef.current = requestAnimationFrame(tick)
+      } else {
+        setActive(prev => (prev + 1) % activeSteps.length)
+      }
+    }
+
+    rafRef.current = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [active, paused, reduce, activeSteps.length])
+
+  const handleClick = (i: number) => {
+    cancelAnimationFrame(rafRef.current)
+    setActive(i)
+    setProgress(0)
+  }
 
   return (
-    // bg-white: creates contrast between two dark surrounding sections
-    // ui-ux-pro-max: section alternation is required for visual rhythm
     <section className="relative bg-background pt-[58px] pb-20 md:pt-[82px] md:pb-28 overflow-hidden">
 
-      {/* ── max-w-5xl mx-auto: ui-ux-pro-max container-width rule ────────────
-          Progressive horizontal padding: 24px → 40px → 64px
-          Prevents content from hugging edges at all breakpoints          */}
-      {/* V-chevron divider — dark V pointing down from problem section into light bg; hidden in dark mode (both sections already dark) */}
-      <div aria-hidden="true" className="absolute top-0 left-0 right-0 leading-[0] dark:hidden">
-        <svg
-          viewBox="0 0 1440 54"
-          preserveAspectRatio="none"
-          className="w-full h-[40px] md:h-[54px]"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+      {/* V-chevron divider */}
+      <div aria-hidden="true" className="absolute top-0 left-0 right-0 leading-[0]">
+        <svg viewBox="0 0 1440 54" preserveAspectRatio="none" className="w-full h-[40px] md:h-[54px]" xmlns="http://www.w3.org/2000/svg">
           <polygon points="0,0 1440,0 720,54" fill="#0a0a0a" />
-          <polyline
-            points="0,0 720,54 1440,0"
-            fill="none"
-            strokeWidth="1.5"
-            vectorEffect="non-scaling-stroke"
-            style={{ stroke: "var(--accent)" }}
-          />
+          <polyline points="0,0 720,54 1440,0" fill="none" strokeWidth="1.5" vectorEffect="non-scaling-stroke" style={{ stroke: "var(--accent)" }} />
         </svg>
       </div>
 
       <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
 
-        {/* Section headline
-            max-w-2xl: constrains heading so left-align reads intentional, not broken
-            text-balance: impeccable rule — even line distribution on h1-h3
-            tracking-tight + leading-[1.0]: display-heading discipline               */}
+        {/* Eyebrow */}
         {eyebrow && (
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: reduce ? 0 : 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, ease }}
+            transition={{ duration: reduce ? 0 : 0.5, ease }}
             className="flex items-center justify-center gap-2 mb-4"
           >
             <div className="h-px w-8 bg-accent/40" />
@@ -106,106 +114,232 @@ export function HowItWorksSection({
         )}
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: reduce ? 0 : 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, ease }}
-          className="mb-12 md:mb-16 text-center"
+          transition={{ duration: reduce ? 0 : 0.6, ease }}
+          className="mb-16 md:mb-20 text-center"
         >
-          <h2
-            className="text-4xl md:text-5xl lg:text-[56px] font-bold text-[#0a0a0a]
-                       tracking-tight leading-[1.05] text-balance"
-          >
+          <h2 className="text-4xl md:text-5xl lg:text-[56px] font-bold text-foreground tracking-tight leading-[1.05] text-balance">
             {headline}
           </h2>
         </motion.div>
 
-        {/* ── Animated connector line (desktop only) ────────────────────────
-            Track: gray-100 (subtle, light bg)
-            Fill: #2A6DD9 draws left→right — the animation IS the sequence cue
-            impeccable: "motion should be intentional" — this communicates flow */}
-        <div className="hidden md:block relative h-px overflow-hidden">
-          <div className="absolute inset-0 bg-border" />
-          <motion.div
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-            style={{ originX: 0 }}
-            className="absolute inset-0 bg-accent"
-          />
+        {/* ── Interactive step selector ─────────────────────────────────────── */}
+        <div
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
+
+          {/* ── DESKTOP: columns ───────────────────────────────────────────── */}
+          <div className="hidden md:grid md:grid-cols-3 md:gap-x-20 lg:gap-x-32">
+            {activeSteps.map((step, i) => {
+              const isActive = i === active
+              const isCompleted = i < active
+              return (
+                <button
+                  key={step.number}
+                  onClick={() => handleClick(i)}
+                  className="text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm"
+                >
+                  {/* Number + checkmark */}
+                  <div className="flex items-center gap-3 mb-5">
+                    {/* SEO: scale transform instead of font-size animation — compositor only, no layout recalc */}
+                    <div className="relative h-[76px] flex items-center">
+                      <span
+                        className="font-bold tracking-tight leading-none text-foreground select-none tabular-nums text-[76px]"
+                        style={{
+                          transform: isActive ? "scale(1)" : "scale(0.45)",
+                          opacity: isActive ? 1 : 0.2,
+                          transformOrigin: "left center",
+                          transition: reduce
+                            ? "none"
+                            : "transform 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.45s cubic-bezier(0.16,1,0.3,1)",
+                          display: "block",
+                        }}
+                      >
+                        {step.number}
+                      </span>
+                    </div>
+
+                    <motion.div
+                      animate={{ opacity: isActive || isCompleted ? 1 : 0.2 }}
+                      transition={{ duration: reduce ? 0 : 0.3 }}
+                      className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center"
+                      style={{
+                        background: isCompleted ? "var(--accent)" : "transparent",
+                        border: `1.5px solid ${isCompleted ? "var(--accent)" : "var(--foreground)"}`,
+                      }}
+                    >
+                      {isCompleted && (
+                        <svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true">
+                          <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                    </motion.div>
+                  </div>
+
+                  {/* Progress bar */}
+                  <div className="relative h-[1.5px] mb-6 overflow-hidden bg-border">
+                    {isCompleted && <div className="absolute inset-0 bg-accent" />}
+                    {isActive && !reduce && (
+                      <div
+                        className="absolute inset-y-0 left-0 bg-foreground"
+                        style={{ width: `${progress}%` }}
+                      />
+                    )}
+                    {isActive && reduce && (
+                      <div className="absolute inset-0 bg-foreground" />
+                    )}
+                  </div>
+
+                  {/* SEO: all content always in DOM — opacity controls visibility */}
+                  <div className="min-h-[100px]">
+                    {/* Active content */}
+                    <div
+                      aria-hidden={!isActive}
+                      style={{
+                        opacity: isActive ? 1 : 0,
+                        transition: reduce ? "none" : "opacity 0.3s ease",
+                        position: isActive ? "relative" : "absolute",
+                        pointerEvents: isActive ? "auto" : "none",
+                      }}
+                    >
+                      <h3 className="text-xl md:text-2xl font-bold text-foreground tracking-tight mb-3 leading-snug">
+                        {step.headline}
+                      </h3>
+                      <p className="text-[15px] text-foreground/60 leading-relaxed">
+                        {step.body}
+                      </p>
+                    </div>
+                    {/* Inactive title — always visible to crawlers, hidden visually when active */}
+                    <p
+                      aria-hidden={isActive}
+                      className="text-sm font-semibold text-foreground/25 tracking-tight"
+                      style={{
+                        opacity: isActive ? 0 : 1,
+                        transition: reduce ? "none" : "opacity 0.3s ease",
+                        position: isActive ? "absolute" : "relative",
+                        pointerEvents: "none",
+                      }}
+                    >
+                      {step.headline}
+                    </p>
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+
+          {/* ── MOBILE: numbers row + full-width content ───────────────────── */}
+          <div className="md:hidden">
+            <div className="grid grid-cols-3">
+              {activeSteps.map((step, i) => {
+                const isActive = i === active
+                const isCompleted = i < active
+                return (
+                  <button
+                    key={step.number}
+                    onClick={() => handleClick(i)}
+                    className="text-left focus-visible:outline-none"
+                  >
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="relative h-[42px] flex items-center">
+                        <span
+                          className="font-bold tracking-tight leading-none text-foreground select-none tabular-nums text-[42px]"
+                          style={{
+                            transform: isActive ? "scale(1)" : "scale(0.48)",
+                            opacity: isActive ? 1 : 0.2,
+                            transformOrigin: "left center",
+                            transition: reduce
+                              ? "none"
+                              : "transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s cubic-bezier(0.16,1,0.3,1)",
+                            display: "block",
+                          }}
+                        >
+                          {step.number}
+                        </span>
+                      </div>
+
+                      <div
+                        className="w-4 h-4 rounded-full flex-shrink-0 flex items-center justify-center"
+                        style={{
+                          opacity: isActive || isCompleted ? 1 : 0.2,
+                          background: isCompleted ? "var(--accent)" : "transparent",
+                          border: `1.5px solid ${isCompleted ? "var(--accent)" : "var(--foreground)"}`,
+                          transition: reduce ? "none" : "opacity 0.3s ease",
+                        }}
+                      >
+                        {isCompleted && (
+                          <svg width="8" height="6" viewBox="0 0 10 8" fill="none" aria-hidden="true">
+                            <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Progress bar */}
+                    <div className="relative h-[1.5px] overflow-hidden bg-border">
+                      {isCompleted && <div className="absolute inset-0 bg-accent" />}
+                      {isActive && !reduce && (
+                        <div className="absolute inset-y-0 left-0 bg-foreground" style={{ width: `${progress}%` }} />
+                      )}
+                      {isActive && reduce && (
+                        <div className="absolute inset-0 bg-foreground" />
+                      )}
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* SEO: all step content in DOM always, active one shown */}
+            <div className="mt-8 relative min-h-[100px]">
+              {activeSteps.map((step, i) => (
+                <div
+                  key={step.number}
+                  aria-hidden={i !== active}
+                  style={{
+                    opacity: i === active ? 1 : 0,
+                    transition: reduce ? "none" : "opacity 0.3s ease",
+                    position: i === active ? "relative" : "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    pointerEvents: i === active ? "auto" : "none",
+                  }}
+                >
+                  <h3 className="text-2xl font-bold text-foreground tracking-tight mb-3 leading-snug">
+                    {step.headline}
+                  </h3>
+                  <p className="text-[15px] text-foreground/60 leading-relaxed">
+                    {step.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Steps grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 md:gap-x-12 lg:gap-x-20">
-          {activeSteps.map((step, i) => (
-            <motion.div
-              key={step.number}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              // Stagger: 30-50ms per item per ui-ux-pro-max stagger-sequence rule
-              transition={{ duration: 0.6, ease, delay: 0.25 + i * 0.15 }}
-              className={STEP_CLASSES[i] ?? STEP_CLASSES[0]}
-            >
-              {/* Step number
-                  #2A6DD9 at 12px bold on white = 4.93:1 contrast — passes WCAG AA
-                  ui-ux-pro-max color-contrast rule: normal text min 4.5:1
-                  Kept small (12px) so it feels like a label, not a heading      */}
-              <p className="text-[12px] font-mono font-bold tracking-[0.2em] text-accent mb-5 tabular-nums select-none">
-                {step.number}
-              </p>
-
-              {/* Step headline
-                  text-[#0a0a0a] on white = 19.1:1 contrast (AAA)
-                  text-xl/2xl: clear hierarchy above body copy                  */}
-              <h3 className="text-xl md:text-[22px] font-semibold text-foreground leading-snug mb-3">
-                {step.headline}
-              </h3>
-
-              {/* Body copy
-                  text-gray-600 on white = 7.4:1 contrast (AAA)
-                  text-[15px]: above 16px floor, avoids iOS auto-zoom on mobile
-                  leading-relaxed: 1.625 line-height — ui-ux-pro-max line-height rule */}
-              <p className="text-[15px] text-foreground/60 leading-relaxed">
-                {step.body}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* CTAs
-            mt-12/16 + pt-10 + border-t: spacing rhythm (48→64→40 across hierarchy)
-            items-stretch: full-width buttons on mobile (ui-ux-pro-max touch-target-size)
-            active:scale-[0.98]: press tactile feedback (impeccable interaction rule)  */}
+        {/* CTAs */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: reduce ? 0 : 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, ease, delay: 0.55 }}
-          className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4
-                     mt-12 md:mt-16 pt-10 border-t border-border"
+          transition={{ duration: reduce ? 0 : 0.6, ease, delay: reduce ? 0 : 0.3 }}
+          className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 mt-16 md:mt-20 pt-10 border-t border-border"
         >
           <PhoneLink
             phone={phone}
             label="how-it-works-cta"
-            className="inline-flex items-center justify-center gap-2.5
-                       bg-[#E63946] hover:bg-[#c8303c] text-white
-                       px-8 py-4 text-sm font-bold uppercase tracking-widest
-                       transition-colors duration-200 active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2.5 bg-[#E63946] hover:bg-[#c8303c] text-white px-8 py-4 text-sm font-bold uppercase tracking-widest transition-colors duration-200 active:scale-[0.98]"
           >
             <Phone className="h-4 w-4 shrink-0" />
             {primaryCtaLabel}: {phone}
           </PhoneLink>
-
-          {/* Secondary: dark border on white — 19.1:1 contrast, hover inverts cleanly */}
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center gap-2
-                       border border-gray-900 text-gray-900
-                       hover:bg-gray-900 hover:text-white
-                       px-8 py-4 text-sm font-bold uppercase tracking-widest
-                       transition-all duration-200 active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2 border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white px-8 py-4 text-sm font-bold uppercase tracking-widest transition-all duration-200 active:scale-[0.98]"
           >
             {secondaryCtaLabel}
           </Link>
