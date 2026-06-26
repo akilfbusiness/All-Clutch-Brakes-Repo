@@ -37,8 +37,8 @@ export function BrandsSection({ brands }: Props) {
       `}</style>
 
       {/* Wave divider — dark #0a0a0a (guarantee section) arches down into brands white */}
-      <div aria-hidden="true" className="absolute top-0 left-0 right-0 leading-[0]">
-        <svg viewBox="0 0 1440 100" preserveAspectRatio="none" className="w-full h-[70px] md:h-[100px]" xmlns="http://www.w3.org/2000/svg">
+      <div aria-hidden="true" className="absolute -top-4 left-0 right-0 leading-[0]">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none" className="w-full h-[90px] md:h-[116px]" xmlns="http://www.w3.org/2000/svg">
           <path d="M 0,0 L 1440,0 L 1440,28 C 1080,88 360,88 0,28 Z" fill="#0a0a0a" />
           <path d="M 1440,28 C 1080,88 360,88 0,28" fill="none" stroke="#2A6DD9" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
         </svg>
