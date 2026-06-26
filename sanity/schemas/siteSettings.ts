@@ -353,13 +353,31 @@ export const siteSettingsSchema = defineType({
     }),
     defineField({
       name: "heroVideo",
-      title: "Hero Background Video",
+      title: "Hero Background Video (Desktop / Landscape)",
       type: "file",
       group: "homepage",
-      description: "Optional looping background video for the hero section. Upload an MP4 (H.264, 1080p, 5–15 MB, no audio). When set, this plays instead of the background image.",
+      description: "Looping background video for the hero section on desktop. Upload an MP4 (H.264, 1080p, 5–15 MB, no audio). When set, this plays instead of the background image.",
       options: {
         accept: "video/mp4,video/webm",
       },
+    }),
+    defineField({
+      name: "heroVideoMobile",
+      title: "Hero Background Video (Mobile / Portrait)",
+      type: "file",
+      group: "homepage",
+      description: "Optional portrait-cropped version of the hero video for mobile screens (max 768px wide). Crop to roughly 9:16 ratio so the key subject stays centred on phone screens. If left empty, the desktop video is used on mobile too.",
+      options: {
+        accept: "video/mp4,video/webm",
+      },
+    }),
+    defineField({
+      name: "heroImageMobile",
+      title: "Hero Background Image (Mobile / Portrait)",
+      type: "image",
+      group: "homepage",
+      description: "Portrait-cropped version of the hero image for mobile screens. Used as the video poster on mobile, and as the fallback static image when no mobile video is uploaded. Aim for roughly 9:16 ratio.",
+      options: { hotspot: true },
     }),
     defineField({
       name: "mechanicImage",
