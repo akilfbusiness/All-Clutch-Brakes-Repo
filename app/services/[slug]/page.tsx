@@ -107,19 +107,9 @@ export default async function ServicePage({
       seller: { "@type": "LocalBusiness", name: businessName, url: siteUrl },
       ...(service.pricingDescription && { description: service.pricingDescription }),
     },
-    // aggregateRating — sourced from site-wide settings so it stays in sync with
-    // the root AutoRepair entity. Only emitted if both values are present.
-    ...(settings?.aggregateRating?.ratingValue && settings?.aggregateRating?.reviewCount
-      ? {
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: settings.aggregateRating.ratingValue,
-            reviewCount: settings.aggregateRating.reviewCount,
-            bestRating: "5",
-            worstRating: "1",
-          },
-        }
-      : {}),
+    // aggregateRating intentionally omitted from Service schema —
+    // Google does not support aggregateRating on Service type.
+    // It is correctly applied to the LocalBusiness/AutoRepair schema in app/layout.tsx.
   }
 
   const breadcrumbSchema = {
