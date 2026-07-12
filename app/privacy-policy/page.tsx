@@ -22,7 +22,7 @@ export default async function PrivacyPolicyPage() {
   const siteUrl = settings?.siteUrl ?? "https://example.com"
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
   const phone = settings?.phone?.[0] ?? "(08) 8277 8122"
-  const email = settings?.email ?? "info@allclutchandbrake.com.au"
+  const email = settings?.email ?? "info@acbs.au"
   const abn = settings?.abn ?? ""
   const address = settings?.address
 
