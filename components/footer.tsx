@@ -146,13 +146,21 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
       <div className="relative z-10 border-t border-border/50">
         <div className="container flex flex-wrap justify-between items-center gap-4 py-5">
           <p className="text-xs text-muted-foreground/50">{copyright}</p>
-          <a
-            href="https://computergeeksaustralia.com.au/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-muted-foreground/50 hover:text-accent transition-colors duration-300">
-            Created by Monarc Labs
-          </a>
+          <div className="flex items-center gap-3">
+            <a
+              href="https://computergeeksaustralia.com.au/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-muted-foreground/50 hover:text-accent transition-colors duration-300">
+              Created by Monarc Labs
+            </a>
+            <span className="text-muted-foreground/30 text-xs">·</span>
+            <a
+              href="/studio"
+              className="text-xs text-muted-foreground/50 hover:text-accent transition-colors duration-300">
+              Login
+            </a>
+          </div>
         </div>
       </div>
     </footer>
