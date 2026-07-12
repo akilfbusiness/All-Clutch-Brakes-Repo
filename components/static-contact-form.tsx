@@ -5,6 +5,7 @@ import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { CheckCircle, AlertCircle, Phone } from "lucide-react"
 import { WEBHOOK_STATIC } from "@/lib/form-config"
+import { PhoneLink } from "@/components/phone-link"
 
 export interface StaticContactFormProps {
   /** Services to show in the dropdown — "Product Enquiry" and "General Enquiry" are always appended */
@@ -99,13 +100,14 @@ export function StaticContactForm({
                 Our team will get back to you as soon as possible. In the meantime, feel free to give us a call.
               </p>
             </div>
-            <a
-              href="tel:0882778122"
+            <PhoneLink
+              phone="08 8277 8122"
+              label="success-state-form"
               className="inline-flex items-center gap-2 text-accent text-sm font-bold hover:underline"
             >
               <Phone className="h-4 w-4" />
               08 8277 8122
-            </a>
+            </PhoneLink>
             <button
               onClick={() => setFormStatus("idle")}
               className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors underline underline-offset-2 mt-1"
