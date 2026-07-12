@@ -8,7 +8,9 @@ import { PortableText } from "@portabletext/react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, ArrowRight, Plus, ChevronRight, MapPin, ArrowLeft } from "lucide-react"
 import { LeadQualificationForm } from "@/components/lead-qualification-form"
+import { StaticContactForm } from "@/components/static-contact-form"
 import { PhoneLink } from "@/components/phone-link"
+import { FORM_MODE, WEBHOOK_STEP1, WEBHOOK_STEP2, WEBHOOK_PARTIAL, WEBHOOK_CALL } from "@/lib/form-config"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -476,21 +478,27 @@ export function ServicePageClient({
             <div>
               <div className="lg:sticky lg:top-28 space-y-5">
 
-                {/* Lead Qualification Form — replaces Get a Quote card */}
+                {/* Form sidebar — controlled by global FORM_MODE in lib/form-config.ts */}
                 <motion.div
                   initial={{ opacity: 0, x: 28 }} whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }} transition={{ duration: 0.7, ease }}
                 >
-                  <LeadQualificationForm
-                    businessName={businessName}
-                    phoneNumber={phone}
-                    accentColor="#2563EB"
-                    services={[service.title]}
-                    webhookUrlPartial="https://n8n-customer-automations.onrender.com/webhook/5384017c-e44f-4844-9965-6e8b78f5be0c"
-                    webhookUrl1="https://n8n-customer-automations.onrender.com/webhook/1a390a21-4ada-4ffe-a366-0e7fc6afc302"
-                    webhookUrl2="https://n8n-customer-automations.onrender.com/webhook/242b5f86-aaef-49a5-aa19-2137188f62c6"
-                    webhookUrlCall="https://n8n-customer-automations.onrender.com/webhook/66efcdcc-49af-4630-a088-a0d5fc2174e7"
-                  />
+                  {FORM_MODE === "dynamic" ? (
+                    <LeadQualificationForm
+                      businessName={businessName}
+                      phoneNumber={phone}
+                      accentColor="#2563EB"
+                      services={[service.title]}
+                      webhookUrlPartial={WEBHOOK_PARTIAL}
+                      webhookUrl1={WEBHOOK_STEP1}
+                      webhookUrl2={WEBHOOK_STEP2}
+                      webhookUrlCall={WEBHOOK_CALL}
+                    />
+                  ) : (
+                    <StaticContactForm
+                      serviceOptions={[service.title]}
+                    />
+                  )}
                 </motion.div>
 
                 {/* Service areas */}
