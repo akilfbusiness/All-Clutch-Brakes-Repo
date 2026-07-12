@@ -14,7 +14,7 @@ import { PhoneLink } from "@/components/phone-link"
 //   "dynamic" → multi-step AI lead qualification form (recommended)
 //   "static"  → standard single-page contact form
 // ─────────────────────────────────────────────────────────────────────────────
-const FORM_MODE: "dynamic" | "static" = "dynamic"
+const FORM_MODE: "dynamic" | "static" = "static"
 
 const N8N_WEBHOOK_URL =
   "https://n8n-customer-automations.onrender.com/webhook/e0e17791-3ae9-43b6-b107-6784e57c90ef"
