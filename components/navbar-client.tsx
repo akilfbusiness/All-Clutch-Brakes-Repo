@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, ChevronDown } from "lucide-react"
@@ -118,30 +117,11 @@ export function NavbarClient({ businessName, phone, logo, navItems = [], ctaLabe
       >
         <div className="container flex h-20 items-center justify-between">
 
-          {/* Logo — shows Sanity logo image if available, falls back to business name text */}
+          {/* Logo — text only until a transparent PNG logo is provided */}
           <Link href="/" onClick={() => setOpen(false)} className="relative z-50">
-            {logo ? (
-              <div className={`
-                px-3 py-1.5 rounded-md transition-all duration-300
-                ${useHeroWhite
-                  ? "bg-white/15 backdrop-blur-sm shadow-[0_2px_12px_rgba(0,0,0,0.15)]"
-                  : "bg-transparent"
-                }
-              `}>
-                <Image
-                  src={logo}
-                  alt={businessName}
-                  width={120}
-                  height={40}
-                  className="h-8 w-auto object-contain"
-                  priority
-                />
-              </div>
-            ) : (
-              <span className={`text-xs font-bold tracking-[0.2em] uppercase transition-opacity duration-300 ${useHeroWhite ? "text-white opacity-100" : "text-foreground opacity-100"}`}>
-                {businessName}
-              </span>
-            )}
+            <span className={`text-xs font-bold tracking-[0.2em] uppercase transition-opacity duration-300 ${useHeroWhite ? "text-white opacity-100" : "text-foreground opacity-100"}`}>
+              {businessName}
+            </span>
           </Link>
 
           {/* Phone — desktop only */}
