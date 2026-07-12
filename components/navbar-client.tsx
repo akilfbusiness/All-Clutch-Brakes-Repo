@@ -121,14 +121,22 @@ export function NavbarClient({ businessName, phone, logo, navItems = [], ctaLabe
           {/* Logo — shows Sanity logo image if available, falls back to business name text */}
           <Link href="/" onClick={() => setOpen(false)} className="relative z-50">
             {logo ? (
-              <Image
-                src={logo}
-                alt={businessName}
-                width={120}
-                height={40}
-                className={`h-9 w-auto object-contain transition-opacity duration-300 ${useHeroWhite ? "brightness-0 invert" : ""}`}
-                priority
-              />
+              <div className={`
+                px-3 py-1.5 rounded-md transition-all duration-300
+                ${useHeroWhite
+                  ? "bg-white/15 backdrop-blur-sm shadow-[0_2px_12px_rgba(0,0,0,0.15)]"
+                  : "bg-transparent"
+                }
+              `}>
+                <Image
+                  src={logo}
+                  alt={businessName}
+                  width={120}
+                  height={40}
+                  className="h-8 w-auto object-contain"
+                  priority
+                />
+              </div>
             ) : (
               <span className={`text-xs font-bold tracking-[0.2em] uppercase transition-opacity duration-300 ${useHeroWhite ? "text-white opacity-100" : "text-foreground opacity-100"}`}>
                 {businessName}
