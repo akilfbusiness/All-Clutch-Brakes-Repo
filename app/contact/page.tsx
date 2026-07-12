@@ -39,6 +39,7 @@ export default async function ContactPage() {
     "Brake Services",
     "Transmission Repairs",
     "Flywheel Machining",
+    "Product Enquiry",
     "General Enquiry",
   ]
   const faqs = settings?.contactFaqs ?? []
