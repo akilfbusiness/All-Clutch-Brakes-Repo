@@ -26,7 +26,7 @@ export default async function ContactPage() {
   const siteUrl      = settings?.siteUrl      ?? "https://example.com"
   const businessName = settings?.businessName ?? "All Clutch & Brake Service"
   const phones       = settings?.phone        ?? ["(08) 8277 8122"]
-  const email        = settings?.email        ?? "info@allclutchandbrake.com.au"
+  const email        = settings?.email        ?? "info@acbs.au"
   const address      = settings?.address      ?? null
   const businessHours = settings?.businessHours ?? []
 

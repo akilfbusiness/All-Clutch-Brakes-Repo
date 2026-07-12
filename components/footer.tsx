@@ -11,7 +11,7 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
   const businessName  = settings.businessName  || "All Clutch & Brake Service"
   const address       = settings.address
   const phone         = settings.phone?.[0]    || "(08) 8277 8122"
-  const email         = settings.email         || "info@allclutchandbrake.com.au"
+  const email         = settings.email         || "info@acbs.au"
   const businessHours = settings.businessHours || []
   const footerLinks   = settings.footerLinks   || []
   const copyright     = settings.footerCopyrightText || `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`
