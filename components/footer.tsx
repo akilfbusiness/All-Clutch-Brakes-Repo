@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Phone, Mail, MapPin, Clock } from "lucide-react"
 import { PhoneLink } from "@/components/phone-link"
 import type { SiteSettings } from "@/sanity/queries"
@@ -14,6 +15,7 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
   const businessHours = settings.businessHours || []
   const footerLinks   = settings.footerLinks   || []
   const copyright     = settings.footerCopyrightText || `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`
+  const logo             = settings.logo             || null
   const footerBrandLabel = settings.footerBrandLabel || "Adelaide Specialists"
   const footerTagline    = settings.footerTagline    || "Expert clutch, brake and transmission repairs for all makes and models. Trusted by Adelaide drivers for over 30 years."
 
@@ -48,9 +50,19 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
               <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-accent mb-3">
                 {footerBrandLabel}
               </p>
-              <h3 className="text-lg font-bold tracking-tight text-foreground">
-                {businessName}
-              </h3>
+              {logo ? (
+                <Image
+                  src={logo}
+                  alt={businessName}
+                  width={120}
+                  height={40}
+                  className="h-10 w-auto object-contain"
+                />
+              ) : (
+                <h3 className="text-lg font-bold tracking-tight text-foreground">
+                  {businessName}
+                </h3>
+              )}
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed max-w-[220px]">
               {footerTagline}
