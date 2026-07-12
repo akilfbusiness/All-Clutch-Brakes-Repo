@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, ChevronDown } from "lucide-react"
@@ -17,6 +18,7 @@ interface NavItem {
 interface NavbarClientProps {
   businessName: string
   phone: string
+  logo?: string | null
   navItems?: NavItem[]
   ctaLabel?: string
   ctaLink?: string
@@ -32,7 +34,7 @@ const FALLBACK_NAV_LINKS: NavItem[] = [
 
 const ease = [0.22, 1, 0.36, 1] as const
 
-export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "Get a Quote", ctaLink = "/contact" }: NavbarClientProps) {
+export function NavbarClient({ businessName, phone, logo, navItems = [], ctaLabel = "Get a Quote", ctaLink = "/contact" }: NavbarClientProps) {
   const [open,        setOpen]        = useState(false)
   const [scrolled,    setScrolled]    = useState(false)
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
@@ -116,12 +118,22 @@ export function NavbarClient({ businessName, phone, navItems = [], ctaLabel = "G
       >
         <div className="container flex h-20 items-center justify-between">
 
-          {/* Logo — uses opacity transition (GPU-composited) instead of colour
-              transition to avoid non-composited animation paint flags in Lighthouse */}
+          {/* Logo — shows Sanity logo image if available, falls back to business name text */}
           <Link href="/" onClick={() => setOpen(false)} className="relative z-50">
-            <span className={`text-xs font-bold tracking-[0.2em] uppercase transition-opacity duration-300 ${useHeroWhite ? "text-white opacity-100" : "text-foreground opacity-100"}`}>
-              {businessName}
-            </span>
+            {logo ? (
+              <Image
+                src={logo}
+                alt={businessName}
+                width={120}
+                height={40}
+                className={`h-9 w-auto object-contain transition-opacity duration-300 ${useHeroWhite ? "brightness-0 invert" : ""}`}
+                priority
+              />
+            ) : (
+              <span className={`text-xs font-bold tracking-[0.2em] uppercase transition-opacity duration-300 ${useHeroWhite ? "text-white opacity-100" : "text-foreground opacity-100"}`}>
+                {businessName}
+              </span>
+            )}
           </Link>
 
           {/* Phone — desktop only */}
