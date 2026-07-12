@@ -3,21 +3,12 @@
 import { useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { Phone, Mail, MapPin, Clock, ArrowRight, Plus, ChevronRight, CheckCircle, AlertCircle } from "lucide-react"
+import { Phone, Mail, MapPin, Clock, ArrowRight, Plus, ChevronRight } from "lucide-react"
 import { PageHeroMedia } from "@/components/page-hero-media"
 import { LeadQualificationForm } from "@/components/lead-qualification-form"
+import { StaticContactForm } from "@/components/static-contact-form"
 import { PhoneLink } from "@/components/phone-link"
-
-// ─────────────────────────────────────────────────────────────────────────────
-// FORM TOGGLE
-// Change the value below to switch between the two contact forms:
-//   "dynamic" → multi-step AI lead qualification form (recommended)
-//   "static"  → standard single-page contact form
-// ─────────────────────────────────────────────────────────────────────────────
-const FORM_MODE: "dynamic" | "static" = "dynamic"
-
-const N8N_WEBHOOK_URL =
-  "https://n8n-customer-automations.onrender.com/webhook/e0e17791-3ae9-43b6-b107-6784e57c90ef"
+import { FORM_MODE, WEBHOOK_STEP1, WEBHOOK_STEP2, WEBHOOK_PARTIAL, WEBHOOK_CALL } from "@/lib/form-config"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -60,37 +51,7 @@ export function ContactPageClient({
   serviceOptions, googleMapsEmbedUrl, faqs,
 }: ContactPageClientProps) {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
-  const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">("idle")
   const phone = phones[0] ?? "(08) 8277 8122"
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setFormStatus("submitting")
-
-    const formData = new FormData(e.currentTarget)
-    const payload = {
-      name:    formData.get("name") as string,
-      phone:   formData.get("phone") as string,
-      email:   formData.get("email") as string,
-      suburb:  formData.get("suburb") as string,
-      service: formData.get("service") as string,
-      message: formData.get("message") as string,
-      submittedAt: new Date().toISOString(),
-    }
-
-    try {
-      const res = await fetch(N8N_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      setFormStatus("success")
-      ;(e.target as HTMLFormElement).reset()
-    } catch {
-      setFormStatus("error")
-    }
-  }
 
   const contactRows = [
     {
@@ -298,157 +259,26 @@ export function ContactPageClient({
               initial={{ opacity: 0, x: 28 }} whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.7, ease, delay: 0.1 }}
             >
-              <div className={FORM_MODE === "dynamic" ? "relative overflow-hidden" : "border border-border p-8 md:p-10 relative overflow-hidden"}>
-                {/* Top accent line — only shown on static form, dynamic form has its own header */}
-                {FORM_MODE === "static" && <div className="absolute top-0 left-0 right-0 h-[2px] bg-accent" />}
-
-                {FORM_MODE === "dynamic" ? (
+              {FORM_MODE === "dynamic" ? (
+                <div className="relative overflow-hidden">
                   <LeadQualificationForm
                     businessName={businessName}
                     phoneNumber={phone}
                     accentColor="#2563EB"
                     services={serviceOptions}
-                    webhookUrlPartial="https://n8n-customer-automations.onrender.com/webhook/5384017c-e44f-4844-9965-6e8b78f5be0c"
-                    webhookUrl1="https://n8n-customer-automations.onrender.com/webhook/1a390a21-4ada-4ffe-a366-0e7fc6afc302"
-                    webhookUrl2="https://n8n-customer-automations.onrender.com/webhook/242b5f86-aaef-49a5-aa19-2137188f62c6"
-                    webhookUrlCall="https://n8n-customer-automations.onrender.com/webhook/66efcdcc-49af-4630-a088-a0d5fc2174e7"
+                    webhookUrlPartial={WEBHOOK_PARTIAL}
+                    webhookUrl1={WEBHOOK_STEP1}
+                    webhookUrl2={WEBHOOK_STEP2}
+                    webhookUrlCall={WEBHOOK_CALL}
                   />
-                ) : (
-                  <>
-                    <p className="text-accent text-[10px] font-bold tracking-[0.45em] uppercase mb-4">Free Quote</p>
-                    <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-2">{formHeading}</h2>
-                    {formSubheading && (
-                      <p className="text-sm text-muted-foreground leading-relaxed mb-8">{formSubheading}</p>
-                    )}
-                    {!formSubheading && (
-                      <p className="text-sm text-muted-foreground leading-relaxed mb-8">
-                        Have a question or need to book your vehicle? Fill out the form and our team will get back to you as soon as possible.
-                      </p>
-                    )}
-
-                    {formStatus === "success" && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                        className="flex items-start gap-3 border border-green-500/30 bg-green-500/5 px-5 py-4 mb-6"
-                      >
-                        <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="text-sm font-bold text-foreground">Enquiry sent!</p>
-                          <p className="text-xs text-muted-foreground mt-0.5">We&apos;ll get back to you as soon as possible.</p>
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {formStatus === "error" && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                        className="flex items-start gap-3 border border-red-500/30 bg-red-500/5 px-5 py-4 mb-6"
-                      >
-                        <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="text-sm font-bold text-foreground">Something went wrong</p>
-                          <p className="text-xs text-muted-foreground mt-0.5">Please try again or call us directly.</p>
-                        </div>
-                      </motion.div>
-                    )}
-
-                    <form className="space-y-5" aria-label="Contact enquiry form" onSubmit={handleSubmit}>
-                      {/* Full Name */}
-                      <div>
-                        <label htmlFor="name" className="block text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground/70 mb-2">
-                          Full Name <span className="text-accent">*</span>
-                        </label>
-                        <input
-                          id="name" name="name" type="text" autoComplete="name" required
-                          placeholder="Your full name"
-                          className="w-full bg-background border border-border focus:border-accent outline-none px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/35 transition-colors duration-200"
-                        />
-                      </div>
-
-                      {/* Phone + Email */}
-                      <div className="grid gap-5 sm:grid-cols-2">
-                        <div>
-                          <label htmlFor="contact-phone" className="block text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground/70 mb-2">
-                            Phone <span className="text-accent">*</span>
-                          </label>
-                          <input
-                            id="contact-phone" name="phone" type="tel" autoComplete="tel" required
-                            placeholder="Your phone number"
-                            className="w-full bg-background border border-border focus:border-accent outline-none px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/35 transition-colors duration-200"
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor="contact-email" className="block text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground/70 mb-2">
-                            Email <span className="text-accent">*</span>
-                          </label>
-                          <input
-                            id="contact-email" name="email" type="email" autoComplete="email" required
-                            placeholder="Your email address"
-                            className="w-full bg-background border border-border focus:border-accent outline-none px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/35 transition-colors duration-200"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Suburb */}
-                      <div>
-                        <label htmlFor="suburb" className="block text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground/70 mb-2">
-                          Suburb / Location
-                        </label>
-                        <input
-                          id="suburb" name="suburb" type="text" autoComplete="address-level2"
-                          placeholder="Your suburb or town"
-                          className="w-full bg-background border border-border focus:border-accent outline-none px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/35 transition-colors duration-200"
-                        />
-                      </div>
-
-                      {/* Service select */}
-                      <div>
-                        <label htmlFor="service-type" className="block text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground/70 mb-2">
-                          Service Interested In
-                        </label>
-                        <select
-                          id="service-type" name="service"
-                          className="w-full bg-background border border-border focus:border-accent outline-none px-4 py-3.5 text-sm text-foreground transition-colors duration-200 appearance-none cursor-pointer"
-                        >
-                          <option value="">Select a service</option>
-                          {serviceOptions.map((s) => (
-                            <option key={s} value={s}>{s}</option>
-                          ))}
-                        </select>
-                      </div>
-
-                      {/* Message */}
-                      <div>
-                        <label htmlFor="message" className="block text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground/70 mb-2">
-                          Message <span className="text-accent">*</span>
-                        </label>
-                        <textarea
-                          id="message" name="message" rows={5} required
-                          placeholder="Tell us about your vehicle and what you need help with"
-                          className="w-full bg-background border border-border focus:border-accent outline-none px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/35 transition-colors duration-200 resize-none"
-                        />
-                      </div>
-
-                      {/* Submit */}
-                      <button
-                        type="submit"
-                        disabled={formStatus === "submitting"}
-                        className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-sm py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
-                      >
-                        {formStatus === "submitting" ? "Sending…" : "Send Enquiry"}
-                      </button>
-
-                      <p className="text-[11px] text-muted-foreground/50 text-center leading-relaxed">
-                        By submitting you agree to our{" "}
-                        <Link href="/privacy-policy" className="text-accent/70 hover:text-accent transition-colors">
-                          Privacy Policy
-                        </Link>
-                        . {privacyNote}
-                      </p>
-                    </form>
-                  </>
-                )}
-              </div>
+                </div>
+              ) : (
+                <StaticContactForm
+                  serviceOptions={serviceOptions}
+                  heading={formHeading}
+                  subheading={formSubheading || undefined}
+                />
+              )}
             </motion.div>
           </div>
         </div>

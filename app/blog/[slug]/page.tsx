@@ -22,7 +22,9 @@ import {
   Youtube,
 } from "lucide-react"
 import { LeadQualificationForm } from "@/components/lead-qualification-form"
+import { StaticContactForm } from "@/components/static-contact-form"
 import { PhoneLink } from "@/components/phone-link"
+import { FORM_MODE, WEBHOOK_STEP1, WEBHOOK_STEP2, WEBHOOK_PARTIAL, WEBHOOK_CALL, DEFAULT_SERVICES } from "@/lib/form-config"
 
 export async function generateStaticParams() {
   try {
@@ -762,19 +764,23 @@ export default async function BlogPostPage({
           </div>
         </div>
 
-        {/* ── Lead Qualification Form ───────────────────────────────────────── */}
+        {/* ── Enquiry Form — controlled by global FORM_MODE in lib/form-config.ts */}
         <section className="py-16 bg-background border-t border-border">
           <div className="container mx-auto px-6 max-w-2xl">
-            <LeadQualificationForm
-              businessName={businessName}
-              phoneNumber={phone}
-              accentColor="#2563EB"
-              services={["Clutch Repairs & Replacement", "Brake Services & Repairs", "Transmission Repairs", "Flywheel Machining", "Brake Caliper & Hydraulic Repairs"]}
-              webhookUrlPartial="https://n8n-customer-automations.onrender.com/webhook/5384017c-e44f-4844-9965-6e8b78f5be0c"
-              webhookUrl1="https://n8n-customer-automations.onrender.com/webhook/1a390a21-4ada-4ffe-a366-0e7fc6afc302"
-              webhookUrl2="https://n8n-customer-automations.onrender.com/webhook/242b5f86-aaef-49a5-aa19-2137188f62c6"
-              webhookUrlCall="https://n8n-customer-automations.onrender.com/webhook/66efcdcc-49af-4630-a088-a0d5fc2174e7"
-            />
+            {FORM_MODE === "dynamic" ? (
+              <LeadQualificationForm
+                businessName={businessName}
+                phoneNumber={phone}
+                accentColor="#2563EB"
+                services={DEFAULT_SERVICES}
+                webhookUrlPartial={WEBHOOK_PARTIAL}
+                webhookUrl1={WEBHOOK_STEP1}
+                webhookUrl2={WEBHOOK_STEP2}
+                webhookUrlCall={WEBHOOK_CALL}
+              />
+            ) : (
+              <StaticContactForm serviceOptions={DEFAULT_SERVICES} />
+            )}
           </div>
         </section>
 

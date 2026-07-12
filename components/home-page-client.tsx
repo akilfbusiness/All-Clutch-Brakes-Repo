@@ -13,7 +13,9 @@ import { useTheme } from "next-themes"
 import { PromotionsBanner } from "./promotions-banner"
 import { CircularGallery } from "./ui/circular-gallery"
 import { LeadQualificationForm } from "./lead-qualification-form"
+import { StaticContactForm } from "./static-contact-form"
 import { PhoneLink } from "./phone-link"
+import { FORM_MODE, WEBHOOK_STEP1, WEBHOOK_STEP2, WEBHOOK_PARTIAL, WEBHOOK_CALL } from "@/lib/form-config"
 import { ProblemSection } from "./problem-section"
 import { HowItWorksSection } from "./how-it-works-section"
 import { ReviewsWallSection } from "./reviews-wall-section"
@@ -719,16 +721,25 @@ export function HomePageClient({
               initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1, ease }}
             >
-              <LeadQualificationForm
-                businessName={businessName}
-                phoneNumber={phone}
-                accentColor="#2563EB"
-                services={serviceItems.map((s) => s.title)}
-                webhookUrlPartial="https://n8n-customer-automations.onrender.com/webhook/5384017c-e44f-4844-9965-6e8b78f5be0c"
-                webhookUrl1="https://n8n-customer-automations.onrender.com/webhook/1a390a21-4ada-4ffe-a366-0e7fc6afc302"
-                webhookUrl2="https://n8n-customer-automations.onrender.com/webhook/242b5f86-aaef-49a5-aa19-2137188f62c6"
-                webhookUrlCall="https://n8n-customer-automations.onrender.com/webhook/66efcdcc-49af-4630-a088-a0d5fc2174e7"
-              />
+              {FORM_MODE === "dynamic" ? (
+                <LeadQualificationForm
+                  businessName={businessName}
+                  phoneNumber={phone}
+                  accentColor="#2563EB"
+                  services={serviceItems.map((s) => s.title)}
+                  webhookUrlPartial={WEBHOOK_PARTIAL}
+                  webhookUrl1={WEBHOOK_STEP1}
+                  webhookUrl2={WEBHOOK_STEP2}
+                  webhookUrlCall={WEBHOOK_CALL}
+                />
+              ) : (
+                <StaticContactForm
+                  serviceOptions={serviceItems.map((s) => s.title)}
+                  eyebrow="Free Diagnosis"
+                  heading="Tell Us What's Wrong"
+                  subheading="Describe your issue and our team will get back to you with a diagnosis as soon as possible."
+                />
+              )}
             </motion.div>
           </div>
         </div>
