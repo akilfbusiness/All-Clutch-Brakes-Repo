@@ -155,7 +155,7 @@ export default async function HomePage() {
 
   // Problem Section
   const problemEyebrow  = settings.problemEyebrow  || "Sound familiar?"
-  const problemHeadline = settings.problemHeadline || "Clutch slipping? Brakes grinding? You need it fixed [today] — not next week."
+  const problemHeadline = settings.problemHeadline || "Clutch slipping? Brakes grinding? You need it fixed"
   const problemBody     = settings.problemBody     || "Most drivers put it off. They hope the noise goes away, or assume every shop has a week-long wait. Neither is true — and both cost you more in the end."
 
   // How It Works
