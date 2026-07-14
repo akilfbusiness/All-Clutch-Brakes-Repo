@@ -1007,47 +1007,6 @@ export const siteSettingsSchema = defineType({
       description: "Supporting sentence below the headline.",
     }),
 
-    // ─── HOW IT WORKS SECTION ──────────────────────────────────────────────────
-    defineField({
-      name: "howItWorksHeadline",
-      title: "How It Works — Section Headline",
-      type: "string",
-      group: "homepage",
-      description: "e.g. 'Getting Fixed Is Simple'",
-    }),
-    defineField({
-      name: "howItWorksSteps",
-      title: "How It Works — Steps",
-      type: "array",
-      group: "homepage",
-      description: "The 3 steps. Each has a step number, headline, and body line.",
-      of: [
-        {
-          type: "object",
-          fields: [
-            { name: "number", title: "Step Number (e.g. 01)", type: "string", validation: (Rule: any) => Rule.required() },
-            { name: "headline", title: "Step Headline", type: "string", validation: (Rule: any) => Rule.required() },
-            { name: "body", title: "Step Body", type: "text", rows: 2, validation: (Rule: any) => Rule.required() },
-          ],
-          preview: { select: { title: "number", subtitle: "headline" } },
-        },
-      ],
-    }),
-    defineField({
-      name: "howItWorksPrimaryCtaLabel",
-      title: "How It Works — Primary CTA Label",
-      type: "string",
-      group: "homepage",
-      description: "Label for the call button. e.g. 'Call Us Today'",
-    }),
-    defineField({
-      name: "howItWorksSecondaryCtaLabel",
-      title: "How It Works — Secondary CTA Label",
-      type: "string",
-      group: "homepage",
-      description: "Label for the enquiry button. e.g. 'Send Us an Enquiry'",
-    }),
-
     // ─── RISK REVERSAL SECTION ─────────────────────────────────────────────────
     defineField({
       name: "riskReversalEyebrow",

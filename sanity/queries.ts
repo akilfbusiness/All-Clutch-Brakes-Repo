@@ -86,11 +86,6 @@ export interface SiteSettings {
   problemEyebrow?: string
   problemHeadline?: string
   problemBody?: string
-  // How It Works
-  howItWorksHeadline?: string
-  howItWorksSteps?: { number: string; headline: string; body: string }[]
-  howItWorksPrimaryCtaLabel?: string
-  howItWorksSecondaryCtaLabel?: string
   // Risk Reversal
   riskReversalEyebrow?: string
   riskReversalHeadline?: string
@@ -282,7 +277,7 @@ export interface SiteNavigation {
   showPhoneInHeader?: boolean
 }
 
-// ─── SITE SETTINGS ─────────────────────────────────────────────────────�����������──────
+// ─── SITE SETTINGS ─────────────────────────────────────────────────────�����������─��────
 
 export const SITE_SETTINGS_QUERY = `
   *[_type == "siteSettings"][0] {
@@ -338,7 +333,6 @@ export const SITE_SETTINGS_QUERY = `
     servicesHowWeDeliverHeading, servicesHowWeDeliverPoints,
     servicesFaqs,
     problemEyebrow, problemHeadline, problemBody,
-    howItWorksHeadline, howItWorksSteps, howItWorksPrimaryCtaLabel, howItWorksSecondaryCtaLabel,
     riskReversalEyebrow, riskReversalHeadline, riskReversalBody, riskReversalCtaLabel,
     homeInspectionCardHeading, homeInspectionCardBody,
     locationsPageHeading, locationsPageAnswerCapsule, locationsFaqs,

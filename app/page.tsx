@@ -158,12 +158,6 @@ export default async function HomePage() {
   const problemHeadline = settings.problemHeadline || "Clutch slipping? Brakes grinding? You need it fixed"
   const problemBody     = settings.problemBody     || "Most drivers put it off. They hope the noise goes away, or assume every shop has a week-long wait. Neither is true — and both cost you more in the end."
 
-  // How It Works
-  const howItWorksHeadline        = settings.howItWorksHeadline        || "Getting Fixed Is Simple"
-  const howItWorksSteps           = settings.howItWorksSteps           || []
-  const howItWorksPrimaryCtaLabel = settings.howItWorksPrimaryCtaLabel || "Call Us Today"
-  const howItWorksSecondaryCtaLabel = settings.howItWorksSecondaryCtaLabel || "Send Us an Enquiry"
-
   // Risk Reversal
   const riskReversalEyebrow  = settings.riskReversalEyebrow  || "Our Guarantee"
   const riskReversalHeadline = settings.riskReversalHeadline || "Not Happy? We'll Make It Right. No Arguments."
@@ -227,10 +221,6 @@ export default async function HomePage() {
         problemEyebrow={problemEyebrow}
         problemHeadline={problemHeadline}
         problemBody={problemBody}
-        howItWorksHeadline={howItWorksHeadline}
-        howItWorksSteps={howItWorksSteps}
-        howItWorksPrimaryCtaLabel={howItWorksPrimaryCtaLabel}
-        howItWorksSecondaryCtaLabel={howItWorksSecondaryCtaLabel}
         riskReversalEyebrow={riskReversalEyebrow}
         riskReversalHeadline={riskReversalHeadline}
         riskReversalBody={riskReversalBody}
