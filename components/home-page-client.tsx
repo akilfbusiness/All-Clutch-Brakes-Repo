@@ -17,7 +17,6 @@ import { StaticContactForm } from "./static-contact-form"
 import { PhoneLink } from "./phone-link"
 import { FORM_MODE, WEBHOOK_STEP1, WEBHOOK_STEP2, WEBHOOK_PARTIAL, WEBHOOK_CALL } from "@/lib/form-config"
 import { ProblemSection } from "./problem-section"
-import { HowItWorksSection } from "./how-it-works-section"
 import { ReviewsWallSection } from "./reviews-wall-section"
 import { RiskReversalSection } from "./risk-reversal-section"
 import type { Testimonial, Promotion, HomepageGalleryImage } from "@/sanity/queries"
@@ -79,11 +78,6 @@ export interface HomePageClientProps {
   problemEyebrow: string
   problemHeadline: string
   problemBody: string
-  // How It Works
-  howItWorksHeadline: string
-  howItWorksSteps: { number: string; headline: string; body: string }[]
-  howItWorksPrimaryCtaLabel: string
-  howItWorksSecondaryCtaLabel: string
   // Risk Reversal
   riskReversalEyebrow: string
   riskReversalHeadline: string
@@ -225,7 +219,6 @@ export function HomePageClient({
   inspectionCardBody, aboutDescription, faqs, serviceItems,
   testimonials, promotions, galleryImages, homepageTestimonials,
   problemEyebrow, problemHeadline, problemBody,
-  howItWorksHeadline, howItWorksSteps, howItWorksPrimaryCtaLabel, howItWorksSecondaryCtaLabel,
   riskReversalEyebrow, riskReversalHeadline, riskReversalBody, riskReversalCtaLabel,
   ratingValue, reviewCount,
   brands, projects,
@@ -496,19 +489,7 @@ export function HomePageClient({
       />
 
       {/* ══════════════════════════════════════════════════════════════════════
-          04 · HOW IT WORKS
-          White bg · 3-step layout · dual CTA
-      ══════════════════════════════════════════════════════════════════════ */}
-      <HowItWorksSection
-        phone={phone}
-        headline={howItWorksHeadline}
-        steps={howItWorksSteps}
-        primaryCtaLabel={howItWorksPrimaryCtaLabel}
-        secondaryCtaLabel={howItWorksSecondaryCtaLabel}
-      />
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          05 · SERVICES
+          04 · SERVICES
           Dark navy section · image-top cards · stagger entrance
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative py-24 md:py-32 bg-background dark:bg-[oklch(0.11_0.015_245)] overflow-hidden">
