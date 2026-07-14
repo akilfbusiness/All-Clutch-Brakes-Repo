@@ -14,7 +14,7 @@ interface ProblemSectionProps {
 export function ProblemSection({
   eyebrow = "Sound familiar?",
   // Fix #1: em-dashes removed (taste-skill 9.G absolute ban)
-  headline = "Clutch slipping? Brakes grinding? You need it fixed [today]. Not next week.",
+  headline = "Clutch slipping? Brakes grinding? You need it fixed",
   body = "Most drivers put it off. They hope the noise goes away, or assume every shop has a week-long wait. Neither is true. Both cost you more in the end.",
 }: ProblemSectionProps) {
   const reduce = useReducedMotion()
