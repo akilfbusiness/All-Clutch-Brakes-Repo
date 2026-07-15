@@ -20,7 +20,7 @@ const siteSettings = {
   businessName: "All Clutch & Brake Service",
   tagline: "Adelaide's Clutch & Brake Specialists",
   phone: ["(08) 8277 8122"],
-  email: "info@acbs.au",
+  email: "sales@acbs.au",
   address: {
     street: "Unit 1/3 Adelaide Terrace",
     suburb: "St Marys",
