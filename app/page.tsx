@@ -8,16 +8,15 @@ import { HomePageClient } from "@/components/home-page-client"
 
 const DEFAULT_TICKER_ITEMS = [
   "Clutch Replacement", "Brake Repairs", "40+ Years Experience",
-  "Same Day Service", "Free Quotes", "All Makes & Models",
-  "Adelaide Specialists", "Fixed Pricing", "No Surprises",
-  "Qualified Tradespeople", "Transmission Service", "Brake Machining",
+  "All Makes & Models", "Adelaide Specialists", "Fixed Pricing",
+  "No Surprises", "Qualified Tradespeople", "Transmission Service", "Brake Machining",
 ]
 
 const DEFAULT_STATS_ITEMS = [
-  { displayValue: "40+",      label: "Years in Business",    subtitle: "Serving Adelaide since 1994"    },
-  { displayValue: "All",      label: "Makes & Models",       subtitle: "European, Japanese, 4WD & more" },
-  { displayValue: "Same\nDay", label: "Service Available",   subtitle: "Most jobs completed same day"   },
-  { displayValue: "Free",     label: "Quotes & Inspections", subtitle: "No obligation, no charge, ever" },
+  { displayValue: "40+",  label: "Years in Business",  subtitle: "Serving Adelaide since 1984"    },
+  { displayValue: "All",  label: "Makes & Models",     subtitle: "European, Japanese, 4WD & more" },
+  { displayValue: "100%", label: "Qualified Staff",    subtitle: "No apprentices unsupervised"    },
+  { displayValue: "Fixed", label: "Upfront Pricing",  subtitle: "No hidden fees, no surprises"   },
 ]
 
 const DEFAULT_SERVICES = [
@@ -33,20 +32,20 @@ const DEFAULT_SERVICES = [
 const DEFAULT_WHY_US = [
   "Over 30 years of experience in clutch and brake repairs",
   "Qualified tradespeople — no apprentices working on your car unsupervised",
-  "Fixed pricing — you get the quote upfront, no surprises",
+  "Fixed pricing — no hidden fees, no surprises",
   "All makes and models including European, Japanese, American, and 4WD",
-  "Most jobs completed same day or next day",
+  "Most jobs completed promptly with minimal downtime",
   "Courtesy pickup and drop-off within the local area",
 ]
 
 const DEFAULT_FAQS = [
   {
     question: "How do I know if my clutch needs replacing?",
-    answer: "Common signs include slipping (engine revs rise but speed does not increase), difficulty changing gears, a burning smell, or a spongy/stiff clutch pedal. Bring it in and we will inspect it for free.",
+    answer: "Common signs include slipping (engine revs rise but speed does not increase), difficulty changing gears, a burning smell, or a spongy/stiff clutch pedal. Bring it in and we will take a look.",
   },
   {
     question: "How long does a clutch replacement take?",
-    answer: "Most clutch replacements take 3–5 hours. In many cases your car will be ready the same day you drop it off.",
+    answer: "Most clutch replacements take 3–5 hours. We aim to turn jobs around as quickly as possible with minimal downtime for you.",
   },
   {
     question: "How often should brake pads be replaced?",
@@ -65,7 +64,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const businessName = settings.businessName ?? "All Clutch & Brake Service"
   const description =
     settings.defaultSeoDescription ??
-    "Expert clutch replacement and brake repairs in Adelaide. All makes and models. Free quotes. Call (08) 8277 8122."
+    "Expert clutch replacement and brake repairs in Adelaide. All makes and models. Call (08) 8277 8122."
   const pageTitle = settings.defaultSeoTitle ?? businessName
 
   return {
@@ -132,7 +131,7 @@ export default async function HomePage() {
   const workshopImage  = settings.workshopImage  || "https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=828&q=40&fm=webp"
   const primaryCta     = settings.heroPrimaryCtaLabel   || "Call Now"
   const secondaryCta   = settings.heroSecondaryCtaLabel || "Our Services"
-  const trustSignals   = settings.heroTrustSignals?.length ? settings.heroTrustSignals : ["40+ Years Experience","All Makes & Models","Same Day Service","Free Quotes"]
+  const trustSignals   = settings.heroTrustSignals?.length ? settings.heroTrustSignals : ["40+ Years Experience","All Makes & Models","Qualified Tradespeople","Fixed Pricing"]
 
   const tickerItems = settings.homeTickerItems?.length ? settings.homeTickerItems : DEFAULT_TICKER_ITEMS
 
@@ -144,11 +143,11 @@ export default async function HomePage() {
   const whyUsHeading = settings.homeWhyUsHeading || "Why Choose Us"
   const whyUsPoints  = settings.homeWhyUsPoints?.length ? settings.homeWhyUsPoints : DEFAULT_WHY_US
 
-  const ctaHeading = settings.homeCtaHeading || "Need a Quote?"
+  const ctaHeading = settings.homeCtaHeading || "Get a Quote"
   const ctaBody    = settings.homeCtaBody    || "Call us today or send a message and we will get back to you promptly."
 
-  const inspectionCardHeading = settings.homeInspectionCardHeading || "Book a Free Inspection"
-  const inspectionCardBody    = settings.homeInspectionCardBody    || "Not sure what is wrong with your vehicle? Bring it in and our technicians will inspect your clutch or brakes at no charge and give you an honest quote."
+  const inspectionCardHeading = settings.homeInspectionCardHeading || "Not Sure What's Wrong?"
+  const inspectionCardBody    = settings.homeInspectionCardBody    || "Not sure what is wrong with your vehicle? Bring it in and our technicians will assess your clutch or brakes and give you an honest quote."
   const aboutDescription      = settings.homeAboutDescription      || "Based in St Marys and serving all of Adelaide — no apprentices working unsupervised, no hidden fees, no surprises. Just honest, qualified tradework backed by over three decades of experience."
 
   const faqs = settings.homeFaqs?.length ? settings.homeFaqs : DEFAULT_FAQS

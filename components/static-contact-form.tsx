@@ -24,7 +24,7 @@ const ease = [0.22, 1, 0.36, 1] as const
 
 export function StaticContactForm({
   serviceOptions = [],
-  eyebrow = "Free Quote",
+  eyebrow = "Get a Quote",
   heading = "Send an Enquiry",
   subheading,
   showCard = true,

@@ -120,7 +120,7 @@ export default async function WhatWeDoPage() {
                     { value: "1984", label: "Established" },
                     { value: "40+",  label: "Years Experience" },
                     { value: "All",  label: "Makes & Models" },
-                    { value: "Free", label: "Quotes & Inspections" },
+                    { value: "Fixed", label: "Upfront Pricing" },
                   ].map((stat) => (
                     <div key={stat.label} className="group cursor-default">
                       <dt className="text-4xl md:text-5xl font-bold text-foreground group-hover:text-accent transition-colors duration-300 mb-2">{stat.value}</dt>
@@ -203,7 +203,7 @@ export default async function WhatWeDoPage() {
                 Ready to Work With Us?
               </h2>
               <p className="mt-3 text-accent-foreground/55 text-sm md:text-base max-w-lg leading-relaxed">
-                Call us today for a free quote or bring your vehicle in for a no-obligation inspection.
+                Call us today or bring your vehicle in and we&apos;ll give you an honest, upfront quote.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">

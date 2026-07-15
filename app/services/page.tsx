@@ -32,7 +32,7 @@ export default async function ServicesPage() {
   const siteUrl        = settings?.siteUrl        ?? "https://example.com"
 
   const pageTitle    = settings?.servicesPageHeroTitle    ?? "Our Services"
-  const pageSubtitle = settings?.servicesPageHeroSubtitle ?? "From clutch replacements to full brake overhauls — all work carried out in-house by qualified tradespeople with upfront fixed pricing."
+  const pageSubtitle = settings?.servicesPageHeroSubtitle ?? "From clutch replacements to full brake overhauls — all work carried out in-house by qualified tradespeople. Honest advice and upfront pricing."
 
   const ctaHeading = settings?.servicesCtaHeading ?? "Ready to Book?"
   const ctaBody    = settings?.servicesCtaBody    ?? "Call us today or send a message and we'll get back to you promptly."

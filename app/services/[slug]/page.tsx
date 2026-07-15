@@ -33,7 +33,7 @@ export async function generateMetadata({
   if (!service) return { title: "Service Not Found" }
 
   const title       = service.seoTitle       ?? service.title
-  const description = service.seoDescription ?? service.answerCapsule ?? `Expert ${service.title.toLowerCase()} in Adelaide. All makes and models. Free quotes.`
+  const description = service.seoDescription ?? service.answerCapsule ?? `Expert ${service.title.toLowerCase()} in Adelaide. All makes and models. Call (08) 8277 8122.`
 
   return {
     title,  // uses %s | businessName template from layout.tsx — do NOT wrap manually
@@ -70,7 +70,7 @@ export default async function ServicePage({
         "Quality parts with manufacturer warranty",
         "Transparent upfront pricing — no hidden fees",
         "Work completed to manufacturer standards",
-        "Most jobs finished same day or next day",
+        "Efficient turnaround with minimal downtime",
       ]
 
   const relatedServices = allServices
