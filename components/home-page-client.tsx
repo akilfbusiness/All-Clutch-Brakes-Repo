@@ -668,7 +668,7 @@ export function HomePageClient({
       />
 
       {/* ═══════════════��══════════════════════════════════════════════════════
-          06 · FREE DIAGNOSIS FORM
+          06 ·  DIAGNOSIS FORM
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden bg-white pt-[76px] pb-16 md:pt-[120px] md:pb-24">
 
@@ -691,7 +691,7 @@ export function HomePageClient({
             >
               <div className="flex items-center justify-center gap-2 mb-4">
                 <div className="h-px w-8 bg-accent/40" />
-                <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent">Free Diagnosis</span>
+                <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent">Enquiry Form</span>
                 <div className="h-px w-8 bg-accent/40" />
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-tight">
@@ -716,7 +716,7 @@ export function HomePageClient({
               ) : (
                 <StaticContactForm
                   serviceOptions={serviceItems.map((s) => s.title)}
-                  eyebrow="Free Diagnosis"
+                  eyebrow="Enquiry Form"
                   heading="Tell Us What's Wrong"
                   subheading="Describe your issue and our team will get back to you with a diagnosis as soon as possible."
                 />
