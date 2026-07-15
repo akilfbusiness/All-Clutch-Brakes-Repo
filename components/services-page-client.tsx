@@ -111,7 +111,7 @@ export function ServicesPageClient({
                 href="/contact"
                 className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5"
               >
-                Get a Free Quote <ArrowRight className="h-4 w-4" />
+                Get a Quote <ArrowRight className="h-4 w-4" />
               </Link>
             </motion.div>
           </motion.div>
@@ -297,7 +297,7 @@ export function ServicesPageClient({
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"
               >
-                Get a Quote Online
+                Get a Quote
               </Link>
             </div>
           </motion.div>

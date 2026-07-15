@@ -799,7 +799,7 @@ export default async function BlogPostPage({
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 bg-black text-white px-8 py-4 text-sm font-bold uppercase tracking-widest hover:bg-black/80 transition-colors"
               >
-                Get a Free Quote
+                Get a Quote
               </Link>
               <PhoneLink
                 phone={phone}

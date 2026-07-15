@@ -170,14 +170,13 @@ export default async function GalleryPage() {
               Ready to Get Started?
             </h2>
             <p className="mb-8 text-pretty text-lg text-muted-foreground">
-              Experience the quality service that {businessName} is known for. Contact us today for
-              a free quote.
+              Experience the quality service that {businessName} is known for. Contact us today to get a quote.
             </p>
             <a
               href="/contact"
               className="inline-flex items-center justify-center gap-2 bg-primary px-8 py-4 font-bold text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              Get a Free Quote
+              Get a Quote
             </a>
           </div>
         </div>

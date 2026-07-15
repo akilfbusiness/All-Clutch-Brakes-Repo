@@ -13,7 +13,7 @@ const PLACEHOLDER_REVIEWS: Testimonial[] = [
     vehicleType: "2019 Toyota Hilux",
     rating: 5,
     testimonialText:
-      "Brought my Hilux in for a clutch replacement. They diagnosed it free, quoted me on the spot, and had it done same day. Price was exactly what they said. Couldn't believe it.",
+      "Brought my Hilux in for a clutch replacement. They assessed it, quoted me on the spot, and had it done quickly. Price was exactly what they said. Couldn't believe it.",
   },
   {
     _id: "p2",
@@ -29,7 +29,7 @@ const PLACEHOLDER_REVIEWS: Testimonial[] = [
     vehicleType: "2018 Ford Ranger",
     rating: 5,
     testimonialText:
-      "Clutch was slipping on my Ranger for weeks. Finally came in and they sorted it same day. Wish I'd come sooner. Will not go anywhere else.",
+      "Clutch was slipping on my Ranger for weeks. Finally came in and they sorted it out properly. Wish I'd come sooner. Will not go anywhere else.",
   },
   {
     _id: "p4",
@@ -37,7 +37,7 @@ const PLACEHOLDER_REVIEWS: Testimonial[] = [
     vehicleType: "2015 Holden Colorado",
     rating: 5,
     testimonialText:
-      "They replaced the flywheel and clutch kit. Quoted me upfront, no hidden charges at the end. The car drives like new. These guys are the real specialists.",
+      "They replaced the flywheel and clutch kit. Price was exactly as quoted, no hidden charges at the end. The car drives like new. These guys are the real specialists.",
   },
   {
     _id: "p5",

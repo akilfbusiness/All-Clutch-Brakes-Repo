@@ -130,9 +130,8 @@ function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
 
 const DEFAULT_TICKER_ITEMS = [
   "Clutch Replacement", "Brake Repairs", "40+ Years Experience",
-  "Same Day Service", "Free Quotes", "All Makes & Models",
-  "Adelaide Specialists", "Fixed Pricing", "No Surprises",
-  "Qualified Tradespeople", "Transmission Service", "Brake Machining",
+  "All Makes & Models", "Adelaide Specialists", "Fixed Pricing",
+  "No Surprises", "Qualified Tradespeople", "Transmission Service", "Brake Machining",
 ]
 
 function Ticker({ items, reverse = false }: { items?: string[]; reverse?: boolean }) {
@@ -621,7 +620,7 @@ export function HomePageClient({
                 href="/contact"
                 className="inline-flex items-center gap-2.5 border border-border hover:border-accent text-foreground hover:text-accent font-bold text-sm px-8 py-4 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
               >
-                Get a Free Quote
+                Get a Quote
               </Link>
             </motion.div>
           </div>
@@ -928,7 +927,7 @@ export function HomePageClient({
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"
               >
-                Get a Quote Online
+                Get a Quote
               </Link>
             </div>
           </motion.div>

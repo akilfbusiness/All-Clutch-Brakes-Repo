@@ -147,7 +147,7 @@ export default async function ProjectsPage() {
                 Want Us to Work on Your Vehicle?
               </h2>
               <p className="mt-3 text-accent-foreground/55 text-sm md:text-base max-w-lg leading-relaxed">
-                Get in touch for a free quote. We work on all makes and models — no job too big or small.
+                Get in touch for a quote. We work on all makes and models — no job too big or small.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
@@ -162,7 +162,7 @@ export default async function ProjectsPage() {
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 border-2 border-accent-foreground/40 hover:bg-accent-foreground hover:text-accent text-accent-foreground font-bold text-sm px-8 py-4 transition-all duration-300"
               >
-                Get a Quote Online
+                Get a Quote
               </Link>
             </div>
           </div>

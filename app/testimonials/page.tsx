@@ -199,7 +199,7 @@ export default async function TestimonialsPage() {
               Ready to Experience Our Service?
             </h2>
             <p className="mb-8 text-pretty text-lg text-muted-foreground">
-              Join hundreds of satisfied customers across Adelaide. Get your free quote today.
+              Join hundreds of satisfied customers across Adelaide. Contact us today to get a quote.
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <PhoneLink
@@ -213,7 +213,7 @@ export default async function TestimonialsPage() {
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 border-2 border-primary px-8 py-4 font-bold text-primary transition-all hover:bg-primary hover:text-primary-foreground"
               >
-                Get a Quote Online
+                Get a Quote
               </a>
             </div>
           </div>

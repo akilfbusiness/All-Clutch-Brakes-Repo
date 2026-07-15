@@ -579,7 +579,7 @@ export function ServicePageClient({
                 Ready for {service.title}?
               </h2>
               <p className="mt-3 text-accent-foreground/55 text-sm md:text-base max-w-lg leading-relaxed">
-                Contact {businessName} today for expert service, upfront pricing, and same-day availability.
+                Contact {businessName} today for expert service and upfront pricing.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
