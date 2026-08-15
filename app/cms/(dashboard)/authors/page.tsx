@@ -1,8 +1,10 @@
 import Image from "next/image"
-import { Users } from "lucide-react"
+import Link from "next/link"
+import { Plus, Users } from "lucide-react"
 import { sanityClient } from "@/sanity/client"
 import { urlFor } from "@/sanity/image"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 interface CmsAuthorListItem {
   _id: string
@@ -34,13 +36,19 @@ export default async function CmsAuthorsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Authors</h1>
           <p className="text-sm text-muted-foreground">
             {authors.length} {authors.length === 1 ? "author" : "authors"} in Sanity.
           </p>
         </div>
+        <Button asChild>
+          <Link href="/cms/authors/new">
+            <Plus className="size-4" />
+            New author
+          </Link>
+        </Button>
       </div>
 
       {authors.length === 0 ? (
@@ -53,35 +61,34 @@ export default async function CmsAuthorsPage() {
       ) : (
         <div className="flex flex-col gap-2">
           {authors.map((author) => (
-            <Card key={author._id}>
-              <CardContent className="flex items-center gap-4 py-4">
-                <div className="relative size-12 shrink-0 overflow-hidden rounded-full bg-muted">
-                  {author.photo?.asset ? (
-                    <Image
-                      src={urlFor(author.photo).width(96).height(96).fit("crop").url()}
-                      alt={author.name}
-                      fill
-                      className="object-cover"
-                      sizes="48px"
-                    />
-                  ) : (
-                    <div className="flex size-full items-center justify-center">
-                      <Users className="size-5 text-muted-foreground/40" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex flex-1 flex-col">
-                  <span className="font-medium text-foreground">{author.name}</span>
-                  {author.role && <span className="text-sm text-muted-foreground">{author.role}</span>}
-                </div>
-              </CardContent>
-            </Card>
+            <Link key={author._id} href={`/cms/authors/${author._id}`}>
+              <Card className="transition-colors hover:bg-muted/50">
+                <CardContent className="flex items-center gap-4 py-4">
+                  <div className="relative size-12 shrink-0 overflow-hidden rounded-full bg-muted">
+                    {author.photo?.asset ? (
+                      <Image
+                        src={urlFor(author.photo).width(96).height(96).fit("crop").url()}
+                        alt={author.name}
+                        fill
+                        className="object-cover"
+                        sizes="48px"
+                      />
+                    ) : (
+                      <div className="flex size-full items-center justify-center">
+                        <Users className="size-5 text-muted-foreground/40" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-1 flex-col">
+                    <span className="font-medium text-foreground">{author.name}</span>
+                    {author.role && <span className="text-sm text-muted-foreground">{author.role}</span>}
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       )}
-      <p className="text-xs text-muted-foreground">
-        Editing, creating, and deleting authors will be added in the next step.
-      </p>
     </div>
   )
 }

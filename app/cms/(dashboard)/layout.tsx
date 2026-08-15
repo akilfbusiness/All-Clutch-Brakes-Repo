@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { CmsTopBar } from "@/components/cms/cms-top-bar"
 import { CmsNav } from "@/components/cms/cms-nav"
+import { Toaster } from "@/components/ui/sonner"
 
 export default function CmsDashboardLayout({ children }: { children: ReactNode }) {
   return (
@@ -12,6 +13,7 @@ export default function CmsDashboardLayout({ children }: { children: ReactNode }
           <div className="mx-auto max-w-4xl">{children}</div>
         </div>
       </div>
+      <Toaster position="top-right" />
     </div>
   )
 }

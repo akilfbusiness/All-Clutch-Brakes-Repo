@@ -1,4 +1,5 @@
 import crypto from "crypto"
+import { cookies } from "next/headers"
 
 /**
  * Server-only auth helpers for the custom /cms admin panel.
@@ -81,3 +82,18 @@ export function verifySessionToken(token: string | undefined | null): boolean {
 }
 
 export const SESSION_MAX_AGE_SECONDS = Math.floor(SESSION_DURATION_MS / 1000)
+
+/**
+ * Defense-in-depth guard for Server Actions. Middleware already blocks
+ * unauthenticated requests to /cms/**, but Server Actions are invoked via
+ * POST requests that should always carry the same session cookie — this
+ * throws if that invariant is somehow violated, so no write/delete/upload
+ * action can execute without a valid, unexpired /cms session.
+ */
+export async function requireCmsSession(): Promise<void> {
+  const cookieStore = await cookies()
+  const token = cookieStore.get(CMS_SESSION_COOKIE)?.value
+  if (!verifySessionToken(token)) {
+    throw new Error("Unauthorized: no valid /cms session.")
+  }
+}
