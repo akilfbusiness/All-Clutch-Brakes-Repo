@@ -1,14 +1,14 @@
 "use client"
 
 import { useState, type FormEvent } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+const REQUEST_TIMEOUT_MS = 10_000
+
 export default function CmsLoginPage() {
-  const router = useRouter()
   const [passcode, setPasscode] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -18,11 +18,15 @@ export default function CmsLoginPage() {
     setError(null)
     setIsSubmitting(true)
 
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+
     try {
       const response = await fetch("/api/cms/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ passcode }),
+        signal: controller.signal,
       })
 
       if (!response.ok) {
@@ -32,11 +36,21 @@ export default function CmsLoginPage() {
         return
       }
 
-      router.push("/cms")
-      router.refresh()
-    } catch {
-      setError("Unable to reach the server. Please try again.")
+      // Use a full page navigation (not client-side router.push) so the
+      // browser re-requests /cms as a fresh top-level document load,
+      // guaranteeing the just-set session cookie is sent and read by the
+      // server before anything renders. This is more robust than a
+      // client-side transition, especially inside embedded/preview contexts.
+      window.location.href = "/cms"
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setError("The request took too long. Please try again.")
+      } else {
+        setError("Unable to reach the server. Please try again.")
+      }
       setIsSubmitting(false)
+    } finally {
+      clearTimeout(timeoutId)
     }
   }
 
