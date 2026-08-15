@@ -223,8 +223,8 @@ const deskStructure = (S: any) =>
 
 export default defineConfig({
   ...sanityConfig,
-  name: "project-noda-cms",
-  title: "Project Noda — CMS",
+  name: "all-clutch-and-brake-cms",
+  title: "All Clutch & Brake CMS",
   basePath: "/studio",
 
   schema: {
