@@ -327,7 +327,7 @@ export default async function RootLayout({
         <Analytics />
         
 
- <RoryChatWidget />    {/* ← add this line */}
+{/* <RoryChatWidget /> */}    {/* ← add this line */}
       </body>
     </html>
   )
